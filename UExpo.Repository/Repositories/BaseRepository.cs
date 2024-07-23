@@ -1,0 +1,98 @@
+﻿using Microsoft.EntityFrameworkCore;
+using UExpo.Repository.Context;
+using AutoMapper;
+using UExpo.Repository.Dao;
+using UExpo.Domain.Shared;
+
+namespace UExpo.Repository.Repositories;
+
+public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
+    where TDao : BaseDao
+    where TEntity : BaseModel
+{
+    protected readonly UExpoDbContext Context;
+    protected readonly DbSet<TDao> Database;
+    protected readonly IMapper Mapper;
+
+    protected BaseRepository(UExpoDbContext context, IMapper mapper)
+    {
+        Context = context;
+        Database = context.Set<TDao>();
+        Mapper = mapper;
+    }
+
+    public async Task CreateAsync(TEntity item, CancellationToken cancellationToken = default)
+    {
+        var entityDao = Mapper.Map<TDao>(item);
+
+        Database.Add(entityDao);
+
+        await Context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task CreateAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
+    {
+        var entityDao = Mapper.Map<List<TDao>>(items);
+
+        Database.AddRange(entityDao);
+
+        await Context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<List<TEntity>> GetAsync(CancellationToken cancellationToken = default) =>
+        Mapper.Map<List<TEntity>>(await Database.AsNoTracking().ToListAsync(cancellationToken));
+
+    public async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var entity = await Database
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
+
+        return entity is null
+            ? throw new Exception($"{nameof(TDao)} com id = {id}")
+        : Mapper.Map<TEntity>(entity);
+    }
+
+    public async Task<TEntity?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var entity = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
+
+        return entity is null ? default : Mapper.Map<TEntity>(entity);
+    }
+
+    public async Task UpdateAsync(TEntity item, CancellationToken cancellationToken = default)
+    {
+        var existingEntity = await Database.FirstOrDefaultAsync(x => x.Id!.Equals(item.Id), cancellationToken: cancellationToken);
+
+        if (existingEntity is null)
+            throw new Exception($"{nameof(TDao)} com id = {item.Id}");
+
+        Mapper.Map(item, existingEntity);
+
+        await Context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
+    {
+        var itemsList = items.ToList();
+
+        var itemsIds = itemsList.Select(x => x.Id).ToList();
+
+        var entityDaos = Database.Where(x => itemsIds.Contains(x.Id)).ToList();
+
+        foreach (var item in itemsList)
+            Mapper.Map(item, entityDaos.FirstOrDefault(x => x.Id!.Equals(item.Id)));
+        await Context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var item = await Database.FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
+
+        if (item is null) return;
+
+        Database.Remove(item);
+
+        await Context.SaveChangesAsync(cancellationToken);
+    }
+}
