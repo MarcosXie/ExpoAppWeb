@@ -1,5 +1,7 @@
 ﻿namespace UExpo.Repository.Dao;
 
+
+// Data Access Object
 public class BaseDao
 {
     public Guid Id { get; set; } = Guid.NewGuid();
