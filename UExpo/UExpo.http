@@ -1,0 +1,6 @@
+@UExpo_HostAddress = http://localhost:5130
+
+GET {{UExpo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
