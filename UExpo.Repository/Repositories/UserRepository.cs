@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using UExpo.Domain.User;
+using UExpo.Domain.Users;
 using UExpo.Repository.Context;
 using UExpo.Repository.Dao;
 

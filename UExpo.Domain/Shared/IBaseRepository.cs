@@ -4,7 +4,7 @@ public interface IBaseRepository<TDao, TEntity>
     where TDao : class
     where TEntity : class
 {
-    public Task CreateAsync(TEntity item, CancellationToken cancellationToken = default);
+    public Task<Guid> CreateAsync(TEntity item, CancellationToken cancellationToken = default);
 
     public Task CreateAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default);
 

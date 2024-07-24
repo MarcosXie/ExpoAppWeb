@@ -21,18 +21,25 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
         Mapper = mapper;
     }
 
-    public async Task CreateAsync(TEntity item, CancellationToken cancellationToken = default)
+    public async Task<Guid> CreateAsync(TEntity item, CancellationToken cancellationToken = default)
     {
         var entityDao = Mapper.Map<TDao>(item);
+
+        entityDao.CreatedAt = DateTime.Now;
 
         Database.Add(entityDao);
 
         await Context.SaveChangesAsync(cancellationToken);
+
+        return entityDao.Id;
     }
 
     public async Task CreateAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
     {
         var entityDao = Mapper.Map<List<TDao>>(items);
+
+        foreach(var e in entityDao)
+            e.CreatedAt = DateTime.Now;
 
         Database.AddRange(entityDao);
 
@@ -67,6 +74,8 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
         if (existingEntity is null)
             throw new Exception($"{nameof(TDao)} com id = {item.Id}");
 
+        existingEntity.UpdatedAt = DateTime.Now;
+
         Mapper.Map(item, existingEntity);
 
         await Context.SaveChangesAsync(cancellationToken);
@@ -81,7 +90,10 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
         var entityDaos = Database.Where(x => itemsIds.Contains(x.Id)).ToList();
 
         foreach (var item in itemsList)
+        {
+            item.UpdatedAt = DateTime.Now;
             Mapper.Map(item, entityDaos.FirstOrDefault(x => x.Id!.Equals(item.Id)));
+        }
         await Context.SaveChangesAsync(cancellationToken);
     }
 

@@ -1,3 +1,4 @@
+using UExpo.Application.Extensions;
 using UExpo.Repository.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
 services.AddRepository();
+services.AddApplication();
 
 var app = builder.Build();
 

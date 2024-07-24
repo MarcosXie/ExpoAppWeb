@@ -11,8 +11,8 @@ using UExpo.Repository.Context;
 namespace UExpo.Repository.Migrations
 {
     [DbContext(typeof(UExpoDbContext))]
-    [Migration("20240723220415_add-user-name")]
-    partial class addusername
+    [Migration("20240724231437_add-user-table")]
+    partial class addusertable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,11 +45,11 @@ namespace UExpo.Repository.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
