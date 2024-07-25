@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using UExpo.Domain.Users;
 
 namespace UExpo.Domain.Users;
 
@@ -12,11 +11,9 @@ public class UserDto
     public string Email { get; set; } = null!;
     [Required, MaxLength(150)]
     public string? Enterprise { get; set; }
-    //[Required, Length(8, 8)]
+    [Required, Length(8, 8)]
     public string Password { get; set; } = null!;
-    //[Required, Length(8, 8)]
     public string ConfirmPassword { get; set; } = null!;
-    public TypeEnum Type { get; set; }
     [Required, MaxLength(30)]
     public string Country { get; set; } = null!;
 }

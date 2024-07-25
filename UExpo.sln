@@ -3,15 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UExpo.Api", "UExpo\UExpo.Api.csproj", "{1A89B0B9-8016-489E-B92E-0E3DAA72F338}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UExpo.Api", "UExpo\UExpo.Api.csproj", "{1A89B0B9-8016-489E-B92E-0E3DAA72F338}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UExpo.Application", "UExpo.Application\UExpo.Application.csproj", "{9B59353D-2F87-42DB-BCEF-EEEFF19B773A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UExpo.Application", "UExpo.Application\UExpo.Application.csproj", "{9B59353D-2F87-42DB-BCEF-EEEFF19B773A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UExpo.Domain", "UExpo.Domain\UExpo.Domain.csproj", "{01074E0A-0984-4121-891C-1403637F0172}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UExpo.Domain", "UExpo.Domain\UExpo.Domain.csproj", "{01074E0A-0984-4121-891C-1403637F0172}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UExpo.Infrastructure", "UExpo.Infrastructure\UExpo.Infrastructure.csproj", "{9B0DE8A6-D2CC-4F1D-9B07-5417215EE432}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UExpo.Infrastructure", "UExpo.Infrastructure\UExpo.Infrastructure.csproj", "{9B0DE8A6-D2CC-4F1D-9B07-5417215EE432}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UExpo.Repository", "UExpo.Repository\UExpo.Repository.csproj", "{59F395EC-53CC-4A11-8520-3E1A8588D736}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UExpo.Repository", "UExpo.Repository\UExpo.Repository.csproj", "{59F395EC-53CC-4A11-8520-3E1A8588D736}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4A9F7299-9726-4212-82CC-96D9D60EC925}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

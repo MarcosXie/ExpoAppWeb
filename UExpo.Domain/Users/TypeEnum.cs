@@ -2,8 +2,6 @@
 
 public enum TypeEnum
 {
-    Consumer = 0,
+    Guest = 0,
     Exhibitor = 1,
-    Importer = 2,
-    Trader = 3,
 }

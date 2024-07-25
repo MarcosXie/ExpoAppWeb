@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\UExpo.Domain\UExpo.Domain.csproj" />
     <ProjectReference Include="..\UExpo.Repository\UExpo.Repository.csproj" />
   </ItemGroup>
