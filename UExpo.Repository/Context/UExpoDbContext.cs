@@ -7,6 +7,15 @@ public class UExpoDbContext : DbContext
 {
     public virtual DbSet<UserDao> Users { get; set; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<UserDao>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseMySql("server=uexpo-db.cbasq20g4rj4.us-east-1.rds.amazonaws.com;database=uexpo_db;user=root;password=RootAws123!",

@@ -24,8 +24,7 @@ public class UserService : IUserService
 
     public async Task<Guid> CreateUserAsync(UserDto userDto)
     {
-        if (!userDto.Password.Equals(userDto.ConfirmPassword))
-            throw new Exception("The passwords don`t match! Please try again!");
+        await ValidateCreateAsync(userDto);
 
         var user = _mapper.Map<User>(userDto);
 
@@ -45,6 +44,16 @@ public class UserService : IUserService
         }
 
         return null;
+    }
+
+    #region Utils
+    private async Task ValidateCreateAsync(UserDto userDto)
+    {
+        if (!userDto.Password.Equals(userDto.ConfirmPassword))
+            throw new Exception("The passwords don`t match! Please try again!");
+
+        if (await _repository.GetUserByEmailAsync(userDto.Email) is not null)
+            throw new Exception("This email is already registered in UExpo!");
     }
 
     private string GenerateJwtToken(User user, TypeEnum userType)
@@ -70,4 +79,5 @@ public class UserService : IUserService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+    #endregion
 }
