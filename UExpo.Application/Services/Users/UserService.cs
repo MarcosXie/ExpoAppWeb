@@ -1,18 +1,25 @@
 ﻿using AutoMapper;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using UExpo.Application.Utils;
 using UExpo.Domain.Users;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace UExpo.Application.Services.Users;
 
 public class UserService : IUserService
 {
-    private IUserRepository _repository;
-    private IMapper _mapper;
+    private readonly IUserRepository _repository;
+    private readonly IMapper _mapper;
+    private readonly IConfiguration _config;
 
-    public UserService(IUserRepository repository, IMapper mapper)
+    public UserService(IUserRepository repository, IMapper mapper, IConfiguration config)
     {
         _repository = repository;
         _mapper = mapper;
+        _config = config;
     }
 
     public async Task<Guid> CreateUserAsync(UserDto userDto)
@@ -27,8 +34,40 @@ public class UserService : IUserService
         return await _repository.CreateAsync(user);
     }
 
-    public Task<string> LoginAsync(LoginDto loginDto)
+    public async Task<string?> LoginAsync(LoginDto loginDto)
     {
-        throw new NotImplementedException();
+        var user = await _repository.GetUserByEmailAsync(loginDto.Email);
+
+        if (user is not null && HashHelper.VerifyPassword(loginDto.Password, user.Password))
+        {
+            var token = GenerateJwtToken(user, loginDto.UserType);
+            return token;
+        }
+
+        return null;
+    }
+
+    private string GenerateJwtToken(User user, TypeEnum userType)
+    {
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Name),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("Email", user.Email),
+            new Claim("UserType", userType.ToString())
+        };
+
+        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Jwt:Key"]!));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            _config["Jwt:Issuer"],
+            _config["Jwt:Audience"],
+            claims,
+            expires: DateTime.Now.AddMinutes(Convert.ToDouble(_config["Jwt:ExpiresInMinutes"])),
+            signingCredentials: creds
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
