@@ -2,13 +2,13 @@
 
 public static class HashHelper
 {
-    public static string HashPassword(string password)
+    public static string Hash(string value)
     {
-        return BCrypt.Net.BCrypt.HashPassword(password);
+        return BCrypt.Net.BCrypt.HashPassword(value);
     }
 
-    public static bool VerifyPassword(string password, string hashedPassword)
+    public static bool Verify(string value, string hashedValue)
     {
-        return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+        return BCrypt.Net.BCrypt.Verify(value, hashedValue);
     }
 }

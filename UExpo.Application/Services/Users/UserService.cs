@@ -6,6 +6,7 @@ using UExpo.Domain.Users;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using UExpo.Domain.Email;
 
 namespace UExpo.Application.Services.Users;
 
@@ -14,12 +15,18 @@ public class UserService : IUserService
     private readonly IUserRepository _repository;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
+    private readonly IEmailService _emailService;
 
-    public UserService(IUserRepository repository, IMapper mapper, IConfiguration config)
+    public UserService(
+        IUserRepository repository, 
+        IMapper mapper, 
+        IConfiguration config, 
+        IEmailService emailService)
     {
         _repository = repository;
         _mapper = mapper;
         _config = config;
+        _emailService = emailService;
     }
 
     public async Task<Guid> CreateUserAsync(UserDto userDto)
@@ -28,7 +35,9 @@ public class UserService : IUserService
 
         var user = _mapper.Map<User>(userDto);
 
-        user.Password = HashHelper.HashPassword(userDto.Password);
+        user.Password = HashHelper.Hash(userDto.Password);
+
+        await SendEmailConfirmationEmailAsync(user);
 
         return await _repository.CreateAsync(user);
     }
@@ -37,7 +46,10 @@ public class UserService : IUserService
     {
         var user = await _repository.GetUserByEmailAsync(loginDto.Email);
 
-        if (user is not null && HashHelper.VerifyPassword(loginDto.Password, user.Password))
+        if (!user.IsEmailValidated)
+            throw new Exception("Email not validated!");
+
+        if (user is not null && HashHelper.Verify(loginDto.Password, user.Password))
         {
             var token = GenerateJwtToken(user, loginDto.UserType);
             return token;
@@ -46,13 +58,33 @@ public class UserService : IUserService
         return null;
     }
 
+    public async Task VerifyEmailAsync(Guid id, string code)
+    {
+        var user = await _repository.GetByIdAsync(id);
+
+        var baseCode = GenerateBaseValidationCode(user);
+
+        var isValid = HashHelper.Verify(baseCode, code);
+
+        if (!isValid)
+            throw new Exception("Error validating user email!");
+
+        user.IsEmailValidated = true;
+
+        await _repository.UpdateAsync(user);
+
+        await _repository.DeleteUserWithNotValidatedEmailsAsync(user.Email);
+    }
+
     #region Utils
     private async Task ValidateCreateAsync(UserDto userDto)
     {
         if (!userDto.Password.Equals(userDto.ConfirmPassword))
             throw new Exception("The passwords don`t match! Please try again!");
 
-        if (await _repository.GetUserByEmailAsync(userDto.Email) is not null)
+        var email = await _repository.GetUserByEmailAsync(userDto.Email);
+
+        if (email is not null && email.IsEmailValidated)
             throw new Exception("This email is already registered in UExpo!");
     }
 
@@ -79,5 +111,27 @@ public class UserService : IUserService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    private async Task SendEmailConfirmationEmailAsync(User user)
+    {
+        var code = HashHelper.Hash(GenerateBaseValidationCode(user));
+
+        EmailSendDto emailSendDto = new EmailSendDto()
+        {
+            ToAddresses = [user.Email],
+            Subject = $"Welcome {user.Name} to UExpo! Please verify your email.",
+            Body = @$"<p>Click in the link bellow to authenticate your email: 
+                    <br>
+                    <a href=""{_config["FrontEndUrl"]}/080_verify_email/{user.Id}/{code}"">Authenticate</a>
+                    <br>
+                    Thank you!</p>"
+        };
+
+    
+        await _emailService.SendEmailAsync(emailSendDto);
+    }
+
+    private static string GenerateBaseValidationCode(User user) => 
+        $"{user.Name}{user.Email}{user.Password}";
     #endregion
 }

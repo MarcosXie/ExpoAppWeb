@@ -7,4 +7,5 @@ public interface IUserRepository
     public Task<User> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default);
     public Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     public Task UpdateAsync(User item, CancellationToken cancellationToken = default);
+    public Task DeleteUserWithNotValidatedEmailsAsync(string email, CancellationToken cancellationToken = default);
 }

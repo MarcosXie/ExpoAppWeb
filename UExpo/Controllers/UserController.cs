@@ -5,7 +5,7 @@ using UExpo.Domain.Users;
 namespace UExpo.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("Api/[controller]")]
 public class UserController(IUserService service) : ControllerBase
 {
     private readonly IUserService service = service;
@@ -39,6 +39,21 @@ public class UserController(IUserService service) : ControllerBase
             }
 
             return Ok(hash);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("Verify/{id}/{code}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> VerifyEmailAsync(Guid id, string code)
+    {
+        try
+        {
+            await service.VerifyEmailAsync(id, code);
+            return Ok("Successfully validated email!");
         }
         catch (Exception ex)
         {

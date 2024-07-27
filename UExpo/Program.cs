@@ -7,6 +7,7 @@ using UExpo.Repository.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
+using UExpo.Infrastructure.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +50,7 @@ services.AddSwaggerGen(c =>
 });
 
 services.AddRepository(config);
+services.AddInfrastructure();
 services.AddApplication();
 
 // Add authentication
