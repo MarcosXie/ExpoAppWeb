@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using UExpo.Domain.Email;
+using UExpo.Domain.Exceptions;
 
 namespace UExpo.Application.Services.Users;
 
@@ -44,18 +45,17 @@ public class UserService : IUserService
 
     public async Task<string?> LoginAsync(LoginDto loginDto)
     {
-        var user = await _repository.GetUserByEmailAsync(loginDto.Email);
+        var user = await _repository.GetUserByEmailAsync(loginDto.Email) 
+            ?? throw new InvalidCredentialsException();
 
         if (!user.IsEmailValidated)
-            throw new Exception("Email not validated!");
+            throw new BadRequestException("Email not validated!");
 
-        if (user is not null && HashHelper.Verify(loginDto.Password, user.Password))
-        {
-            var token = GenerateJwtToken(user, loginDto.UserType);
-            return token;
-        }
+        if (!HashHelper.Verify(loginDto.Password, user.Password))
+            throw new InvalidCredentialsException();
 
-        return null;
+        var token = GenerateJwtToken(user, loginDto.UserType);
+        return token;
     }
 
     public async Task VerifyEmailAsync(Guid id, string code)
@@ -80,12 +80,12 @@ public class UserService : IUserService
     private async Task ValidateCreateAsync(UserDto userDto)
     {
         if (!userDto.Password.Equals(userDto.ConfirmPassword))
-            throw new Exception("The passwords don`t match! Please try again!");
+            throw new BadRequestException("The passwords don`t match! Please try again!");
 
         var email = await _repository.GetUserByEmailAsync(userDto.Email);
 
         if (email is not null && email.IsEmailValidated)
-            throw new Exception("This email is already registered in UExpo!");
+            throw new BadRequestException("This email is already registered in UExpo!");
     }
 
     private string GenerateJwtToken(User user, TypeEnum userType)

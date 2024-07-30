@@ -20,9 +20,9 @@ public class UserRepository(UExpoDbContext context, IMapper mapper)
         await Context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<User> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        var userDao = await Database.FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email));
+        var userDao = await Database.FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email), cancellationToken: cancellationToken);
 
         return Mapper.Map<User>(userDao);
     }

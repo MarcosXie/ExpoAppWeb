@@ -14,51 +14,25 @@ public class UserController(IUserService service) : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> RegisterUserAsync(UserDto user)
     {
-        try
-        {
-            var id = await service.CreateUserAsync(user);
-            return Ok(id);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var id = await service.CreateUserAsync(user);
+        return Ok(id);
     }
 
     [HttpPost("Login")]
     [AllowAnonymous]
     public async Task<IActionResult> LoginAsync(LoginDto loginDto)
     {
-        try
-        {
-            var hash = await service.LoginAsync(loginDto);
+        var hash = await service.LoginAsync(loginDto);
 
-            if (hash is null)
-            {
-                return Unauthorized();
-            }
-
-            return Ok(hash);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        return Ok(hash);
     }
 
     [HttpPost("Verify/{id}/{code}")]
     [AllowAnonymous]
     public async Task<IActionResult> VerifyEmailAsync(Guid id, string code)
     {
-        try
-        {
-            await service.VerifyEmailAsync(id, code);
-            return Ok("Successfully validated email!");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        await service.VerifyEmailAsync(id, code);
+        return Ok("Successfully validated email! Now you are able to login!");
     }
 
     [HttpGet("Private")]
