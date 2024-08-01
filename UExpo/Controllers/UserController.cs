@@ -35,6 +35,14 @@ public class UserController(IUserService service) : ControllerBase
         return Ok("Successfully validated email! Now you are able to login!");
     }
 
+    [HttpPost("ForgotPassword")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
+    {
+        await service.ForgotPasswordAsync(forgotPasswordDto);
+        return Ok();
+    }
+
     [HttpGet("Private")]
     public IActionResult PrivateEndpoint()
     {

@@ -3,6 +3,7 @@
 public interface IUserService
 {
     Task<Guid> CreateUserAsync(UserDto userDto);
+    Task ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto);
     Task<string?> LoginAsync(LoginDto loginDto);
     Task VerifyEmailAsync(Guid id, string code);
 }

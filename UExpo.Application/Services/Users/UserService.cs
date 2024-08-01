@@ -45,11 +45,10 @@ public class UserService : IUserService
 
     public async Task<string?> LoginAsync(LoginDto loginDto)
     {
-        var user = await _repository.GetUserByEmailAsync(loginDto.Email) 
+        var user = await _repository.GetUserByEmailAsync(loginDto.Email)
             ?? throw new InvalidCredentialsException();
 
-        if (!user.IsEmailValidated)
-            throw new BadRequestException("Email not validated!");
+        ValidateUserEmail(user);
 
         if (!HashHelper.Verify(loginDto.Password, user.Password))
             throw new InvalidCredentialsException();
@@ -74,6 +73,18 @@ public class UserService : IUserService
         await _repository.UpdateAsync(user);
 
         await _repository.DeleteUserWithNotValidatedEmailsAsync(user.Email);
+    }
+
+    public async Task ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
+    {
+        var user = await _repository.GetUserByEmailAsync(forgotPasswordDto.Email);
+
+        if (user is null)
+            throw new NotFoundException(nameof(user) + $"with email: {forgotPasswordDto.Email}");
+
+        ValidateUserEmail(user);
+
+        await SendEmailForgotPasswordAsync(user);
     }
 
     #region Utils
@@ -116,7 +127,7 @@ public class UserService : IUserService
     {
         var code = HashHelper.Hash(GenerateBaseValidationCode(user));
 
-        EmailSendDto emailSendDto = new EmailSendDto()
+        EmailSendDto emailSendDto = new()
         {
             ToAddresses = [user.Email],
             Subject = $"Welcome {user.Name} to UExpo! Please verify your email.",
@@ -127,11 +138,31 @@ public class UserService : IUserService
                     Thank you!</p>"
         };
 
-    
+        await _emailService.SendEmailAsync(emailSendDto);
+    }
+
+    private async Task SendEmailForgotPasswordAsync(User user)
+    {
+        //TODO: Modificar para retornar a senha verdadeira
+        EmailSendDto emailSendDto = new()
+        {
+            ToAddresses = [user.Email],
+            Subject = $"UExpo - Forgot password",
+            Body = @$"<p>You requested your password from UExpo, if are not you please ignore this email.
+                        <br>
+                        Password:<strong>{user.Password}</strong>
+                      </p>"
+        };
+
         await _emailService.SendEmailAsync(emailSendDto);
     }
 
     private static string GenerateBaseValidationCode(User user) => 
         $"{user.Name}{user.Email}{user.Password}";
+    private static void ValidateUserEmail(User user)
+    {
+        if (!user.IsEmailValidated)
+            throw new BadRequestException("Email not validated!");
+    }
     #endregion
 }
