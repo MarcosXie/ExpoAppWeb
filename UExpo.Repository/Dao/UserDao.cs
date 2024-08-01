@@ -3,7 +3,6 @@ using UExpo.Domain.Users;
 
 namespace UExpo.Repository.Dao;
 
-[Table("Users")]
 public class UserDao : BaseDao
 {
     public string Name { get; set; } = null!;
@@ -14,4 +13,6 @@ public class UserDao : BaseDao
     public bool IsEmailValidated { get; set; }
     [NotMapped]
     public TypeEnum Type { get; set; }
+
+    public CallCenterChatDao CallCenterChatDao { get; set; } = new();
 }
