@@ -14,5 +14,5 @@ public class UserDao : BaseDao
     [NotMapped]
     public TypeEnum Type { get; set; }
 
-    public CallCenterChatDao CallCenterChatDao { get; set; } = new();
+    public CallCenterChatDao CallCenterChat { get; set; } = new();
 }

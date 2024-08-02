@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Users;
 using UExpo.Repository.Context;
 using UExpo.Repository.Mapper;
@@ -19,5 +20,6 @@ public static class DependencyInjection
         services.AddDbContext<UExpoDbContext>();
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICallCenterChatRepository, CallCenterChatRepository>();
     }
 }

@@ -10,6 +10,6 @@ public class UserConfiguration : IEntityTypeConfiguration<UserDao>
     {
         entity.HasKey(x => x.Id).HasName("user_pkey");
 
-        entity.ToTable("user", "uexpo_db");
+        entity.ToTable("user");
     }
 }

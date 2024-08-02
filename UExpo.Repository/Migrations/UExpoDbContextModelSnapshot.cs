@@ -41,28 +41,26 @@ namespace UExpo.Repository.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("UserDaoId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("UserLang")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("call_center_pkey");
 
-                    b.HasIndex("UserDaoId")
+                    b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("CallCenterChatDao");
+                    b.ToTable("call_center_chat", (string)null);
                 });
 
             modelBuilder.Entity("UExpo.Repository.Dao.CallCenterMessageDao", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("CallCenterChatDaoId")
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("ChatId")
@@ -96,11 +94,12 @@ namespace UExpo.Repository.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("call_center_message_pkey");
 
-                    b.HasIndex("CallCenterChatDaoId");
+                    b.HasIndex("ChatId");
 
-                    b.ToTable("CallCenterMessageDao");
+                    b.ToTable("call_center_message", (string)null);
                 });
 
             modelBuilder.Entity("UExpo.Repository.Dao.UserDao", b =>
@@ -137,31 +136,32 @@ namespace UExpo.Repository.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("user_pkey");
 
-                    b.ToTable("Users");
+                    b.ToTable("user", (string)null);
                 });
 
             modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
                 {
-                    b.HasOne("UExpo.Repository.Dao.UserDao", "UserDao")
-                        .WithOne("CallCenterChatDao")
-                        .HasForeignKey("UExpo.Repository.Dao.CallCenterChatDao", "UserDaoId")
+                    b.HasOne("UExpo.Repository.Dao.UserDao", "User")
+                        .WithOne("CallCenterChat")
+                        .HasForeignKey("UExpo.Repository.Dao.CallCenterChatDao", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("UserDao");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("UExpo.Repository.Dao.CallCenterMessageDao", b =>
                 {
-                    b.HasOne("UExpo.Repository.Dao.CallCenterChatDao", "CallCenterChatDao")
+                    b.HasOne("UExpo.Repository.Dao.CallCenterChatDao", "CallCenterChat")
                         .WithMany("Messages")
-                        .HasForeignKey("CallCenterChatDaoId")
+                        .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CallCenterChatDao");
+                    b.Navigation("CallCenterChat");
                 });
 
             modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
@@ -171,7 +171,7 @@ namespace UExpo.Repository.Migrations
 
             modelBuilder.Entity("UExpo.Repository.Dao.UserDao", b =>
                 {
-                    b.Navigation("CallCenterChatDao")
+                    b.Navigation("CallCenterChat")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

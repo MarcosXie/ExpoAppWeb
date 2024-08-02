@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UExpo.Repository.Configurations;
 using UExpo.Repository.Dao;
 
 namespace UExpo.Repository.Context;
@@ -9,6 +10,7 @@ public class UExpoDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfiguration).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 

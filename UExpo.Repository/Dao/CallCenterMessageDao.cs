@@ -3,7 +3,7 @@
 public class CallCenterMessageDao : BaseDao
 {
     public Guid ChatId { get; set; }
-    public CallCenterChatDao CallCenterChatDao { get; set; } = null!;
+    public CallCenterChatDao CallCenterChat { get; set; } = null!;
     public Guid SenderId { get; set; }    
     public string SenderLang { get; set; } = null!;
     public string SendedMessage { get; set; } = null!;

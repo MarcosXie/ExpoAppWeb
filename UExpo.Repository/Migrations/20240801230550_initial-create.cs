@@ -6,17 +6,45 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UExpo.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class addchattables : Migration
+    public partial class initialcreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
-                name: "CallCenterChatDao",
+                name: "user",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    UserDaoId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Email = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Enterprise = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Password = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Country = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsEmailValidated = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("user_pkey", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "call_center_chat",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     AttendentId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     UserLang = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -27,23 +55,22 @@ namespace UExpo.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CallCenterChatDao", x => x.Id);
+                    table.PrimaryKey("call_center_pkey", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CallCenterChatDao_Users_UserDaoId",
-                        column: x => x.UserDaoId,
-                        principalTable: "Users",
+                        name: "FK_call_center_chat_user_UserId",
+                        column: x => x.UserId,
+                        principalTable: "user",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "CallCenterMessageDao",
+                name: "call_center_message",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     ChatId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    CallCenterChatDaoId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     SenderId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     SenderLang = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -59,36 +86,39 @@ namespace UExpo.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CallCenterMessageDao", x => x.Id);
+                    table.PrimaryKey("call_center_message_pkey", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CallCenterMessageDao_CallCenterChatDao_CallCenterChatDaoId",
-                        column: x => x.CallCenterChatDaoId,
-                        principalTable: "CallCenterChatDao",
+                        name: "FK_call_center_message_call_center_chat_ChatId",
+                        column: x => x.ChatId,
+                        principalTable: "call_center_chat",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CallCenterChatDao_UserDaoId",
-                table: "CallCenterChatDao",
-                column: "UserDaoId",
+                name: "IX_call_center_chat_UserId",
+                table: "call_center_chat",
+                column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CallCenterMessageDao_CallCenterChatDaoId",
-                table: "CallCenterMessageDao",
-                column: "CallCenterChatDaoId");
+                name: "IX_call_center_message_ChatId",
+                table: "call_center_message",
+                column: "ChatId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CallCenterMessageDao");
+                name: "call_center_message");
 
             migrationBuilder.DropTable(
-                name: "CallCenterChatDao");
+                name: "call_center_chat");
+
+            migrationBuilder.DropTable(
+                name: "user");
         }
     }
 }

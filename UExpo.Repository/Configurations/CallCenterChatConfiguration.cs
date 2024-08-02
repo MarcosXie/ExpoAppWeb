@@ -10,12 +10,18 @@ public class CallCenterChatConfiguration : IEntityTypeConfiguration<CallCenterCh
     {
         entity.HasKey(x => x.Id).HasName("call_center_pkey");
 
-        entity.ToTable("call_center_chat", "uexpo_db");
+        entity.ToTable("call_center_chat");
 
         entity
             .HasMany(n => n.Messages)
-            .WithOne(n => n.CallCenterChatDao)
+            .WithOne(n => n.CallCenterChat)
             .HasForeignKey(n => n.ChatId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+        entity
+            .HasOne(n => n.User)
+            .WithOne(n => n.CallCenterChat)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

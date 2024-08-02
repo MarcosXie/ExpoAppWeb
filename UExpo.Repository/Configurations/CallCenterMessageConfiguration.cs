@@ -10,6 +10,6 @@ public class CallCenterMessageConfiguration : IEntityTypeConfiguration<CallCente
     {
         entity.HasKey(x => x.Id).HasName("call_center_message_pkey");
 
-        entity.ToTable("call_center_message", "uexpo_db");
+        entity.ToTable("call_center_message");
     }
 }

@@ -2,8 +2,8 @@
 
 public class CallCenterChatDao : BaseDao
 {
-    public Guid UserDaoId { get; set; }
-    public UserDao UserDao { get; set; } = null!;
+    public Guid UserId { get; set; }
+    public UserDao User { get; set; } = null!;
 
     public Guid AttendentId { get; set; }
     public string UserLang { get; set; } = "en-US";

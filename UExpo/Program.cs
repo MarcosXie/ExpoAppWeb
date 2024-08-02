@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using UExpo.Infrastructure.Extensions;
 using UExpo.Api.Middlewares;
+using UExpo.Api.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,13 +20,13 @@ var config = builder.Configuration;
 
 services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder.AllowAnyOrigin();
-            builder.AllowAnyHeader();
-            builder.AllowAnyMethod();
-        });
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
 services.AddControllers();
@@ -61,6 +62,7 @@ services.AddSwaggerGen(c =>
     });
 });
 
+services.AddSignalR();
 services.AddRepository(config);
 services.AddInfrastructure();
 services.AddApplication();
@@ -111,12 +113,17 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors();
 app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chathub")
+    .RequireAuthorization();
+
+app.MapHub<CallCenterChatHub>("/call-center-chathub")
+    .RequireAuthorization();
 
 app.Run();
