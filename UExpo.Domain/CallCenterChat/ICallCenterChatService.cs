@@ -2,6 +2,6 @@
 
 public interface ICallCenterChatService
 {
-    Task CreateCallCenterChatAsync(CallCenterChatDto chat);
-    Task<CallCenterMessageDto> AddMessageAsync(CallCenterMessageDto message);
+    Task<(Guid, string)> CreateCallCenterChatAsync(CallCenterChatDto chat);
+    Task<CallCenterReceiveMessageDto> AddMessageAsync(CallCenterSendMessageDto message);
 }

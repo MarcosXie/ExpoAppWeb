@@ -10,6 +10,6 @@ public class DtoToDomain : Profile
     {
         CreateMap<UserDto, User>();
         CreateMap<CallCenterChatDto, CallCenterChat>();
-        CreateMap<CallCenterMessageDto, CallCenterMessage>();
+        CreateMap<CallCenterSendMessageDto, CallCenterMessage>();
     }
 }

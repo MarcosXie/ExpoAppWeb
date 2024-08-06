@@ -1,8 +1,9 @@
-﻿using UExpo.Domain.Shared;
+﻿using UExpo.Domain.CallCenterChat;
+using UExpo.Domain.Shared;
 
 namespace UExpo.Domain.Users;
 
-public class User : BaseModel
+public class User : BaseModel, IChatUser
 {
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
@@ -11,5 +12,6 @@ public class User : BaseModel
     public string Country { get; set; } = null!;
     public bool IsEmailValidated { get; set; } = false;
     public TypeEnum Type { get; set; }
+    public string Language { get; set; } = "en-US";
 }
 

@@ -2,9 +2,11 @@
 
 public interface ICallCenterChatRepository
 {
-    public Task<Guid> CreateAsync(CallCenterChat item, CancellationToken cancellationToken = default);
-    public Task<Guid> AddMessageAsync(CallCenterMessage message, CancellationToken cancellationToken = default)
-    public Task<List<CallCenterChat>> GetAsync(CancellationToken cancellationToken = default);
-    public Task<CallCenterChat> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    public Task UpdateAsync(CallCenterChat item, CancellationToken cancellationToken = default);
+    Task<Guid> CreateAsync(CallCenterChat item, CancellationToken cancellationToken = default);
+    Task<Guid> AddMessageAsync(CallCenterMessage message, CancellationToken cancellationToken = default);
+    Task<List<CallCenterChat>> GetAsync(CancellationToken cancellationToken = default);
+    Task<CallCenterChat> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<CallCenterChat> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<bool> AnyAsync(Guid id, CancellationToken cancellationToken = default);
+    Task UpdateAsync(CallCenterChat item, CancellationToken cancellationToken = default);
 }

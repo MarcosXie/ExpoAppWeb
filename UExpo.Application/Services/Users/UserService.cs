@@ -19,7 +19,7 @@ public class UserService : IUserService
     private readonly IEmailService _emailService;
 
     public UserService(
-        IUserRepository repository, 
+        IUserRepository repository,
         IMapper mapper, 
         IConfiguration config, 
         IEmailService emailService)

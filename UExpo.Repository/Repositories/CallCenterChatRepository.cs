@@ -10,17 +10,34 @@ namespace UExpo.Repository.Repositories;
 public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
     : BaseRepository<CallCenterChatDao, CallCenterChat>(context, mapper), ICallCenterChatRepository
 {
+    public override async Task<CallCenterChat?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var entity = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == id, cancellationToken: cancellationToken);
+
+        return entity is null ? default : Mapper.Map<CallCenterChat>(entity);
+    }
+
     public async Task<Guid> AddMessageAsync(CallCenterMessage message, CancellationToken cancellationToken = default)
     {
         var callCenter = await Database
+            .Include(x => x.Messages)
             .FirstOrDefaultAsync(x => 
-                x.Id == message.ChatId, cancellationToken: cancellationToken)
+                x.UserId == message.ChatId, cancellationToken: cancellationToken)
             ?? throw new NotFoundException(message.ChatId.ToString());
         var messageDao = Mapper.Map<CallCenterMessageDao>(message);
 
-        callCenter.Messages.Add(messageDao);
+        messageDao.ChatId = callCenter.Id;
+        messageDao.CreatedAt = DateTime.Now;
+        Context.CallCenterMessages.Add(messageDao);
 
-        await Context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await Context.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.ToString());
+        }
 
         return messageDao.Id;
     }

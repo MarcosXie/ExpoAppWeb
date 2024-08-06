@@ -60,7 +60,13 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
         : Mapper.Map<TEntity>(entity);
     }
 
-    public async Task<TEntity?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<bool> AnyAsync(Guid id, CancellationToken cancellationToken = default) =>
+       await Database
+            .AsNoTracking()
+            .AnyAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
+    
+
+    public virtual async Task<TEntity?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var entity = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
 

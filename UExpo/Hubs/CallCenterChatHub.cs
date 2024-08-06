@@ -7,26 +7,32 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
 {
     public async Task JoinRoom(CallCenterChatDto callCenterChat)
     {
-        var roomId = callCenterChat.UserId.ToString();
+        var (roomId, userName) = await service.CreateCallCenterChatAsync(callCenterChat);
 
-        await service.CreateCallCenterChatAsync(callCenterChat);
+        await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
+        CallCenterReceiveMessageDto msg = new()
+        {
+            SenderId = callCenterChat.UserId,
+            TranslatedMessage = $"{userName} has joined the room.",
+            SenderName = "System",
+            Readed = false
+        };
 
-        await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-        await Clients.Group(roomId).SendAsync("ReceiveMessage", $"{Context.ConnectionId} has joined the room.");
+        await Clients.Group(roomId.ToString()).SendAsync("ReceiveMessage", msg);
     }
 
-    public async Task LeaveRoom(string roomId)
+    public async Task LeaveRoom(CallCenterChatDto callCenterChat)
     {
+        var roomId = callCenterChat.Id.ToString();
+
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
         await Clients.Groups(roomId).SendAsync("ReceiveMessage", $"{Context.ConnectionId} has left the room.");
     }
 
-    public async Task SendMessageToRoom(CallCenterMessageDto message)
+    public async Task SendMessageToRoom(CallCenterSendMessageDto message)
     {
-        var roomId = message.UserId.ToString();
+        var msgDto = await service.AddMessageAsync(message);
 
-        await service.AddMessageAsync(message);
-
-        await Clients.Group(roomId).SendAsync("ReceiveMessage", message);
+        await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
     }
 }
