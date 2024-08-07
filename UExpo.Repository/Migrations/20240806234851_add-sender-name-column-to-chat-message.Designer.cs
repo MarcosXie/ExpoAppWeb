@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UExpo.Repository.Context;
 
@@ -11,9 +12,11 @@ using UExpo.Repository.Context;
 namespace UExpo.Repository.Migrations
 {
     [DbContext(typeof(UExpoDbContext))]
-    partial class UExpoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240806234851_add-sender-name-column-to-chat-message")]
+    partial class addsendernamecolumntochatmessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

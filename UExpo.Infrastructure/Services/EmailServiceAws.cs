@@ -4,6 +4,7 @@ using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
 using Microsoft.Extensions.Configuration;
 using UExpo.Domain.Email;
+using UExpo.Infrastructure.Utils;
 
 namespace UExpo.Infrastructure.Services;
 
@@ -12,19 +13,12 @@ public class EmailServiceAws : IEmailService
     private readonly IConfiguration _config;
     private readonly IAmazonSimpleEmailService _sesClient;
 
-    public EmailServiceAws(IConfiguration config) 
+    public EmailServiceAws(IConfiguration config)
     {
         _config = config;
 
-        var accessKey = _config["AWS:AccessKey"];
-        var secretKey = _config["AWS:SecretKey"];
-
-        var credentials = accessKey is not null ?
-            new BasicAWSCredentials(accessKey, secretKey) :
-            null;
-
         _sesClient = new AmazonSimpleEmailServiceClient(
-            credentials,
+            AwsUtils.GetAwsCredentials(config),
             RegionEndpoint.GetBySystemName(_config["AWS:Region"])
         );
     }

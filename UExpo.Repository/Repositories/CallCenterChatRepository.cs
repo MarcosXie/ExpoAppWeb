@@ -41,4 +41,17 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
         return messageDao.Id;
     }
+
+    public async Task<List<CallCenterMessage>> GetLastMessagesByChat(Guid id)
+    {
+        var chat = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == id);
+            
+        var messages = await Context.CallCenterMessages
+            .Where(x => x.ChatId == chat.Id)
+            .OrderBy(x => x.CreatedAt)
+            .Take(30)
+            .ToListAsync();
+
+        return messages.Select(x => Mapper.Map<CallCenterMessage>(x)).ToList();
+    }
 }

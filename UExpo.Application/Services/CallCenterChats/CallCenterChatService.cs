@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Attendents;
 using UExpo.Domain.CallCenterChat;
+using UExpo.Domain.Translation;
 using UExpo.Domain.Users;
 
 namespace UExpo.Application.Services.CallCenterChats;
@@ -10,17 +11,20 @@ public class CallCenterChatService : ICallCenterChatService
     private ICallCenterChatRepository _repository;
     private IUserRepository _userRepository;
     private IAttendentRepository _attendentRepository;
+    private ITranslationService _translationService;
     private IMapper _mapper;
 
     public CallCenterChatService(
         ICallCenterChatRepository repository,
         IUserRepository userRepository,
         IAttendentRepository attendentRepository,
+        ITranslationService translationService,
         IMapper mapper)
     {
         _repository = repository;
         _userRepository = userRepository;
         _attendentRepository = attendentRepository;
+        _translationService = translationService;
         _mapper = mapper;
     }
 
@@ -72,16 +76,20 @@ public class CallCenterChatService : ICallCenterChatService
     {
         var chat = await _repository.GetByIdOrDefaultAsync(message.RoomId);
 
-        var receiverUser = await GetChatUser(message, chat);
+        var senderUser = await GetChatUser(message.SenderId, chat);
+
+        var senderLang = senderUser.Language;
+        var receiverLang = chat.UserLang.Equals(senderUser.Language) ? chat.AttendentLang : chat.UserLang;
 
         CallCenterMessage callCenterMessage = new()
         {
             ChatId = message.RoomId,
             SenderId = message.SenderId,
             SendedMessage = message.SendedMessage,
-            SenderLang = message.Lang,
-            TranslatedMessage = TranslateAsync(message.SendedMessage, message.Lang, receiverUser.Language),
-            ReceiverLang = receiverUser.Language,
+            SenderLang = senderLang,
+            SenderName = senderUser.Name,
+            TranslatedMessage = await _translationService.TranslateText(message.SendedMessage, senderLang, receiverLang),
+            ReceiverLang = receiverLang,
             Readed = false
         };
 
@@ -93,31 +101,53 @@ public class CallCenterChatService : ICallCenterChatService
             SenderId = callCenterMessage.SenderId,
             SendedMessage = callCenterMessage.SendedMessage,
             TranslatedMessage = callCenterMessage.TranslatedMessage,
-            SenderName = receiverUser.Name,
+            SenderName = senderUser.Name,
             Readed = callCenterMessage.Readed
         };
 
         return msgDto;
     }
 
-    private async Task<IChatUser> GetChatUser(CallCenterSendMessageDto message, CallCenterChat chat)
+    private async Task<IChatUser> GetChatUser(Guid id, CallCenterChat chat)
     {
         try
         {
-            var user = await _userRepository.GetByIdAsync(message.SenderId);
+            var user = await _userRepository.GetByIdAsync(id);
             user.Language = chat.UserLang;
             return user;
         }
         catch (Exception)
         {
-            var attendent = await _attendentRepository.GetByIdAsync(message.SenderId);
+            var attendent = await _attendentRepository.GetByIdAsync(id);
             attendent.Language = chat.AttendentLang;
             return attendent;
         }
     }
 
-    private string TranslateAsync(string sendedMessage, string sourceLang, string targetLang)
+    public async Task UpdateChatAsync(CallCenterChatDto chat)
     {
-        return sendedMessage;
+        var dbChat = await _repository.GetByIdOrDefaultAsync(chat.Id);
+
+        if (chat.Id.Equals(chat.UserId)) 
+            dbChat.UserLang = chat.Lang;
+        else 
+            dbChat.AttendentLang = chat.Lang;
+
+        await _repository.UpdateAsync(dbChat);
+    }
+
+    public async Task<List<CallCenterReceiveMessageDto>> GetMessagesByChatAsync(CallCenterChatDto chat)
+    {
+        var messages = await _repository.GetLastMessagesByChat(chat.Id);
+
+        return messages.Select(x => new CallCenterReceiveMessageDto
+        {
+            RoomId = x.ChatId.ToString(),
+            SenderId = x.SenderId,
+            SendedMessage = x.SendedMessage,
+            SenderName = x.SenderName,
+            TranslatedMessage = x.TranslatedMessage,
+            Readed = x.Readed
+         }).ToList();
     }
 }

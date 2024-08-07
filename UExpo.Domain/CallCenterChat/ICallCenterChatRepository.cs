@@ -9,4 +9,5 @@ public interface ICallCenterChatRepository
     Task<CallCenterChat> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> AnyAsync(Guid id, CancellationToken cancellationToken = default);
     Task UpdateAsync(CallCenterChat item, CancellationToken cancellationToken = default);
+    Task<List<CallCenterMessage>> GetLastMessagesByChat(Guid id);
 }
