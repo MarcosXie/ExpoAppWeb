@@ -1,5 +1,4 @@
 ﻿using Amazon;
-using Amazon.Runtime;
 using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
 using Microsoft.Extensions.Configuration;

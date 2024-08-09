@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 using UExpo.Application.Utils;
 using UExpo.Domain.Users;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.Extensions.Configuration;
 using UExpo.Domain.Email;
 using UExpo.Domain.Exceptions;
@@ -53,8 +49,9 @@ public class UserService : IUserService
         if (!HashHelper.Verify(loginDto.Password, user.Password))
             throw new InvalidCredentialsException();
 
-        var token = GenerateJwtToken(user, loginDto.UserType);
-        return token;
+        user.Type = loginDto.UserType;
+
+        return JwtHelper.GenerateJwtToken(user, _config);
     }
 
     public async Task VerifyEmailAsync(Guid id, string code)
@@ -97,30 +94,6 @@ public class UserService : IUserService
 
         if (email is not null && email.IsEmailValidated)
             throw new BadRequestException("This email is already registered in UExpo!");
-    }
-
-    private string GenerateJwtToken(User user, TypeEnum userType)
-    {
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Name),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("Email", user.Email),
-            new Claim("UserType", userType.ToString())
-        };
-
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Jwt:Key"]!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            _config["Jwt:Issuer"],
-            _config["Jwt:Audience"],
-            claims,
-            expires: DateTime.Now.AddMinutes(Convert.ToDouble(_config["Jwt:ExpiresInMinutes"])),
-            signingCredentials: creds
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
     private async Task SendEmailConfirmationEmailAsync(User user)

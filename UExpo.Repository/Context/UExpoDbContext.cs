@@ -9,7 +9,7 @@ public class UExpoDbContext : DbContext
     public virtual DbSet<UserDao> Users { get; set; }
     public virtual DbSet<CallCenterChatDao> CallCenterChats { get; set; }
     public virtual DbSet<CallCenterMessageDao> CallCenterMessages { get; set; }
-    public virtual DbSet<AttendentDao> Attendents { get; set; }
+    public virtual DbSet<AdminDao> Admins { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

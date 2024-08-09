@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using UExpo.Domain.Attendents;
+using UExpo.Domain.Admins;
 using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Translation;
 using UExpo.Domain.Users;
@@ -10,20 +10,20 @@ public class CallCenterChatService : ICallCenterChatService
 {
     private ICallCenterChatRepository _repository;
     private IUserRepository _userRepository;
-    private IAttendentRepository _attendentRepository;
+    private IAdminRepository _adminRepository;
     private ITranslationService _translationService;
     private IMapper _mapper;
 
     public CallCenterChatService(
         ICallCenterChatRepository repository,
         IUserRepository userRepository,
-        IAttendentRepository attendentRepository,
+        IAdminRepository adminRepository,
         ITranslationService translationService,
         IMapper mapper)
     {
         _repository = repository;
         _userRepository = userRepository;
-        _attendentRepository = attendentRepository;
+        _adminRepository = adminRepository;
         _translationService = translationService;
         _mapper = mapper;
     }
@@ -55,7 +55,7 @@ public class CallCenterChatService : ICallCenterChatService
 
             await _repository.UpdateAsync(dbChat);
 
-            var attendent = await _attendentRepository.GetByIdAsync(chat.UserId);
+            var attendent = await _adminRepository.GetByIdAsync(chat.UserId);
 
             return (dbChat.Id, attendent.Name);
         }
@@ -118,7 +118,7 @@ public class CallCenterChatService : ICallCenterChatService
         }
         catch (Exception)
         {
-            var attendent = await _attendentRepository.GetByIdAsync(id);
+            var attendent = await _adminRepository.GetByIdAsync(id);
             attendent.Language = chat.AttendentLang;
             return attendent;
         }

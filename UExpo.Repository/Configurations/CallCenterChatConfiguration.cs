@@ -23,5 +23,10 @@ public class CallCenterChatConfiguration : IEntityTypeConfiguration<CallCenterCh
             .HasOne(n => n.User)
             .WithOne(n => n.CallCenterChat)
             .OnDelete(DeleteBehavior.Cascade);
+
+        entity
+            .HasOne(n => n.Admin)
+            .WithOne(n => n.CallCenterChat)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

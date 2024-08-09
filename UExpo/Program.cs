@@ -1,29 +1,32 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using UExpo.Application.Extensions;
-using UExpo.Repository.Dao;
-using UExpo.Repository.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
+using UExpo.Application.Extensions;
+using UExpo.Repository.Dao;
+using UExpo.Repository.Extensions;
 using UExpo.Infrastructure.Extensions;
 using UExpo.Api.Middlewares;
 using UExpo.Api.Hubs;
-
+using UExpo.Application.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-
-if (!string.IsNullOrEmpty(port))
-{
-    builder.WebHost.UseKestrel().UseUrls($"http://*:{port}");
-}
 
 // Add services to the container.
 var services = builder.Services;
 var config = builder.Configuration;
+
+if (!config.GetValue<bool>("IsDev"))
+{
+    var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+
+    if (!string.IsNullOrEmpty(port))
+    {
+        builder.WebHost.UseKestrel().UseUrls($"http://*:{port}");
+    }
+}
 
 config.AddEnvironmentVariables();
 
@@ -129,10 +132,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<ChatHub>("/chathub")
-    .RequireAuthorization();
 
 app.MapHub<CallCenterChatHub>("/call-center-chathub")
     .RequireAuthorization();
+
+SeedDataHelper.BootstrapAdmin(app.Services);
 
 app.Run();

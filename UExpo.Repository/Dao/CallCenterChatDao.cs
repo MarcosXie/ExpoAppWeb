@@ -5,7 +5,8 @@ public class CallCenterChatDao : BaseDao
     public Guid UserId { get; set; }
     public UserDao User { get; set; } = null!;
 
-    public Guid? AttendentId { get; set; }
+    public Guid? AdminId { get; set; }
+    public AdminDao? Admin { get; set; }
     public string UserLang { get; set; } = "en-US";
     public string AttendentLang { get; set; } = "pt-BR";
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using UExpo.Application.Services.Admins;
 using UExpo.Application.Services.CallCenterChats;
 using UExpo.Application.Services.Users;
+using UExpo.Domain.Admins;
 using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Users;
 
@@ -12,5 +14,6 @@ public static class DependencyInjection
     {
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICallCenterChatService, CallCenterChatService>();
+        services.AddScoped<IAdminService, AdminService>();
     }
 }
