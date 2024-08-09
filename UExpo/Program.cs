@@ -14,15 +14,24 @@ using UExpo.Api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseKestrel().UseUrls($"http://*:{port}");
+}
+
 // Add services to the container.
 var services = builder.Services;
 var config = builder.Configuration;
+
+config.AddEnvironmentVariables();
 
 services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(config["FrontEndUrl"]!, "http://10.0.0.34:5173")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -101,14 +110,14 @@ services.AddAuthorizationBuilder()
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "UExpo API v1");
     });
-}
+//}
 
 app.UseMiddleware<ExceptionMiddleware>();
 
