@@ -2,6 +2,6 @@
 
 public enum TypeEnum
 {
-    Guest = 0,
+    Visitor = 0,
     Exhibitor = 1,
 }

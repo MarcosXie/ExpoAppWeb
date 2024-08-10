@@ -41,8 +41,10 @@ public static class JwtHelper
         [
             new Claim(JwtRegisteredClaimNames.Sub, user.Name),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("Email", user.Email),
-            new Claim("UserType", user.Type.ToString())
+            new Claim("email", user.Email),
+            new Claim("type", user.Type.ToString()),
+            new Claim("name", user.Name.ToString()),
+            new Claim("id", user.Id.ToString()),
         ];
     }
 
@@ -52,7 +54,9 @@ public static class JwtHelper
         [
             new Claim(JwtRegisteredClaimNames.Sub, admin.Name),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim("type", admin.Type.ToString())
+            new Claim("type", admin.Type.ToString()),
+            new Claim("name", admin.Name.ToString()),
+            new Claim("id", admin.Id.ToString()),
         ];
     }
 }

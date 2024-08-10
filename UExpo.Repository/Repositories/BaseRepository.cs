@@ -75,11 +75,8 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
 
     public async Task UpdateAsync(TEntity item, CancellationToken cancellationToken = default)
     {
-        var existingEntity = await Database.FirstOrDefaultAsync(x => x.Id!.Equals(item.Id), cancellationToken: cancellationToken);
-
-        if (existingEntity is null)
-            throw new Exception($"{nameof(TDao)} com id = {item.Id}");
-
+        var existingEntity = await Database.FirstOrDefaultAsync(x => x.Id!.Equals(item.Id), cancellationToken: cancellationToken)
+           ?? throw new Exception($"{nameof(TDao)} com id = {item.Id}");
         existingEntity.UpdatedAt = DateTime.Now;
 
         Mapper.Map(item, existingEntity);

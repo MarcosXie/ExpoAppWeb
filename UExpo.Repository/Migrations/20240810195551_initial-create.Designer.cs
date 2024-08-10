@@ -12,8 +12,8 @@ using UExpo.Repository.Context;
 namespace UExpo.Repository.Migrations
 {
     [DbContext(typeof(UExpoDbContext))]
-    [Migration("20240806000218_add-attendents-table")]
-    partial class addattendentstable
+    [Migration("20240810195551_initial-create")]
+    partial class initialcreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,25 +25,39 @@ namespace UExpo.Repository.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("UExpo.Repository.Dao.AttendentDao", b =>
+            modelBuilder.Entity("UExpo.Repository.Dao.AdminDao", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("admin_pkey");
 
-                    b.ToTable("Attendents");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("admin", (string)null);
                 });
 
             modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
@@ -52,10 +66,10 @@ namespace UExpo.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("AttendentId")
+                    b.Property<Guid?>("AdminId")
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("AttendentLang")
+                    b.Property<string>("AdminLang")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -74,6 +88,8 @@ namespace UExpo.Repository.Migrations
 
                     b.HasKey("Id")
                         .HasName("call_center_pkey");
+
+                    b.HasIndex("AdminId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -108,6 +124,10 @@ namespace UExpo.Repository.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("SenderLang")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SenderName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -168,11 +188,18 @@ namespace UExpo.Repository.Migrations
 
             modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
                 {
+                    b.HasOne("UExpo.Repository.Dao.AdminDao", "Admin")
+                        .WithMany("CallCenterChats")
+                        .HasForeignKey("AdminId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("UExpo.Repository.Dao.UserDao", "User")
                         .WithOne("CallCenterChat")
                         .HasForeignKey("UExpo.Repository.Dao.CallCenterChatDao", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Admin");
 
                     b.Navigation("User");
                 });
@@ -188,6 +215,11 @@ namespace UExpo.Repository.Migrations
                     b.Navigation("CallCenterChat");
                 });
 
+            modelBuilder.Entity("UExpo.Repository.Dao.AdminDao", b =>
+                {
+                    b.Navigation("CallCenterChats");
+                });
+
             modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
                 {
                     b.Navigation("Messages");
@@ -195,8 +227,7 @@ namespace UExpo.Repository.Migrations
 
             modelBuilder.Entity("UExpo.Repository.Dao.UserDao", b =>
                 {
-                    b.Navigation("CallCenterChat")
-                        .IsRequired();
+                    b.Navigation("CallCenterChat");
                 });
 #pragma warning restore 612, 618
         }

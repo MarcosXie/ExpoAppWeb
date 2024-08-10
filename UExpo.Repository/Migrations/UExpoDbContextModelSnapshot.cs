@@ -36,7 +36,7 @@ namespace UExpo.Repository.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -48,9 +48,13 @@ namespace UExpo.Repository.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("admin_pkey");
 
-                    b.ToTable("Admins");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("admin", (string)null);
                 });
 
             modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
@@ -62,7 +66,7 @@ namespace UExpo.Repository.Migrations
                     b.Property<Guid?>("AdminId")
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("AttendentLang")
+                    b.Property<string>("AdminLang")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -82,8 +86,7 @@ namespace UExpo.Repository.Migrations
                     b.HasKey("Id")
                         .HasName("call_center_pkey");
 
-                    b.HasIndex("AdminId")
-                        .IsUnique();
+                    b.HasIndex("AdminId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -165,7 +168,7 @@ namespace UExpo.Repository.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -177,17 +180,14 @@ namespace UExpo.Repository.Migrations
                     b.HasKey("Id")
                         .HasName("user_pkey");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("user", (string)null);
                 });
 
             modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
                 {
                     b.HasOne("UExpo.Repository.Dao.AdminDao", "Admin")
-                        .WithOne("CallCenterChat")
-                        .HasForeignKey("UExpo.Repository.Dao.CallCenterChatDao", "AdminId")
+                        .WithMany("CallCenterChats")
+                        .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("UExpo.Repository.Dao.UserDao", "User")
@@ -214,8 +214,7 @@ namespace UExpo.Repository.Migrations
 
             modelBuilder.Entity("UExpo.Repository.Dao.AdminDao", b =>
                 {
-                    b.Navigation("CallCenterChat")
-                        .IsRequired();
+                    b.Navigation("CallCenterChats");
                 });
 
             modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
@@ -225,8 +224,7 @@ namespace UExpo.Repository.Migrations
 
             modelBuilder.Entity("UExpo.Repository.Dao.UserDao", b =>
                 {
-                    b.Navigation("CallCenterChat")
-                        .IsRequired();
+                    b.Navigation("CallCenterChat");
                 });
 #pragma warning restore 612, 618
         }

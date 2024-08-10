@@ -4,9 +4,9 @@ using UExpo.Repository.Dao;
 
 namespace UExpo.Repository.Configurations;
 
-public class AdminConfiguration : IEntityTypeConfiguration<UserDao>
+public class AdminConfiguration : IEntityTypeConfiguration<AdminDao>
 {
-    public void Configure(EntityTypeBuilder<UserDao> entity)
+    public void Configure(EntityTypeBuilder<AdminDao> entity)
     {
         entity.HasKey(x => x.Id).HasName("admin_pkey");
 

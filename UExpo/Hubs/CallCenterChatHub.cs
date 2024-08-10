@@ -5,13 +5,14 @@ namespace UExpo.Api.Hubs;
 
 public class CallCenterChatHub(ICallCenterChatService service) : Hub
 {
-    public async Task<List<CallCenterReceiveMessageDto>> JoinRoom(CallCenterChatDto callCenterChat)
+    public async Task<JoinChatResponseDto> JoinRoom(CallCenterChatDto callCenterChat)
     {
         var (roomId, userName) = await service.CreateCallCenterChatAsync(callCenterChat);
 
         await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
         CallCenterReceiveMessageDto msg = new()
         {
+            RoomId = roomId.ToString(),
             SenderId = callCenterChat.UserId,
             TranslatedMessage = $"{userName} has joined the room.",
             SenderName = "System",
@@ -20,7 +21,13 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
 
         await Clients.Group(roomId.ToString()).SendAsync("ReceiveMessage", msg);
 
-        return await service.GetMessagesByChatAsync(callCenterChat);
+        callCenterChat.Id = roomId;
+
+        return new()
+        { 
+            Messages = await service.GetMessagesByChatAsync(callCenterChat),
+            RoomId = roomId
+        };
     }
     public async Task ChangeUserLang(CallCenterChatDto callCenterChat)
     {

@@ -10,19 +10,12 @@ namespace UExpo.Repository.Repositories;
 public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
     : BaseRepository<CallCenterChatDao, CallCenterChat>(context, mapper), ICallCenterChatRepository
 {
-    public override async Task<CallCenterChat?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var entity = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == id, cancellationToken: cancellationToken);
-
-        return entity is null ? default : Mapper.Map<CallCenterChat>(entity);
-    }
-
     public async Task<Guid> AddMessageAsync(CallCenterMessage message, CancellationToken cancellationToken = default)
     {
         var callCenter = await Database
             .Include(x => x.Messages)
             .FirstOrDefaultAsync(x => 
-                x.UserId == message.ChatId, cancellationToken: cancellationToken)
+                x.Id == message.ChatId, cancellationToken: cancellationToken)
             ?? throw new NotFoundException(message.ChatId.ToString());
         var messageDao = Mapper.Map<CallCenterMessageDao>(message);
 
@@ -42,9 +35,16 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
         return messageDao.Id;
     }
 
+    public async Task<CallCenterChat?> GetByUserIdAsync(Guid id)
+    {
+        var chat = await Database.FirstOrDefaultAsync(x => x.UserId == id);
+
+        return chat is null ? default : Mapper.Map<CallCenterChat>(chat);
+    }
+
     public async Task<List<CallCenterMessage>> GetLastMessagesByChat(Guid id)
     {
-        var chat = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == id);
+        var chat = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             
         var messages = await Context.CallCenterMessages
             .Where(x => x.ChatId == chat.Id)
@@ -53,5 +53,14 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
             .ToListAsync();
 
         return messages.Select(x => Mapper.Map<CallCenterMessage>(x)).ToList();
+    }
+
+    public async Task<List<CallCenterChat>> GetWithUsersAsync()
+    {
+        var chats = await Database.AsNoTracking()
+            .Include(x => x.User)
+            .ToListAsync();
+
+        return chats.Select(x => Mapper.Map<CallCenterChat>(x)).ToList();
     }
 }

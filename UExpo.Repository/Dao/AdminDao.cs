@@ -9,5 +9,5 @@ public class AdminDao : BaseDao
     public AdminType Type { get; set; }
     public bool Active { get; set; } = true;
 
-    public CallCenterChatDao? CallCenterChat { get; set; }
+    public List<CallCenterChatDao>? CallCenterChats { get; set; }
 }

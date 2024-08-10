@@ -9,5 +9,5 @@ public class LoginDto
     [Required]
     public string Password { get; set; } = null!;
     [Required]
-    public TypeEnum UserType { get; set; } = TypeEnum.Guest;
+    public TypeEnum UserType { get; set; } = TypeEnum.Visitor;
 }
