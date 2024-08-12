@@ -28,7 +28,7 @@ public class CallCenterChatService : ICallCenterChatService
         _mapper = mapper;
     }
 
-    public async Task<(Guid, string)> CreateCallCenterChatAsync(CallCenterChatDto chat)
+    public async Task<Guid> CreateCallCenterChatAsync(CallCenterChatDto chat)
     {
         var dbChat = chat.Id is null ?
             await _repository.GetByUserIdAsync(chat.UserId) :
@@ -38,7 +38,7 @@ public class CallCenterChatService : ICallCenterChatService
         if (dbChat is not null)
         {
             // Se o usuario esta acessando um chat que ja existia
-            if (chat.Id.Equals(chat.UserId))
+            if (chat.Id is null)
             {
                 if (!dbChat.UserLang.Equals(chat.Lang))
                 {
@@ -46,9 +46,8 @@ public class CallCenterChatService : ICallCenterChatService
 
                     await _repository.UpdateAsync(dbChat);
                 }
-                var dbUser = await _userRepository.GetByIdAsync(chat.UserId);
 
-                return (dbChat.Id, dbUser.Name);
+                return dbChat.Id;
             }
             // Se é um atendente entrando no chat de um usuario
 
@@ -57,9 +56,7 @@ public class CallCenterChatService : ICallCenterChatService
 
             await _repository.UpdateAsync(dbChat);
 
-            var attendent = await _adminRepository.GetByIdAsync(chat.UserId);
-
-            return (dbChat.Id, attendent.Name);
+            return dbChat.Id;
         }
 
         // Se é um novo chat sendo criado pelo usuario
@@ -69,9 +66,7 @@ public class CallCenterChatService : ICallCenterChatService
             UserLang = chat.Lang,
         };
 
-        var user = await _userRepository.GetByIdAsync(chat.UserId);
-
-        return (await _repository.CreateAsync(callCenterChat), user.Name);
+        return await _repository.CreateAsync(callCenterChat);
     }
 
     public async Task<CallCenterReceiveMessageDto> AddMessageAsync(CallCenterSendMessageDto message)
@@ -104,6 +99,7 @@ public class CallCenterChatService : ICallCenterChatService
             SendedMessage = callCenterMessage.SendedMessage,
             TranslatedMessage = callCenterMessage.TranslatedMessage,
             SenderName = senderUser.Name,
+            SendedTime = callCenterMessage.CreatedAt,
             Readed = callCenterMessage.Readed
         };
 
@@ -133,6 +129,7 @@ public class CallCenterChatService : ICallCenterChatService
             SendedMessage = x.SendedMessage,
             SenderName = x.SenderName,
             TranslatedMessage = x.TranslatedMessage,
+            SendedTime = x.CreatedAt,
             Readed = x.Readed
         }).ToList();
     }
@@ -152,6 +149,11 @@ public class CallCenterChatService : ICallCenterChatService
                 RegisterDate = chat.User.CreatedAt,
                 NotReadedMessages = 0
             }).ToList();
+    }
+
+    public async Task VisualizeMessagesAsync(CallCenterChatDto callCenterChat)
+    {
+        await _repository.VisualizeMessagesAsync(callCenterChat);
     }
 
     private async Task<IChatUser> GetChatUser(Guid id, CallCenterChat chat)

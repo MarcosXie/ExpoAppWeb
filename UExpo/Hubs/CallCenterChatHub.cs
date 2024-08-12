@@ -7,19 +7,9 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
 {
     public async Task<JoinChatResponseDto> JoinRoom(CallCenterChatDto callCenterChat)
     {
-        var (roomId, userName) = await service.CreateCallCenterChatAsync(callCenterChat);
+        var roomId = await service.CreateCallCenterChatAsync(callCenterChat);
 
         await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
-        CallCenterReceiveMessageDto msg = new()
-        {
-            RoomId = roomId.ToString(),
-            SenderId = callCenterChat.UserId,
-            TranslatedMessage = $"{userName} has joined the room.",
-            SenderName = "System",
-            Readed = false
-        };
-
-        await Clients.Group(roomId.ToString()).SendAsync("ReceiveMessage", msg);
 
         callCenterChat.Id = roomId;
 
@@ -47,5 +37,12 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
         var msgDto = await service.AddMessageAsync(message);
 
         await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
+    }
+
+    public async Task VisualizeMessages(CallCenterChatDto callCenterChat)
+    {
+        await service.VisualizeMessagesAsync(callCenterChat);
+
+        await Clients.Group(callCenterChat.Id.ToString()!).SendAsync("VisualizedMessages", callCenterChat.UserId);
     }
 }

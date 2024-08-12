@@ -14,7 +14,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
     {
         var callCenter = await Database
             .Include(x => x.Messages)
-            .FirstOrDefaultAsync(x => 
+            .FirstOrDefaultAsync(x =>
                 x.Id == message.ChatId, cancellationToken: cancellationToken)
             ?? throw new NotFoundException(message.ChatId.ToString());
         var messageDao = Mapper.Map<CallCenterMessageDao>(message);
@@ -45,7 +45,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
     public async Task<List<CallCenterMessage>> GetLastMessagesByChat(Guid id)
     {
         var chat = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-            
+
         var messages = await Context.CallCenterMessages
             .Where(x => x.ChatId == chat.Id)
             .OrderBy(x => x.CreatedAt)
@@ -62,5 +62,22 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
             .ToListAsync();
 
         return chats.Select(x => Mapper.Map<CallCenterChat>(x)).ToList();
+    }
+
+    public async Task VisualizeMessagesAsync(CallCenterChatDto callCenterChat)
+    {
+        var chat = await Database.Include(x => x.Messages)
+            .FirstAsync(x => x.Id == callCenterChat.Id);
+
+
+        var notReadedMessages = chat.Messages
+            .Where(x => x.SenderId == callCenterChat.UserId && !x.Readed).ToList();
+
+
+        foreach (var message in notReadedMessages)
+            message.Readed = true;
+
+
+        await Context.SaveChangesAsync();
     }
 }

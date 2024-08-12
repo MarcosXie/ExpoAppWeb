@@ -12,4 +12,5 @@ public interface ICallCenterChatRepository
     Task<List<CallCenterMessage>> GetLastMessagesByChat(Guid id);
     Task<List<CallCenterChat>> GetWithUsersAsync();
     Task<CallCenterChat> GetByUserIdAsync(Guid id);
+    Task VisualizeMessagesAsync(CallCenterChatDto callCenterChat);
 }
