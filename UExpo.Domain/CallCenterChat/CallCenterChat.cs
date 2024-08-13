@@ -11,7 +11,8 @@ public class CallCenterChat : BaseModel
     public Guid? AdminId { get; set; }
     public Admin? Admin { get; set; }
     public string UserLang { get; set; } = "en-US";
-    public string AttendentLang { get; set; } = "pt-BR";
+    public string AdminLang { get; set; } = "pt-BR";
+    public int NotReadedMessages {  get; set; }
 
     public List<CallCenterMessage> Messages { get; set; } = [];
 }

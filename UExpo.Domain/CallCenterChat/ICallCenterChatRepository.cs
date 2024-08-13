@@ -1,4 +1,6 @@
-﻿namespace UExpo.Domain.CallCenterChat;
+﻿using UExpo.Domain.Authentication;
+
+namespace UExpo.Domain.CallCenterChat;
 
 public interface ICallCenterChatRepository
 {
@@ -11,6 +13,9 @@ public interface ICallCenterChatRepository
     Task UpdateAsync(CallCenterChat item, CancellationToken cancellationToken = default);
     Task<List<CallCenterMessage>> GetLastMessagesByChat(Guid id);
     Task<List<CallCenterChat>> GetWithUsersAsync();
+    Task<CallCenterChat> GetOrCreateUserChatAsync(AuthenticatedUser authenticatedUser);
     Task<CallCenterChat> GetByUserIdAsync(Guid id);
     Task VisualizeMessagesAsync(CallCenterChatDto callCenterChat);
+    Task<int> GetNotReadedMessagesByChatId(Guid roomId);
+    Task<int> GetNotReadedMessagesByUserId(Guid userId);
 }

@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Amazon.SimpleEmail.Model;
+using Microsoft.AspNetCore.SignalR;
+using System.Text.RegularExpressions;
 using UExpo.Domain.CallCenterChat;
 
 namespace UExpo.Api.Hubs;
 
 public class CallCenterChatHub(ICallCenterChatService service) : Hub
 {
+    private string _adminRoom = "AdminRoom";
+
     public async Task<JoinChatResponseDto> JoinRoom(CallCenterChatDto callCenterChat)
     {
         var roomId = await service.CreateCallCenterChatAsync(callCenterChat);
@@ -32,11 +36,31 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
         await Clients.Groups(roomId).SendAsync("ReceiveMessage", $"{Context.ConnectionId} has left the room.");
     }
 
+    public async Task<List<CallCenterChatResponseDto>> JoinAdminRoom()
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, _adminRoom);
+        return await service.GetChatsAsync();
+    }
+
+    public async Task<int> JoinUserRoom(string userId)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, userId);
+        return await service.GetNotReadedMessagesByUserId(userId);
+    }
+
     public async Task SendMessageToRoom(CallCenterSendMessageDto message)
     {
-        var msgDto = await service.AddMessageAsync(message);
+        var (msgDto, isSendedByUser) = await service.AddMessageAsync(message);
 
         await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
+
+        if (isSendedByUser)
+            await Clients.Groups(_adminRoom).SendAsync("UpdatedChats", await service.GetChatsAsync());
+        else
+        {
+            var (count, userId) = await service.GetNotReadedMessagesByRoomId(message.RoomId);
+            await Clients.Groups(userId).SendAsync("UpdatedCallCenter", count);
+        }
     }
 
     public async Task VisualizeMessages(CallCenterChatDto callCenterChat)

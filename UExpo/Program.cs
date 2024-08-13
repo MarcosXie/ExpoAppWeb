@@ -74,6 +74,7 @@ services.AddSwaggerGen(c =>
     });
 });
 
+services.AddHttpContextAccessor();
 services.AddSignalR();
 services.AddRepository(config);
 services.AddInfrastructure();

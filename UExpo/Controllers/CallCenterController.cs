@@ -7,11 +7,11 @@ namespace UExpo.Api.Controllers;
 [ApiController]
 public class CallCenterController(ICallCenterChatService service) : ControllerBase
 {
-    [HttpGet]
-    public async Task<ActionResult<List<CallCenterChatResponseDto>>> GetChats()
+    [HttpGet("Request")]
+    public async Task<ActionResult<CallCenterChatResponseDto>> RequestCallCenterAsync()
     {
-        var chats = await service.GetChatsAsync();
+        var callCenter = await service.GetChatByUserIdAsync();
 
-        return Ok(chats);
+        return Ok(callCenter);
     }
 }

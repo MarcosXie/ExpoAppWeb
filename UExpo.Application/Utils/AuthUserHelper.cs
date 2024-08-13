@@ -1,0 +1,40 @@
+﻿using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using UExpo.Domain.Authentication;
+
+namespace UExpo.Application.Utils;
+
+public class AuthUserHelper
+{
+    private IHttpContextAccessor _context;
+
+    public AuthUserHelper(IHttpContextAccessor contextAccessor)
+    {
+        _context = contextAccessor;
+    }
+
+    public AuthenticatedUser GetUser()
+    {
+        var user = _context.HttpContext.User;
+
+        return new()
+        {
+            Id = user.GetJwtClaim<string>("id")!,
+            Name = user.GetJwtClaim<string>("name")!,
+            Email = user.GetJwtClaim<string>("email"),
+            Type = user.GetJwtClaim<string>("type"),
+        };
+    }
+}
+
+public static class ClaimsPrincipalExtension
+{
+    public static T? GetJwtClaim<T>(this ClaimsPrincipal user, string claimType)
+    {
+        var claim = user.Claims.FirstOrDefault(c => c.Type == claimType);
+
+        if (claim is null) return default;
+
+        return (T)Convert.ChangeType(claim.Value, typeof(T));
+    }
+}
