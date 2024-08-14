@@ -73,9 +73,9 @@ public class CallCenterChatService : ICallCenterChatService
         {
             ChatId = message.RoomId,
             SenderId = message.SenderId,
+            SenderName = message.SenderName,
             SendedMessage = message.SendedMessage,
             SenderLang = senderLang,
-            SenderName = senderUser.Name,
             TranslatedMessage = await _translationService.TranslateText(message.SendedMessage, senderLang, receiverLang),
             ReceiverLang = receiverLang,
             Readed = false
@@ -89,7 +89,7 @@ public class CallCenterChatService : ICallCenterChatService
             SenderId = callCenterMessage.SenderId,
             SendedMessage = callCenterMessage.SendedMessage,
             TranslatedMessage = callCenterMessage.TranslatedMessage,
-            SenderName = senderUser.Name,
+            SenderName = message.SenderName,
             SendedTime = callCenterMessage.CreatedAt,
             Readed = callCenterMessage.Readed
         };
@@ -131,10 +131,10 @@ public class CallCenterChatService : ICallCenterChatService
     {
         var chats = await _repository.GetWithUsersAsync();
 
-        return chats.Select(BuildCallCenterChatResponse).ToList();
+        return chats.Select(x => BuildCallCenterChatResponse(x, false)).ToList();
     }
 
-    private static CallCenterChatResponseDto BuildCallCenterChatResponse(CallCenterChat chat)
+    private static CallCenterChatResponseDto BuildCallCenterChatResponse(CallCenterChat chat, bool isUser = false)
     {
         return new CallCenterChatResponseDto()
         {
@@ -144,7 +144,8 @@ public class CallCenterChatService : ICallCenterChatService
             UserEnterprise = chat.User.Enterprise,
             UserCountry = chat.User.Country,
             RegisterDate = chat.User.CreatedAt,
-            NotReadedMessages = chat.NotReadedMessages
+            NotReadedMessages = chat.NotReadedMessages,
+            IsUser = isUser
         };
     }
 
@@ -173,7 +174,11 @@ public class CallCenterChatService : ICallCenterChatService
     {
         var chat = await _repository.GetOrCreateUserChatAsync(_authUserHelper.GetUser());
 
-        return BuildCallCenterChatResponse(chat);
+        var responseDto = BuildCallCenterChatResponse(chat, true);
+
+        responseDto.UserName = chat.Admin?.Name ?? "Waiting for attendent";
+
+        return responseDto;
     }
 
     public async Task<(int, string)> GetNotReadedMessagesByRoomId(Guid roomId)

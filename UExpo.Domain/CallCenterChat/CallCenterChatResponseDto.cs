@@ -9,4 +9,5 @@ public class CallCenterChatResponseDto
     public string? UserEnterprise { get; set; }
     public DateTime? RegisterDate { get; set; }
     public int NotReadedMessages { get; set; }
+    public bool IsUser { get; set; }
 }

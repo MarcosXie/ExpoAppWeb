@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
+using UExpo.Domain.Admins;
 using UExpo.Domain.Authentication;
 using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Exceptions;
@@ -87,6 +88,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
         var chat = await Database.AsNoTracking()
             .Include(x => x.User)
+            .Include(x => x.Admin)
             .FirstOrDefaultAsync(x => x.UserId == userId);
 
         if (chat is null)
@@ -108,6 +110,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
         {
             Id = chat!.Id,
             AdminId = chat.AdminId,
+            Admin = Mapper.Map<Admin>(chat.Admin),
             AdminLang = chat.AdminLang,
             CreatedAt = chat.CreatedAt,
             UpdatedAt = chat.UpdatedAt,
