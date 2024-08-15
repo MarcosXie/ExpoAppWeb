@@ -1,4 +1,4 @@
-﻿namespace UExpo.Repository.Dao;
+﻿namespace UExpo.Domain.Dao;
 
 public class CallCenterMessageDao : BaseDao
 {
@@ -9,6 +9,6 @@ public class CallCenterMessageDao : BaseDao
     public string SenderLang { get; set; } = null!;
     public string SendedMessage { get; set; } = null!;
     public string ReceiverLang { get; set; } = null!;
-    public string TranslatedMessage {  get; set; } = null!;
+    public string TranslatedMessage { get; set; } = null!;
     public bool Readed { get; set; }
 }

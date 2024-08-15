@@ -1,6 +1,6 @@
 ﻿using UExpo.Domain.Admins;
 
-namespace UExpo.Repository.Dao;
+namespace UExpo.Domain.Dao;
 
 public class AdminDao : BaseDao
 {

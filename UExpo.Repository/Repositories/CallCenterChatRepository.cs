@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System;
 using UExpo.Domain.Admins;
 using UExpo.Domain.Authentication;
 using UExpo.Domain.CallCenterChat;
+using UExpo.Domain.Dao;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.Users;
 using UExpo.Repository.Context;
-using UExpo.Repository.Dao;
 
 namespace UExpo.Repository.Repositories;
 
@@ -141,7 +140,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
     public async Task<int> GetNotReadedMessagesByChatId(Guid roomId)
     {
         var chat = await Database.Include(x => x.Messages).FirstOrDefaultAsync(x => x.Id == roomId);
- 
+
         return await Context.CallCenterMessages.CountAsync(x => !x.Readed && x.ChatId == roomId && x.SenderId != chat!.UserId); ;
     }
 

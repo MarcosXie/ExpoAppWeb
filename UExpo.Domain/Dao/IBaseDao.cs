@@ -1,4 +1,4 @@
-﻿namespace UExpo.Repository.Dao;
+﻿namespace UExpo.Domain.Dao;
 
 public interface IBaseDao
 {

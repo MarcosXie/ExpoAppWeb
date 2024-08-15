@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using UExpo.Domain.Dao;
 using UExpo.Domain.Users;
 using UExpo.Repository.Context;
-using UExpo.Repository.Dao;
 
 namespace UExpo.Repository.Repositories;
 

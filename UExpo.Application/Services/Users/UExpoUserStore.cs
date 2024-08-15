@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using UExpo.Domain.Dao;
 using UExpo.Repository.Context;
-using UExpo.Repository.Dao;
 
 public class UExpoUserStore : IUserStore<UserDao>, IUserPasswordStore<UserDao>
 {

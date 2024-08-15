@@ -2,6 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using UExpo.Domain.Admins;
 using UExpo.Domain.CallCenterChat;
+using UExpo.Domain.Catalogs;
+using UExpo.Domain.Catalogs.ItemImages;
+using UExpo.Domain.Catalogs.Pdfs;
 using UExpo.Domain.Users;
 using UExpo.Repository.Context;
 using UExpo.Repository.Mapper;
@@ -23,5 +26,9 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICallCenterChatRepository, CallCenterChatRepository>();
         services.AddScoped<IAdminRepository, AdminRepository>();
+
+        services.AddScoped<ICatalogRepository, CatalogRepository>();
+        services.AddScoped<ICatalogPdfRepository, CatalogPdfRepository>();
+        services.AddScoped<ICatalogItemImageRepository, CatalogItemImageRepository>();
     }
 }

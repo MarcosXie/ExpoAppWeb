@@ -12,7 +12,7 @@ public class CallCenterChat : BaseModel
     public Admin? Admin { get; set; }
     public string UserLang { get; set; } = "en-US";
     public string AdminLang { get; set; } = "pt-BR";
-    public int NotReadedMessages {  get; set; }
+    public int NotReadedMessages { get; set; }
 
     public List<CallCenterMessage> Messages { get; set; } = [];
 }

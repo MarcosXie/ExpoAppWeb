@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using UExpo.Application.Extensions;
-using UExpo.Repository.Dao;
-using UExpo.Repository.Extensions;
-using UExpo.Infrastructure.Extensions;
-using UExpo.Api.Middlewares;
+using System.Text;
 using UExpo.Api.Hubs;
+using UExpo.Api.Middlewares;
+using UExpo.Application.Extensions;
 using UExpo.Application.Utils;
+using UExpo.Domain.Dao;
+using UExpo.Infrastructure.Extensions;
+using UExpo.Repository.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -116,11 +116,11 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "UExpo API v1");
-    });
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "UExpo API v1");
+});
 //}
 
 app.UseMiddleware<ExceptionMiddleware>();

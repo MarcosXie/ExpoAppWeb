@@ -46,7 +46,7 @@ public class CallCenterChatService : ICallCenterChatService
             dbChat.UserLang = chat.Lang;
 
             await _repository.UpdateAsync(dbChat);
-        } 
+        }
 
         // Se é um atendente entrando no chat de um usuario
         else if (user is Admin && (!dbChat.AdminLang.Equals(chat.Lang) || dbChat.AdminId != chat.UserId))

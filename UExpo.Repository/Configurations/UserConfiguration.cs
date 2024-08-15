@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using UExpo.Repository.Dao;
 
+using UExpo.Domain.Dao;
 namespace UExpo.Repository.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<UserDao>

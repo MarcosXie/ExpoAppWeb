@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using UExpo.Domain.Users;
 
-namespace UExpo.Repository.Dao;
+namespace UExpo.Domain.Dao;
 
 public class UserDao : BaseDao
 {
@@ -15,4 +15,5 @@ public class UserDao : BaseDao
     public TypeEnum Type { get; set; }
 
     public CallCenterChatDao? CallCenterChat { get; set; }
+    public CatalogDao? Catalog { get; set; }
 }

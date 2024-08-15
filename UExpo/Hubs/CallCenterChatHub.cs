@@ -1,6 +1,4 @@
-﻿using Amazon.SimpleEmail.Model;
-using Microsoft.AspNetCore.SignalR;
-using System.Text.RegularExpressions;
+﻿using Microsoft.AspNetCore.SignalR;
 using UExpo.Domain.CallCenterChat;
 
 namespace UExpo.Api.Hubs;
@@ -18,7 +16,7 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
         callCenterChat.Id = roomId;
 
         return new()
-        { 
+        {
             Messages = await service.GetMessagesByChatAsync(callCenterChat),
             RoomId = roomId
         };

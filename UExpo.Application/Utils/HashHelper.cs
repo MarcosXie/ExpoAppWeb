@@ -5,7 +5,7 @@ public static class HashHelper
     public static string Hash(string value)
     {
         var hash = BCrypt.Net.BCrypt.HashPassword(value);
-    
+
         return hash.Replace('/', '-');
     }
 

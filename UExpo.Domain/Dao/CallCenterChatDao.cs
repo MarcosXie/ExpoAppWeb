@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace UExpo.Repository.Dao;
+namespace UExpo.Domain.Dao;
 
 public class CallCenterChatDao : BaseDao
 {

@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using UExpo.Repository.Context;
-using AutoMapper;
-using UExpo.Repository.Dao;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using UExpo.Domain.Dao;
 using UExpo.Domain.Shared;
+using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;
 
@@ -38,7 +38,7 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
     {
         var entityDao = Mapper.Map<List<TDao>>(items);
 
-        foreach(var e in entityDao)
+        foreach (var e in entityDao)
             e.CreatedAt = DateTime.Now;
 
         Database.AddRange(entityDao);
@@ -64,7 +64,7 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
        await Database
             .AsNoTracking()
             .AnyAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
-    
+
 
     public virtual async Task<TEntity?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default)
     {

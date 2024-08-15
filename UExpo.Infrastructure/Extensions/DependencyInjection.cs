@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using UExpo.Domain.Email;
+using UExpo.Domain.FileStorage;
 using UExpo.Domain.Translation;
 using UExpo.Infrastructure.Services;
 
@@ -11,5 +12,6 @@ public static class DependencyInjection
     {
         services.AddSingleton<IEmailService, EmailServiceAws>();
         services.AddSingleton<ITranslationService, TranslationService>();
+        services.AddSingleton<IFileStorageService, S3Service>();
     }
 }

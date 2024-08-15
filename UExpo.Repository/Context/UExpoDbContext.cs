@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UExpo.Domain.Dao;
 using UExpo.Repository.Configurations;
-using UExpo.Repository.Dao;
 
 namespace UExpo.Repository.Context;
 
@@ -10,6 +10,9 @@ public class UExpoDbContext : DbContext
     public virtual DbSet<CallCenterChatDao> CallCenterChats { get; set; }
     public virtual DbSet<CallCenterMessageDao> CallCenterMessages { get; set; }
     public virtual DbSet<AdminDao> Admins { get; set; }
+    public virtual DbSet<CatalogDao> Catalogs { get; set; }
+    public virtual DbSet<CatalogPdfDao> CatalogPdfs { get; set; }
+    public virtual DbSet<CatalogItemImageDao> CatalogImages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

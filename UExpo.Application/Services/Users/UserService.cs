@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using UExpo.Application.Utils;
-using UExpo.Domain.Users;
 using Microsoft.Extensions.Configuration;
+using UExpo.Application.Utils;
 using UExpo.Domain.Email;
 using UExpo.Domain.Exceptions;
+using UExpo.Domain.Users;
 
 namespace UExpo.Application.Services.Users;
 
@@ -16,8 +16,8 @@ public class UserService : IUserService
 
     public UserService(
         IUserRepository repository,
-        IMapper mapper, 
-        IConfiguration config, 
+        IMapper mapper,
+        IConfiguration config,
         IEmailService emailService)
     {
         _repository = repository;
@@ -130,7 +130,7 @@ public class UserService : IUserService
         await _emailService.SendEmailAsync(emailSendDto);
     }
 
-    private static string GenerateBaseValidationCode(User user) => 
+    private static string GenerateBaseValidationCode(User user) =>
         $"{user.Name}{user.Email}{user.Password}";
     private static void ValidateUserEmail(User user)
     {
