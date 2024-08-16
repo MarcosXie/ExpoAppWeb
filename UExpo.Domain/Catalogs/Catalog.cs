@@ -9,7 +9,7 @@ public class Catalog : BaseModel
 {
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
-    public Dictionary<string, object>? JsonTable { get; set; }
+    public List<Dictionary<string, object>>? JsonTable { get; set; }
 
     public ICollection<CatalogItemImage> ItemImages { get; set; } = [];
     public ICollection<CatalogPdf> Pdfs { get; set; } = [];

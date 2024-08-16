@@ -10,7 +10,7 @@ public class CallCenterController(ICallCenterChatService service) : ControllerBa
     [HttpGet("Request")]
     public async Task<ActionResult<CallCenterChatResponseDto>> RequestCallCenterAsync()
     {
-        var callCenter = await service.GetChatByUserIdAsync();
+        CallCenterChatResponseDto callCenter = await service.GetChatByUserIdAsync();
 
         return Ok(callCenter);
     }

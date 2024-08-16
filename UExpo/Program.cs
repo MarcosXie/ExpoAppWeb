@@ -12,15 +12,15 @@ using UExpo.Domain.Dao;
 using UExpo.Infrastructure.Extensions;
 using UExpo.Repository.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var services = builder.Services;
-var config = builder.Configuration;
+IServiceCollection services = builder.Services;
+ConfigurationManager config = builder.Configuration;
 
 if (!config.GetValue<bool>("IsDev"))
 {
-    var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+    string port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 
     if (!string.IsNullOrEmpty(port))
     {
@@ -81,7 +81,7 @@ services.AddInfrastructure();
 services.AddApplication();
 
 // Add authentication
-var key = Encoding.ASCII.GetBytes(config["Jwt:Key"]!);
+byte[] key = Encoding.ASCII.GetBytes(config["Jwt:Key"]!);
 
 services.AddAuthentication(x =>
 {
@@ -111,7 +111,7 @@ services.AddAuthorizationBuilder()
         .RequireAuthenticatedUser()
         .Build());
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())

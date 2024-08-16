@@ -21,7 +21,7 @@ namespace UExpo.Api.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<string>> LoginAdmin(AdminLoginDto admin)
         {
-            var token = await service.LoginAsync(admin);
+            string token = await service.LoginAsync(admin);
             return Ok(token);
         }
 

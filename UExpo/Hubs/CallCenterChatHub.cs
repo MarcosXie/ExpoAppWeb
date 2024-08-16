@@ -5,11 +5,11 @@ namespace UExpo.Api.Hubs;
 
 public class CallCenterChatHub(ICallCenterChatService service) : Hub
 {
-    private string _adminRoom = "AdminRoom";
+    private readonly string _adminRoom = "AdminRoom";
 
     public async Task<JoinChatResponseDto> JoinRoom(CallCenterChatDto callCenterChat)
     {
-        var roomId = await service.CreateCallCenterChatAsync(callCenterChat);
+        Guid roomId = await service.CreateCallCenterChatAsync(callCenterChat);
 
         await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
 
@@ -28,7 +28,7 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
 
     public async Task LeaveRoom(CallCenterChatDto callCenterChat)
     {
-        var roomId = callCenterChat.Id.ToString();
+        string roomId = callCenterChat.Id.ToString();
 
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
         await Clients.Groups(roomId).SendAsync("ReceiveMessage", $"{Context.ConnectionId} has left the room.");
@@ -48,7 +48,7 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
 
     public async Task SendMessageToRoom(CallCenterSendMessageDto message)
     {
-        var (msgDto, isSendedByUser) = await service.AddMessageAsync(message);
+        (CallCenterReceiveMessageDto msgDto, bool isSendedByUser) = await service.AddMessageAsync(message);
 
         await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
 
@@ -56,7 +56,7 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
             await Clients.Groups(_adminRoom).SendAsync("UpdatedChats", await service.GetChatsAsync());
         else
         {
-            var (count, userId) = await service.GetNotReadedMessagesByRoomId(message.RoomId);
+            (int count, string userId) = await service.GetNotReadedMessagesByRoomId(message.RoomId);
             await Clients.Groups(userId).SendAsync("UpdatedCallCenter", count);
         }
     }

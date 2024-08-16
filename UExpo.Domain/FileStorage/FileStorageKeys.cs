@@ -3,4 +3,5 @@
 public static class FileStorageKeys
 {
     public static string CatalogPdf { get; } = "catalog-pdfs";
+    public static string CatalogProductsImages { get; } = "catalog-products-images";
 }

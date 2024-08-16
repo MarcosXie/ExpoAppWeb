@@ -11,7 +11,7 @@ public class UserRepository(UExpoDbContext context, IMapper mapper)
 {
     public async Task DeleteUserWithNotValidatedEmailsAsync(string email, CancellationToken cancellationToken = default)
     {
-        var invalidEmails = Database.Where(x => x.Email.ToLower().Equals(email.ToLower()) && !x.IsEmailValidated);
+        IQueryable<UserDao> invalidEmails = Database.Where(x => x.Email.ToLower().Equals(email.ToLower()) && !x.IsEmailValidated);
 
         if (!invalidEmails.Any()) return;
 
@@ -22,7 +22,7 @@ public class UserRepository(UExpoDbContext context, IMapper mapper)
 
     public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        var userDao = await Database.FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email), cancellationToken: cancellationToken);
+        UserDao? userDao = await Database.FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email), cancellationToken: cancellationToken);
 
         return Mapper.Map<User>(userDao);
     }

@@ -14,7 +14,7 @@ public class UserController(IUserService service) : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<string>> RegisterUserAsync(UserDto user)
     {
-        var id = await service.CreateUserAsync(user);
+        Guid id = await service.CreateUserAsync(user);
         return Ok(id);
     }
 
@@ -22,7 +22,7 @@ public class UserController(IUserService service) : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<string>> LoginAsync(LoginDto loginDto)
     {
-        var hash = await service.LoginAsync(loginDto);
+        string? hash = await service.LoginAsync(loginDto);
 
         return Ok(hash);
     }

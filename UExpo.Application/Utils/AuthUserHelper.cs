@@ -6,7 +6,7 @@ namespace UExpo.Application.Utils;
 
 public class AuthUserHelper
 {
-    private IHttpContextAccessor _context;
+    private readonly IHttpContextAccessor _context;
 
     public AuthUserHelper(IHttpContextAccessor contextAccessor)
     {
@@ -15,7 +15,7 @@ public class AuthUserHelper
 
     public AuthenticatedUser GetUser()
     {
-        var user = _context.HttpContext.User;
+        ClaimsPrincipal user = _context.HttpContext.User;
 
         return new()
         {
@@ -31,7 +31,7 @@ public static class ClaimsPrincipalExtension
 {
     public static T? GetJwtClaim<T>(this ClaimsPrincipal user, string claimType)
     {
-        var claim = user.Claims.FirstOrDefault(c => c.Type == claimType);
+        Claim? claim = user.Claims.FirstOrDefault(c => c.Type == claimType);
 
         if (claim is null) return default;
 

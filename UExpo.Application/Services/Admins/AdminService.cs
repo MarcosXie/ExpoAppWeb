@@ -8,9 +8,9 @@ namespace UExpo.Application.Services.Admins;
 
 public class AdminService : IAdminService
 {
-    private IAdminRepository _repository;
-    private IMapper _mapper;
-    private IConfiguration _config;
+    private readonly IAdminRepository _repository;
+    private readonly IMapper _mapper;
+    private readonly IConfiguration _config;
 
     public AdminService(IAdminRepository repository, IMapper mapper, IConfiguration config)
     {
@@ -21,7 +21,7 @@ public class AdminService : IAdminService
 
     public async Task<string> CreateAsync(AdminDto admin)
     {
-        var user = _mapper.Map<Admin>(admin);
+        Admin user = _mapper.Map<Admin>(admin);
 
         user.Password = HashHelper.Hash(admin.Password);
 
@@ -30,7 +30,7 @@ public class AdminService : IAdminService
 
     public async Task<string> LoginAsync(AdminLoginDto loginDto)
     {
-        var user = await _repository.GetByNameAsync(loginDto.Name)
+        Admin user = await _repository.GetByNameAsync(loginDto.Name)
                 ?? throw new InvalidCredentialsException();
 
         if (!HashHelper.Verify(loginDto.Password, user.Password))

@@ -4,13 +4,14 @@ namespace UExpo.Domain.Shared.Converters;
 
 public static class JsonConverter
 {
-    public static Dictionary<string, object> JsonToDictionary(string json = "")
+    public static List<Dictionary<string, object>> JsonToDictionary(string json = "")
     {
-        return JsonConvert.DeserializeObject<Dictionary<string, object>>(json) ?? [];
+        if (string.IsNullOrEmpty(json)) return [];
+        return JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json) ?? [];
     }
 
-    public static string DictionaryToJson(Dictionary<string, object>? dictionary = null)
+    public static string DictionaryToJson(List<Dictionary<string, object>>? dictionary = null)
     {
-        return JsonConvert.SerializeObject(dictionary);
+        return JsonConvert.SerializeObject(dictionary, Formatting.None);
     }
 }

@@ -9,11 +9,11 @@ public static class SeedDataHelper
 
     public static void BootstrapAdmin(IServiceProvider serviceProvider)
     {
-        using var scope = serviceProvider.CreateScope();
+        using IServiceScope scope = serviceProvider.CreateScope();
 
-        var repository = scope.ServiceProvider.GetRequiredService<IAdminRepository>();
+        IAdminRepository repository = scope.ServiceProvider.GetRequiredService<IAdminRepository>();
 
-        var admin = repository.GetByIdOrDefaultAsync(_baseAdminGuid).Result;
+        Admin? admin = repository.GetByIdOrDefaultAsync(_baseAdminGuid).Result;
 
         if (admin is not null)
             return;

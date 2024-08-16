@@ -9,7 +9,7 @@ namespace UExpo.Infrastructure.Services;
 
 public class TranslationService : ITranslationService
 {
-    private AmazonTranslateClient _tranlateClient;
+    private readonly AmazonTranslateClient _tranlateClient;
 
     public TranslationService(IConfiguration config)
     {
@@ -22,7 +22,7 @@ public class TranslationService : ITranslationService
     {
         if (srcLang.Equals(trgLang)) return text;
 
-        var translateRequest = new TranslateTextRequest
+        TranslateTextRequest translateRequest = new TranslateTextRequest
         {
             SourceLanguageCode = srcLang,
             TargetLanguageCode = trgLang,
@@ -31,7 +31,7 @@ public class TranslationService : ITranslationService
 
         try
         {
-            var translatedResponse = await _tranlateClient.TranslateTextAsync(translateRequest);
+            TranslateTextResponse translatedResponse = await _tranlateClient.TranslateTextAsync(translateRequest);
             return translatedResponse.TranslatedText;
         }
         catch (Exception ex)

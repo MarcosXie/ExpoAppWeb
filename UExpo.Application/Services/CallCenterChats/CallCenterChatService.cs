@@ -10,12 +10,12 @@ namespace UExpo.Application.Services.CallCenterChats;
 
 public class CallCenterChatService : ICallCenterChatService
 {
-    private ICallCenterChatRepository _repository;
-    private IUserRepository _userRepository;
-    private IAdminRepository _adminRepository;
-    private ITranslationService _translationService;
-    private AuthUserHelper _authUserHelper;
-    private IMapper _mapper;
+    private readonly ICallCenterChatRepository _repository;
+    private readonly IUserRepository _userRepository;
+    private readonly IAdminRepository _adminRepository;
+    private readonly ITranslationService _translationService;
+    private readonly AuthUserHelper _authUserHelper;
+    private readonly IMapper _mapper;
 
     public CallCenterChatService(
         ICallCenterChatRepository repository,
@@ -35,10 +35,10 @@ public class CallCenterChatService : ICallCenterChatService
 
     public async Task<Guid> CreateCallCenterChatAsync(CallCenterChatDto chat)
     {
-        var dbChat = await _repository.GetByIdOrDefaultAsync(chat.Id) ??
+        CallCenterChat dbChat = await _repository.GetByIdOrDefaultAsync(chat.Id) ??
             throw new NotFoundException("chat");
 
-        var user = await GetChatUser(chat.UserId, dbChat);
+        IChatUser user = await GetChatUser(chat.UserId, dbChat);
 
         // Se o usuario esta acessando um chat que ja existia
         if (user is User && !dbChat.UserLang.Equals(chat.Lang))
@@ -62,12 +62,12 @@ public class CallCenterChatService : ICallCenterChatService
 
     public async Task<(CallCenterReceiveMessageDto, bool)> AddMessageAsync(CallCenterSendMessageDto message)
     {
-        var chat = await _repository.GetByIdOrDefaultAsync(message.RoomId);
+        CallCenterChat? chat = await _repository.GetByIdOrDefaultAsync(message.RoomId);
 
-        var senderUser = await GetChatUser(message.SenderId, chat);
+        IChatUser senderUser = await GetChatUser(message.SenderId, chat);
 
-        var senderLang = senderUser.Language;
-        var receiverLang = chat.UserLang.Equals(senderUser.Language) ? chat.AdminLang : chat.UserLang;
+        string senderLang = senderUser.Language;
+        string receiverLang = chat.UserLang.Equals(senderUser.Language) ? chat.AdminLang : chat.UserLang;
 
         CallCenterMessage callCenterMessage = new()
         {
@@ -99,9 +99,9 @@ public class CallCenterChatService : ICallCenterChatService
 
     public async Task UpdateChatAsync(CallCenterChatDto chat)
     {
-        var dbChat = await _repository.GetByIdOrDefaultAsync(chat.Id!);
+        CallCenterChat? dbChat = await _repository.GetByIdOrDefaultAsync(chat.Id!);
 
-        var user = await GetChatUser(chat.UserId, dbChat);
+        IChatUser user = await GetChatUser(chat.UserId, dbChat);
 
         if (user is User)
             dbChat!.UserLang = chat.Lang;
@@ -113,7 +113,7 @@ public class CallCenterChatService : ICallCenterChatService
 
     public async Task<List<CallCenterReceiveMessageDto>> GetMessagesByChatAsync(CallCenterChatDto chat)
     {
-        var messages = await _repository.GetLastMessagesByChat(chat.Id);
+        List<CallCenterMessage> messages = await _repository.GetLastMessagesByChat(chat.Id);
 
         return messages.Select(x => new CallCenterReceiveMessageDto
         {
@@ -129,7 +129,7 @@ public class CallCenterChatService : ICallCenterChatService
 
     public async Task<List<CallCenterChatResponseDto>> GetChatsAsync()
     {
-        var chats = await _repository.GetWithUsersAsync();
+        List<CallCenterChat> chats = await _repository.GetWithUsersAsync();
 
         return chats.Select(x => BuildCallCenterChatResponse(x, false)).ToList();
     }
@@ -158,13 +158,13 @@ public class CallCenterChatService : ICallCenterChatService
     {
         try
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            User user = await _userRepository.GetByIdAsync(id);
             user.Language = chat.UserLang;
             return user;
         }
         catch (Exception)
         {
-            var attendent = await _adminRepository.GetByIdAsync(id);
+            Admin attendent = await _adminRepository.GetByIdAsync(id);
             attendent.Language = chat.AdminLang;
             return attendent;
         }
@@ -172,9 +172,9 @@ public class CallCenterChatService : ICallCenterChatService
 
     public async Task<CallCenterChatResponseDto> GetChatByUserIdAsync()
     {
-        var chat = await _repository.GetOrCreateUserChatAsync(_authUserHelper.GetUser());
+        CallCenterChat chat = await _repository.GetOrCreateUserChatAsync(_authUserHelper.GetUser());
 
-        var responseDto = BuildCallCenterChatResponse(chat, true);
+        CallCenterChatResponseDto responseDto = BuildCallCenterChatResponse(chat, true);
 
         responseDto.UserName = chat.Admin?.Name ?? "Waiting for attendent";
 
@@ -183,7 +183,7 @@ public class CallCenterChatService : ICallCenterChatService
 
     public async Task<(int, string)> GetNotReadedMessagesByRoomId(Guid roomId)
     {
-        var chat = await _repository.GetByIdOrDefaultAsync(roomId);
+        CallCenterChat? chat = await _repository.GetByIdOrDefaultAsync(roomId);
 
         return (await _repository.GetNotReadedMessagesByChatId(roomId), chat!.UserId.ToString());
     }

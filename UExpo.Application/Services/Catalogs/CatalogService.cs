@@ -1,18 +1,21 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using UExpo.Application.Utils;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
+using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
 
 namespace UExpo.Application.Services.Catalogs;
 
 public class CatalogService : ICatalogService
 {
-    private ICatalogRepository _repository;
-    private ICatalogPdfRepository _pdfRepository;
-    private ICatalogItemImageRepository _itemImageRepository;
-    private IFileStorageService _fileStorageService;
-    private IMapper _mapper;
+    private readonly ICatalogRepository _repository;
+    private readonly ICatalogPdfRepository _pdfRepository;
+    private readonly ICatalogItemImageRepository _itemImageRepository;
+    private readonly IFileStorageService _fileStorageService;
+    private readonly IMapper _mapper;
 
     public CatalogService(
         ICatalogRepository repository,
@@ -30,8 +33,8 @@ public class CatalogService : ICatalogService
 
     public async Task<CatalogResponseDto> GetOrCreateAsync(string id)
     {
-        var parsedId = Guid.Parse(id);
-        var catalog = await _repository.GetByUserIdOrDefaultAsync(parsedId);
+        Guid parsedId = Guid.Parse(id);
+        Catalog? catalog = await _repository.GetByUserIdOrDefaultAsync(parsedId);
 
         if (catalog is null)
         {
@@ -48,10 +51,10 @@ public class CatalogService : ICatalogService
 
     public async Task<Guid> AddPdfAsync(CatalogPdfDto pdf)
     {
-        var catalog = await _repository.GetByIdAsync(pdf.CatalogId);
-        var fileName = GetFileName(pdf.File.FileName, catalog);
-        
-        var dbPdf = new CatalogPdf()
+        Catalog catalog = await _repository.GetByIdAsync(pdf.CatalogId);
+        string fileName = GetFileName(pdf.File.FileName, catalog.Id.ToString());
+
+        CatalogPdf dbPdf = new()
         {
             CatalogId = catalog.Id,
             Name = Path.GetFileName(pdf.File.FileName),
@@ -63,18 +66,65 @@ public class CatalogService : ICatalogService
 
     public async Task DeletePdfAsync(Guid id, Guid pdfId)
     {
-        var catalog = await _repository.GetByIdAsync(id);
+        Catalog catalog = await _repository.GetByIdAsync(id);
 
-        var pdf = await _pdfRepository.GetByIdAsync(pdfId);
+        CatalogPdf pdf = await _pdfRepository.GetByIdAsync(pdfId);
 
         await Task.WhenAll(
-            _fileStorageService.DeleteFileAsync(FileStorageKeys.CatalogPdf, GetFileName(pdf.Name, catalog)),
+            _fileStorageService.DeleteFileAsync(FileStorageKeys.CatalogPdf, GetFileName(pdf.Name, catalog.Id.ToString())),
             _pdfRepository.DeleteAsync(pdfId)
         );
     }
 
-    private static string GetFileName(string name, Catalog catalog)
+    public async Task<List<Dictionary<string, object>>> AddCatalogDataAsync(Guid id, IFormFile data)
     {
-        return $"{catalog.Id}-{Path.GetFileName(name)}";
+        Catalog catalog = await _repository.GetByIdAsync(id);
+
+        catalog.JsonTable = data.ToDictionary();
+
+        var groupedCodes = catalog.JsonTable.GroupBy(x => x[x.Keys.First()]);
+
+        if (groupedCodes.Any(g => g.Count() > 1))
+            throw new BadRequestException(
+                $"The first column contains repeated identifier values: {
+                    string.Join(", ", groupedCodes.Where(x => x.Count() > 1).Select(x => x.Key))
+                }");
+
+        await _repository.UpdateAsync(catalog);
+
+        return catalog.JsonTable;
     }
+
+    public async Task AddImagesAsync(Guid id, string productId, List<IFormFile> images)
+    {
+        Catalog catalog = await _repository.GetByIdDetailedAsync(id);
+
+        var product = (catalog.JsonTable?.FirstOrDefault(x => x[x.First().Key].ToString() == productId))
+            ?? throw new NotFoundException(productId);
+
+        int order = 1;
+
+        foreach(var image in images)
+        {
+            string fileName = GetFileName(image.FileName, catalog.Id.ToString(), productId);
+
+            CatalogItemImage catalogItemImage = new()
+            {
+                CatalogId = catalog.Id,
+                ItemId = productId,
+                Order = order++,
+                Uri = await _fileStorageService.UploadFileAsync(image, fileName, FileStorageKeys.CatalogProductsImages)
+            };
+
+            await _itemImageRepository.CreateAsync(catalogItemImage);
+        }
+    }
+
+    private static string GetFileName(string name, params string[] ids)
+    {
+        string prefix = string.Join('-', ids);
+
+        return $"{prefix}-{Path.GetFileName(name)}";
+    }
+
 }

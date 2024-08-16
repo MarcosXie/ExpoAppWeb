@@ -11,7 +11,7 @@ public class AdminRepository(UExpoDbContext context, IMapper mapper)
 {
     public async Task<Admin?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
-        var user = await Context.Admins
+        AdminDao? user = await Context.Admins
             .FirstOrDefaultAsync(x =>
                 x.Name.ToLower().Equals(name.ToLower()), cancellationToken: cancellationToken);
 

@@ -25,7 +25,7 @@ public class EmailServiceAws : IEmailService
 
     public async Task SendEmailAsync(EmailSendDto emailSendDto)
     {
-        var sendRequest = new SendEmailRequest
+        SendEmailRequest sendRequest = new SendEmailRequest
         {
             Source = _config["SES:SenderEmail"],
             Destination = new Destination
@@ -44,7 +44,7 @@ public class EmailServiceAws : IEmailService
 
         try
         {
-            var response = await _sesClient.SendEmailAsync(sendRequest);
+            SendEmailResponse response = await _sesClient.SendEmailAsync(sendRequest);
             Console.WriteLine("Email sent successfully.");
         }
         catch (Exception ex)

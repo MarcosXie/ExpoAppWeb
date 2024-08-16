@@ -30,7 +30,7 @@ public class UserService : IUserService
     {
         await ValidateCreateAsync(userDto);
 
-        var user = _mapper.Map<User>(userDto);
+        User user = _mapper.Map<User>(userDto);
 
         user.Password = HashHelper.Hash(userDto.Password);
 
@@ -41,7 +41,7 @@ public class UserService : IUserService
 
     public async Task<string?> LoginAsync(LoginDto loginDto)
     {
-        var user = await _repository.GetUserByEmailAsync(loginDto.Email)
+        User user = await _repository.GetUserByEmailAsync(loginDto.Email)
             ?? throw new InvalidCredentialsException();
 
         ValidateUserEmail(user);
@@ -56,11 +56,11 @@ public class UserService : IUserService
 
     public async Task VerifyEmailAsync(Guid id, string code)
     {
-        var user = await _repository.GetByIdAsync(id);
+        User user = await _repository.GetByIdAsync(id);
 
-        var baseCode = GenerateBaseValidationCode(user);
+        string baseCode = GenerateBaseValidationCode(user);
 
-        var isValid = HashHelper.Verify(baseCode, code);
+        bool isValid = HashHelper.Verify(baseCode, code);
 
         if (!isValid)
             throw new Exception("Error validating user email!");
@@ -74,7 +74,7 @@ public class UserService : IUserService
 
     public async Task ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
     {
-        var user = await _repository.GetUserByEmailAsync(forgotPasswordDto.Email);
+        User? user = await _repository.GetUserByEmailAsync(forgotPasswordDto.Email);
 
         if (user is null)
             throw new NotFoundException(nameof(user) + $"with email: {forgotPasswordDto.Email}");
@@ -90,7 +90,7 @@ public class UserService : IUserService
         if (!userDto.Password.Equals(userDto.ConfirmPassword))
             throw new BadRequestException("The passwords don`t match! Please try again!");
 
-        var email = await _repository.GetUserByEmailAsync(userDto.Email);
+        User? email = await _repository.GetUserByEmailAsync(userDto.Email);
 
         if (email is not null && email.IsEmailValidated)
             throw new BadRequestException("This email is already registered in UExpo!");
@@ -98,7 +98,7 @@ public class UserService : IUserService
 
     private async Task SendEmailConfirmationEmailAsync(User user)
     {
-        var code = HashHelper.Hash(GenerateBaseValidationCode(user));
+        string code = HashHelper.Hash(GenerateBaseValidationCode(user));
 
         EmailSendDto emailSendDto = new()
         {

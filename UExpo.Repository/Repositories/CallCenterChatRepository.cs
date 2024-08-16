@@ -15,7 +15,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 {
     public async Task<Guid> AddMessageAsync(CallCenterMessage message, CancellationToken cancellationToken = default)
     {
-        var callCenter = await Database
+        CallCenterChatDao callCenter = await Database
             .Include(x => x.Messages)
             .FirstOrDefaultAsync(x =>
                 x.Id == message.ChatId, cancellationToken: cancellationToken)
@@ -23,7 +23,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
         message.CreatedAt = DateTime.Now;
 
-        var messageDao = Mapper.Map<CallCenterMessageDao>(message);
+        CallCenterMessageDao messageDao = Mapper.Map<CallCenterMessageDao>(message);
 
         messageDao.ChatId = callCenter.Id;
         Context.CallCenterMessages.Add(messageDao);
@@ -42,16 +42,16 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
     public async Task<CallCenterChat?> GetByUserIdAsync(Guid id)
     {
-        var chat = await Database.FirstOrDefaultAsync(x => x.UserId == id);
+        CallCenterChatDao? chat = await Database.FirstOrDefaultAsync(x => x.UserId == id);
 
         return chat is null ? default : Mapper.Map<CallCenterChat>(chat);
     }
 
     public async Task<List<CallCenterMessage>> GetLastMessagesByChat(Guid id)
     {
-        var chat = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        CallCenterChatDao? chat = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
-        var messages = await Context.CallCenterMessages
+        List<CallCenterMessageDao> messages = await Context.CallCenterMessages
             .Where(x => x.ChatId == chat.Id)
             .OrderByDescending(x => x.CreatedAt)
             .Take(30)
@@ -62,7 +62,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
     public async Task<List<CallCenterChat>> GetWithUsersAsync()
     {
-        var chats = await Database.AsNoTracking()
+        List<CallCenterChat> chats = await Database.AsNoTracking()
             .Include(x => x.User)
             .Select(chat => new CallCenterChat
             {
@@ -83,9 +83,9 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
     public async Task<CallCenterChat> GetOrCreateUserChatAsync(AuthenticatedUser authenticatedUser)
     {
-        var userId = Guid.Parse(authenticatedUser.Id);
+        Guid userId = Guid.Parse(authenticatedUser.Id);
 
-        var chat = await Database.AsNoTracking()
+        CallCenterChatDao? chat = await Database.AsNoTracking()
             .Include(x => x.User)
             .Include(x => x.Admin)
             .FirstOrDefaultAsync(x => x.UserId == userId);
@@ -122,15 +122,15 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
     public async Task VisualizeMessagesAsync(CallCenterChatDto callCenterChat)
     {
-        var chat = await Database.Include(x => x.Messages)
+        CallCenterChatDao chat = await Database.Include(x => x.Messages)
             .FirstAsync(x => x.Id == callCenterChat.Id);
 
 
-        var notReadedMessages = chat.Messages
+        List<CallCenterMessageDao> notReadedMessages = chat.Messages
             .Where(x => x.SenderId != callCenterChat.UserId && !x.Readed).ToList();
 
 
-        foreach (var message in notReadedMessages)
+        foreach (CallCenterMessageDao? message in notReadedMessages)
             message.Readed = true;
 
 
@@ -139,14 +139,14 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
     public async Task<int> GetNotReadedMessagesByChatId(Guid roomId)
     {
-        var chat = await Database.Include(x => x.Messages).FirstOrDefaultAsync(x => x.Id == roomId);
+        CallCenterChatDao? chat = await Database.Include(x => x.Messages).FirstOrDefaultAsync(x => x.Id == roomId);
 
         return await Context.CallCenterMessages.CountAsync(x => !x.Readed && x.ChatId == roomId && x.SenderId != chat!.UserId); ;
     }
 
     public async Task<int> GetNotReadedMessagesByUserId(Guid userId)
     {
-        var chat = await Database.Include(x => x.Messages).FirstOrDefaultAsync(x => x.UserId == userId);
+        CallCenterChatDao? chat = await Database.Include(x => x.Messages).FirstOrDefaultAsync(x => x.UserId == userId);
 
         return await Context.CallCenterMessages.CountAsync(x => !x.Readed && x.ChatId == chat!.Id && x.SenderId != chat!.UserId);
     }

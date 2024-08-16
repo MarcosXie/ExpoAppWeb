@@ -28,13 +28,13 @@ public class ExceptionMiddleware(RequestDelegate next)
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = exception.StatusCode;
 
-        var response = new ErrorResponse
+        ErrorResponse response = new ErrorResponse
         {
             Message = exception.Message,
             StatusCode = exception.StatusCode
         };
 
-        var jsonResponse = JsonConvert.SerializeObject(response);
+        string jsonResponse = JsonConvert.SerializeObject(response);
         return context.Response.WriteAsync(jsonResponse);
     }
 }
