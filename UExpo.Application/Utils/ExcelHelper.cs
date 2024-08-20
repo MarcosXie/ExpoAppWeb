@@ -25,7 +25,13 @@ public static class ExcelHelper
         List<string> headers = new List<string>();
 
         for (int col = 1; col <= colCount; col++)
-            headers.Add(sheet.Cells[1, col].Text);
+        {
+            var headerText = sheet.Cells[1, col].Text;
+            if (string.IsNullOrEmpty(headerText))
+                break;
+            headers.Add(headerText);
+        }
+
 
         for (int row = 2; row <= rowCount; row++)
         {
@@ -39,6 +45,6 @@ public static class ExcelHelper
             result.Add(rowDict);
         }
 
-        return result;
+        return result.Where(x => !string.IsNullOrEmpty(x[x.Keys.First()].ToString())).ToList();
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Dao;
 using UExpo.Repository.Context;

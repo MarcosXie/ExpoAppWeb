@@ -6,6 +6,7 @@ using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
+using UExpo.Domain.Shared;
 
 namespace UExpo.Application.Services.Catalogs;
 
@@ -49,7 +50,7 @@ public class CatalogService : ICatalogService
         return _mapper.Map<CatalogResponseDto>(catalog);
     }
 
-    public async Task<Guid> AddPdfAsync(CatalogPdfDto pdf)
+    public async Task<CatalogPdfResponseDto> AddPdfAsync(CatalogPdfDto pdf)
     {
         Catalog catalog = await _repository.GetByIdAsync(pdf.CatalogId);
         string fileName = GetFileName(pdf.File.FileName, catalog.Id.ToString());
@@ -61,7 +62,9 @@ public class CatalogService : ICatalogService
             Uri = await _fileStorageService.UploadFileAsync(pdf.File, fileName, FileStorageKeys.CatalogPdf)
         };
 
-        return await _pdfRepository.CreateAsync(dbPdf);
+        await _pdfRepository.CreateAsync(dbPdf);
+
+        return _mapper.Map<CatalogPdfResponseDto>(dbPdf);
     }
 
     public async Task DeletePdfAsync(Guid id, Guid pdfId)
@@ -95,6 +98,21 @@ public class CatalogService : ICatalogService
         return catalog.JsonTable;
     }
 
+    public async Task<ValidationErrorResponseDto> ValidadeAddCatalogDataAsync(Guid id, IFormFile data)
+    {
+        Catalog catalog = await _repository.GetByIdAsync(id);
+
+        catalog.JsonTable = data.ToDictionary();
+
+        var groupedCodes = catalog.JsonTable.GroupBy(x => x[x.Keys.First()]);
+
+        return new()
+        {
+            IsError = !groupedCodes.Any(g => g.Count() > 1),
+            Message = $"The first column contains repeated identifier values: {string.Join(", ", groupedCodes.Where(x => x.Count() > 1).Select(x => x.Key))}"
+        }; 
+    }
+
     public async Task AddImagesAsync(Guid id, string productId, List<IFormFile> images)
     {
         Catalog catalog = await _repository.GetByIdDetailedAsync(id);
@@ -126,5 +144,4 @@ public class CatalogService : ICatalogService
 
         return $"{prefix}-{Path.GetFileName(name)}";
     }
-
 }

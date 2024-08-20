@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UExpo.Application.Utils;
 using UExpo.Domain.Catalogs;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using UExpo.Domain.Catalogs.Pdfs;
+using UExpo.Domain.Shared;
 
 namespace UExpo.Api.Controllers;
 
@@ -21,7 +22,7 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
     }
 
     [HttpPost("{id}/Pdf")]
-    public async Task<ActionResult<CatalogResponseDto>> CreatePdfAsync(IFormFile file, Guid id)
+    public async Task<ActionResult<CatalogPdfResponseDto>> CreatePdfAsync(IFormFile file, Guid id)
     {
         if (file is null || file.Length == 0)
             return BadRequest("No file uploaded");
@@ -29,13 +30,13 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
         if (!Path.GetExtension(file.FileName).Equals(".pdf", StringComparison.CurrentCultureIgnoreCase))
             return BadRequest("Invalid file type");
 
-        Guid pdfId = await service.AddPdfAsync(new() { CatalogId = id, File = file });
+        var pdf = await service.AddPdfAsync(new() { CatalogId = id, File = file });
 
-        return Ok(pdfId);
+        return Ok(pdf);
     }
 
     [HttpDelete("{id}/Pdf/{pdfId}")]
-    public async Task<ActionResult<CatalogResponseDto>> DeletePdfAsync(Guid id, Guid pdfId)
+    public async Task<ActionResult> DeletePdfAsync(Guid id, Guid pdfId)
     {
         await service.DeletePdfAsync(id, pdfId);
 
@@ -43,23 +44,39 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
     }
 
     [HttpPost("{id}/Data")]
-    public async Task<ActionResult<List<Dictionary<string, object>>>> AddCatalogData(Guid id, IFormFile data)
+    public async Task<ActionResult<List<Dictionary<string, object>>>> AddCatalogData(Guid id, IFormFile file)
     {
-        if (data is null || data.Length == 0)
+        if (file is null || file.Length == 0)
             return BadRequest("No file uploaded");
 
         List<string> supportedTypes = [".xls", ".xlsx"];
 
-        if (!supportedTypes.Contains(Path.GetExtension(data.FileName)))
+        if (!supportedTypes.Contains(Path.GetExtension(file.FileName)))
             return BadRequest("Invalid file type");
 
-        List<Dictionary<string, object>> parsedData = await service.AddCatalogDataAsync(id, data);
+        List<Dictionary<string, object>> parsedData = await service.AddCatalogDataAsync(id, file);
 
         return Ok(parsedData);
     }
 
+    [HttpPost("{id}/Data/Validade")]
+    public async Task<ActionResult<ValidationErrorResponseDto>> ValidateAddCatalogData(Guid id, IFormFile file)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest("No file uploaded");
+
+        List<string> supportedTypes = [".xls", ".xlsx"];
+
+        if (!supportedTypes.Contains(Path.GetExtension(file.FileName)))
+            return BadRequest("Invalid file type");
+
+        ValidationErrorResponseDto res = await service.ValidadeAddCatalogDataAsync(id, file);
+
+        return Ok(res);
+    }
+
     [HttpPost("{id}/Product/{productId}/Image")]
-    public async Task<ActionResult<List<Dictionary<string, object>>>> AddCatalogData(
+    public async Task<ActionResult> AddCatalogImage(
         Guid id, string productId, List<IFormFile> images)
     {
         if (images is null || images.Count == 0)
