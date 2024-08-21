@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UExpo.Repository.Context;
 
@@ -11,9 +12,11 @@ using UExpo.Repository.Context;
 namespace UExpo.Repository.Migrations
 {
     [DbContext(typeof(UExpoDbContext))]
-    partial class UExpoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240820223616_add-name-to-catalog-image-table")]
+    partial class addnametocatalogimagetable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,7 +156,7 @@ namespace UExpo.Repository.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("JsonTable")
-                        .HasColumnType("longtext");
+                        .HasColumnType("json");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");

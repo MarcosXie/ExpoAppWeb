@@ -10,9 +10,9 @@ public class CatalogConfiguration : IEntityTypeConfiguration<CatalogDao>
     {
         entity.HasKey(x => x.Id).HasName("catalog_pkey");
 
-        entity
-            .Property(e => e.JsonTable)
-            .HasColumnType("json");
+        //entity
+        //    .Property(e => e.JsonTable)
+        //    .HasColumnType("string");
 
         entity
             .HasMany(n => n.ItemImages)

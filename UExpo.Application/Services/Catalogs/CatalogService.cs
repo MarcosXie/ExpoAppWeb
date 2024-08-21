@@ -47,6 +47,8 @@ public class CatalogService : ICatalogService
             await _repository.CreateAsync(catalog);
         }
 
+        catalog.ItemImages = await _itemImageRepository.GetMainImagesByCatalogAsync(catalog.Id);
+
         return _mapper.Map<CatalogResponseDto>(catalog);
     }
 
@@ -113,14 +115,16 @@ public class CatalogService : ICatalogService
         }; 
     }
 
-    public async Task AddImagesAsync(Guid id, string productId, List<IFormFile> images)
+    public async Task<List<CatalogItemImageResponseDto>> AddImagesAsync(Guid id, string productId, List<IFormFile> images)
     {
         Catalog catalog = await _repository.GetByIdDetailedAsync(id);
 
         var product = (catalog.JsonTable?.FirstOrDefault(x => x[x.First().Key].ToString() == productId))
             ?? throw new NotFoundException(productId);
 
-        int order = 1;
+        int order = await _itemImageRepository.GetMaxOrderByProductAsync(productId) + 1;
+
+        List<CatalogItemImage> imagesToCreate = [];
 
         foreach(var image in images)
         {
@@ -131,11 +135,35 @@ public class CatalogService : ICatalogService
                 CatalogId = catalog.Id,
                 ItemId = productId,
                 Order = order++,
+                Name = Path.GetFileName(image.FileName),
                 Uri = await _fileStorageService.UploadFileAsync(image, fileName, FileStorageKeys.CatalogProductsImages)
             };
 
+            imagesToCreate.Add(catalogItemImage);
+
             await _itemImageRepository.CreateAsync(catalogItemImage);
         }
+
+        return imagesToCreate.Select(_mapper.Map<CatalogItemImageResponseDto>).ToList();
+    }
+
+    public async Task<List<CatalogItemImageResponseDto>> GetImagesByProductAsync(Guid id, string productId)
+    {
+        List<CatalogItemImage> images = await _repository.GetImagesByProductIdAsync(id, productId);
+
+        return images.Select(_mapper.Map<CatalogItemImageResponseDto>).OrderByDescending(x => x.Order).ToList();
+    }
+
+    public async Task DeleteImageAsync(Guid id, string productId, Guid imageId)
+    {
+        Catalog catalog = await _repository.GetByIdAsync(id);
+
+        var img = await _itemImageRepository.GetByIdAsync(imageId);
+
+        await Task.WhenAll(
+            _fileStorageService.DeleteFileAsync(FileStorageKeys.CatalogProductsImages, GetFileName(img.Name, catalog.Id.ToString(), productId)),
+            _itemImageRepository.DeleteAsync(imageId)
+        );
     }
 
     private static string GetFileName(string name, params string[] ids)

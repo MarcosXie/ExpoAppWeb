@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UExpo.Application.Utils;
+using UExpo.Domain.Authentication;
 using UExpo.Domain.Catalogs;
+using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
 using UExpo.Domain.Shared;
 
@@ -14,7 +16,7 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
     [HttpPost]
     public async Task<ActionResult<CatalogResponseDto>> GetOrCreateAsync()
     {
-        Domain.Authentication.AuthenticatedUser user = userHelper.GetUser();
+        AuthenticatedUser user = userHelper.GetUser();
 
         CatalogResponseDto catalog = await service.GetOrCreateAsync(user.Id);
 
@@ -76,7 +78,7 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
     }
 
     [HttpPost("{id}/Product/{productId}/Image")]
-    public async Task<ActionResult> AddCatalogImage(
+    public async Task<ActionResult<List<CatalogItemImageResponseDto>>> AddCatalogImage(
         Guid id, string productId, List<IFormFile> images)
     {
         if (images is null || images.Count == 0)
@@ -115,7 +117,23 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
         if (images.Any(img => !supportedTypes.Contains(Path.GetExtension(img.FileName))))
             return BadRequest("Invalid file type");
 
-        await service.AddImagesAsync(id, productId, images);
+        var createdImages = await service.AddImagesAsync(id, productId, images);
+
+        return Ok(createdImages);
+    }
+
+    [HttpGet("{id}/Product/{productId}/Image")]
+    public async Task<ActionResult<CatalogItemImageResponseDto>> GetItemImages(Guid id, string productId)
+    {
+        var images = await service.GetImagesByProductAsync(id, productId);
+
+        return Ok(images);
+    }
+
+    [HttpDelete("{id}/Product/{productId}/Image/{imageId}")]
+    public async Task<ActionResult<CatalogItemImageResponseDto>> DeleteItemImages(Guid id, string productId, Guid imageId)
+    {
+        await service.DeleteImageAsync(id, productId, imageId);
 
         return Ok();
     }

@@ -5,4 +5,6 @@ namespace UExpo.Domain.Catalogs.ItemImages;
 
 public interface ICatalogItemImageRepository : IBaseRepository<CatalogItemImageDao, CatalogItemImage>
 {
+    Task<List<CatalogItemImage>> GetMainImagesByCatalogAsync(Guid id);
+    Task<int> GetMaxOrderByProductAsync(string id);
 }

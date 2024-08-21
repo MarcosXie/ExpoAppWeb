@@ -37,7 +37,7 @@ public static class ExcelHelper
         {
             Dictionary<string, object> rowDict = new Dictionary<string, object>();
 
-            for (int col = 1; col <= colCount; col++)
+            for (int col = 1; col <= headers.Count; col++)
             {
                 rowDict[headers[col - 1]] = sheet.Cells[row, col].Text;
             }

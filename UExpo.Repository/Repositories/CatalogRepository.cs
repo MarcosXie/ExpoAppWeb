@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Catalogs;
+using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Dao;
 using UExpo.Repository.Context;
 
@@ -13,7 +14,6 @@ public class CatalogRepository(UExpoDbContext context, IMapper mapper)
     {
         CatalogDao? catalog = await Database
             .Include(x => x.Pdfs)
-            .Include(x => x.ItemImages)
             .FirstOrDefaultAsync(x => x.UserId == id);
 
         return catalog is null ? null : Mapper.Map<Catalog>(catalog);
@@ -47,5 +47,13 @@ public class CatalogRepository(UExpoDbContext context, IMapper mapper)
         return entity is null
             ? throw new Exception($"{nameof(CatalogDao)} com id = {id}")
         : Mapper.Map<Catalog>(entity);
+    }
+
+    public async Task<List<CatalogItemImage>> GetImagesByProductIdAsync(Guid id, string productId)
+    {
+        var images = await Context.CatalogImages
+            .Where(x => x.CatalogId == id && x.ItemId == productId).ToListAsync();
+
+        return images.Select(Mapper.Map<CatalogItemImage>).ToList();
     }
 }
