@@ -2,28 +2,47 @@
 using Microsoft.AspNetCore.Mvc;
 using UExpo.Domain.Admins;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+namespace UExpo.Api.Controllers;
 
-namespace UExpo.Api.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class AdminController(IAdminService service) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AdminController(IAdminService service) : ControllerBase
+    [HttpPost("Login")]
+    [AllowAnonymous]
+    public async Task<ActionResult<string>> LoginAdmin(AdminLoginDto admin)
     {
-        [HttpPost]
-        public async Task<ActionResult> CreateAdmin(AdminDto admin)
-        {
-            await service.CreateAsync(admin);
-            return Ok();
-        }
+        string token = await service.LoginAsync(admin);
+        return Ok(token);
+    }
 
-        [HttpPost("Login")]
-        [AllowAnonymous]
-        public async Task<ActionResult<string>> LoginAdmin(AdminLoginDto admin)
-        {
-            string token = await service.LoginAsync(admin);
-            return Ok(token);
-        }
+    [HttpPost]
+    public async Task<ActionResult> CreateAdmin(AdminDto admin)
+    {
+        await service.CreateAsync(admin);
+        return Ok();
+    }
 
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateAdmin(Guid id, AdminDto admin)
+    {
+        await service.UpdateAsync(id, admin);
+        return Ok();
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<AdminResponseDto>>> GetAdmins()
+    {
+        List<AdminResponseDto> admins = await service.GetAdminsAsync();
+
+        return Ok(admins);
+    }
+
+    [HttpPut("{id}/SwitchStatus")]
+    public async Task<ActionResult<List<AdminResponseDto>>> SwitchStatusAdmin(Guid id)
+    {
+        await service.SwitchStatusAsync(id);
+
+        return Ok();
     }
 }

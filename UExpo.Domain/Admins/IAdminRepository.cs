@@ -1,9 +1,10 @@
-﻿namespace UExpo.Domain.Admins;
+﻿
+using UExpo.Domain.Dao;
+using UExpo.Domain.Shared;
 
-public interface IAdminRepository
+namespace UExpo.Domain.Admins;
+
+public interface IAdminRepository : IBaseRepository<AdminDao, Admin>
 {
-    Task<Guid> CreateAsync(Admin item, CancellationToken cancellationToken = default);
-    Task<Admin> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<Admin?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Admin?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
 }

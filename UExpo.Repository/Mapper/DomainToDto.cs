@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using UExpo.Domain.Admins;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
@@ -14,5 +15,6 @@ public class DomainToDto : Profile
         CreateMap<Catalog, CatalogResponseDto>();
         CreateMap<CatalogItemImage, CatalogItemImageResponseDto>();
         CreateMap<CatalogPdf, CatalogPdfResponseDto>();
+        CreateMap<Admin, AdminResponseDto>();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Exceptions;
 using UExpo.Domain.Shared;
 using UExpo.Repository.Context;
 
@@ -76,7 +77,7 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
     public async Task UpdateAsync(TEntity item, CancellationToken cancellationToken = default)
     {
         TDao existingEntity = await Database.FirstOrDefaultAsync(x => x.Id!.Equals(item.Id), cancellationToken: cancellationToken)
-           ?? throw new Exception($"{nameof(TDao)} com id = {item.Id}");
+           ?? throw new NotFoundException($"{nameof(TDao)} com id = {item.Id}");
         existingEntity.UpdatedAt = DateTime.Now;
 
         Mapper.Map(item, existingEntity);

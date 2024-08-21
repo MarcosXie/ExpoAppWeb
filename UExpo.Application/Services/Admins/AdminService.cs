@@ -28,14 +28,41 @@ public class AdminService : IAdminService
         return (await _repository.CreateAsync(user)).ToString();
     }
 
+    public async Task UpdateAsync(Guid id, AdminDto admin)
+    {
+        Admin dbAdmin = await _repository.GetByIdAsync(id);
+
+        dbAdmin.Name = admin.Name;
+        dbAdmin.Type = admin.Type;
+        dbAdmin.Password = dbAdmin.Password.Equals(admin.Password) ? admin.Password : HashHelper.Hash(admin.Password);
+
+        await _repository.UpdateAsync(dbAdmin);
+    }
+
+    public async Task<List<AdminResponseDto>> GetAdminsAsync()
+    {
+        var admins = await _repository.GetAsync();
+
+        return admins.Select(_mapper.Map<AdminResponseDto>).ToList();
+    }
+
     public async Task<string> LoginAsync(AdminLoginDto loginDto)
     {
         Admin user = await _repository.GetByNameAsync(loginDto.Name)
                 ?? throw new InvalidCredentialsException();
 
-        if (!HashHelper.Verify(loginDto.Password, user.Password))
+        if (!HashHelper.Verify(loginDto.Password, user.Password) || !user.Active)
             throw new InvalidCredentialsException();
 
         return JwtHelper.GenerateJwtToken(user, _config);
+    }
+
+    public async Task SwitchStatusAsync(Guid id)
+    {
+        var admin = await _repository.GetByIdAsync(id);
+
+        admin.Active = !admin.Active;
+
+        await _repository.UpdateAsync(admin);
     }
 }
