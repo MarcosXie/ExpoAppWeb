@@ -5,6 +5,7 @@ using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Places;
 using UExpo.Domain.Shared.Converters;
 using UExpo.Domain.Users;
 
@@ -29,5 +30,8 @@ public class DaoMapper : Profile
 
         CreateMap<CatalogItemImageDao, CatalogItemImage>().ReverseMap();
         CreateMap<CatalogPdfDao, CatalogPdf>().ReverseMap();
+
+        // Fair Module
+        CreateMap<PlaceDao, Place>().ReverseMap();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Admins;
 using UExpo.Domain.CallCenterChat;
+using UExpo.Domain.Places;
 using UExpo.Domain.Users;
 
 namespace UExpo.Repository.Mapper;
@@ -13,5 +14,7 @@ public class DtoToDomain : Profile
         CreateMap<CallCenterChatDto, CallCenterChat>();
         CreateMap<CallCenterSendMessageDto, CallCenterMessage>();
         CreateMap<AdminDto, Admin>();
+
+        CreateMap<PlaceDto, Place>();
     }
 }

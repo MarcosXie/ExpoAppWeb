@@ -43,7 +43,7 @@ public class AdminService : IAdminService
     {
         var admins = await _repository.GetAsync();
 
-        return admins.Select(_mapper.Map<AdminResponseDto>).ToList();
+        return [.. admins.Select(_mapper.Map<AdminResponseDto>).OrderBy(x => x.Type).ThenBy(x => x.Name)];
     }
 
     public async Task<string> LoginAsync(AdminLoginDto loginDto)

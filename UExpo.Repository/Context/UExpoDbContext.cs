@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Places;
 using UExpo.Repository.Configurations;
 
 namespace UExpo.Repository.Context;
@@ -13,6 +14,7 @@ public class UExpoDbContext : DbContext
     public virtual DbSet<CatalogDao> Catalogs { get; set; }
     public virtual DbSet<CatalogPdfDao> CatalogPdfs { get; set; }
     public virtual DbSet<CatalogItemImageDao> CatalogImages { get; set; }
+    public virtual DbSet<PlaceDao> Places { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
