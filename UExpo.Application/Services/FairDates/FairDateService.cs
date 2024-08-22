@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using UExpo.Domain.Exceptions;
 using UExpo.Domain.FairDates;
-
 namespace UExpo.Application.Services.FairDates;
 
 public class FairDateService : IFairDateService
@@ -14,23 +14,53 @@ public class FairDateService : IFairDateService
         _mapper = mapper;
     }
 
-    public Task<Guid> CreateAsync(FairDateDto place)
+    public async Task<Guid> CreateAsync(FairDateDto date)
     {
-        throw new NotImplementedException();
+        await ValidateDateAsync(date);
+
+        return await _repository.CreateAsync(_mapper.Map<FairDate>(date));
     }
 
-    public Task<List<FairDateResponseDto>> GetAsync()
+    public async Task<List<FairDateResponseDto>> GetAsync()
     {
-        throw new NotImplementedException();
+        var dates = await _repository.GetAsync();
+
+        return [..
+                    dates.Select(date =>
+                    {
+                        var mappedDate = _mapper.Map<FairDateResponseDto>(date);
+
+                        // TODO: Add validation
+                        mappedDate.IsDeletable = DateTime.Now < mappedDate.BeginDate;
+
+                        return mappedDate;
+                    })
+            .OrderByDescending(x => x.BeginDate)];
     }
 
-    public Task SwitchStatusAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var date = await _repository.GetByIdAsync(id);
+
+        await ValidateDeleteAsync(date);
+
+        await _repository.DeleteAsync(id);
     }
 
-    public Task UpdateAsync(Guid id, FairDateDto place)
+    private async Task ValidateDateAsync(FairDateDto date)
     {
-        throw new NotImplementedException();
+        if (date.BeginDate > date.EndDate)
+            throw new BadRequestException("The end date must be greater than begin date!");
+
+        if (date.BeginDate < DateTime.Now)
+            throw new BadRequestException("The begin date must be in the future");
+
+        if (await _repository.HasDateInRangeAsync(date.BeginDate, date.EndDate))
+            throw new BadRequestException("Already exist a configured date in this range");
+    }
+
+    private async Task ValidateDeleteAsync(FairDate date)
+    {
+        //TODO: Implement validation
     }
 }

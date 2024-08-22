@@ -24,18 +24,10 @@ public class FairDateController(IFairDateService service) : ControllerBase
         return Ok(id);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateAsync(Guid id, FairDateDto fairDate)
-    {
-        await service.UpdateAsync(id, fairDate);
-
-        return Ok();
-    }
-
-    [HttpPut("{id}/SwitchStatus")]
+    [HttpDelete("{id}")]
     public async Task<ActionResult<List<AdminResponseDto>>> SwitchStatusAdmin(Guid id)
     {
-        await service.SwitchStatusAsync(id);
+        await service.DeleteAsync(id);
 
         return Ok();
     }

@@ -11,8 +11,8 @@ public class YearlyTaskService(IServiceProvider serviceProvider) : BackgroundSer
         while (!cancellationToken.IsCancellationRequested)
         {
             DateTime now = DateTime.Now;
-            //DateTime nextRun = new DateTime(now.Year + 1, 1, 1);
-            DateTime nextRun = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute + 1, now.Second);
+            DateTime nextRun = new DateTime(now.Year + 1, 1, 1);
+            //DateTime nextRun = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute + 1, now.Second);
 
             TimeSpan timeUntilNextRun = nextRun - now;
 
