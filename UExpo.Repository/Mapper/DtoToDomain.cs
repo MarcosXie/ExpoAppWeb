@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Admins;
 using UExpo.Domain.CallCenterChat;
+using UExpo.Domain.FairDates;
 using UExpo.Domain.Places;
 using UExpo.Domain.Users;
 
@@ -16,5 +17,6 @@ public class DtoToDomain : Profile
         CreateMap<AdminDto, Admin>();
 
         CreateMap<PlaceDto, Place>();
+        CreateMap<FairDateDto, FairDate>();
     }
 }

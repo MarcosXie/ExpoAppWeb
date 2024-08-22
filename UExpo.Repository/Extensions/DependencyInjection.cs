@@ -5,6 +5,7 @@ using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
+using UExpo.Domain.FairDates;
 using UExpo.Domain.Places;
 using UExpo.Domain.Users;
 using UExpo.Repository.Context;
@@ -33,5 +34,6 @@ public static class DependencyInjection
         services.AddScoped<ICatalogItemImageRepository, CatalogItemImageRepository>();
 
         services.AddScoped<IPlaceRepository, PlaceRepository>();
+        services.AddScoped<IFairDateRepository, FairDateRepository>();
     }
 }

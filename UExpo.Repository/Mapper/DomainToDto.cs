@@ -3,6 +3,7 @@ using UExpo.Domain.Admins;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
+using UExpo.Domain.FairDates;
 using UExpo.Domain.Places;
 using UExpo.Domain.Users;
 
@@ -18,5 +19,6 @@ public class DomainToDto : Profile
         CreateMap<CatalogPdf, CatalogPdfResponseDto>();
         CreateMap<Admin, AdminResponseDto>();
         CreateMap<Place, PlaceResponseDto>();
+        CreateMap<FairDate, FairDateResponseDto>();
     }
 }
