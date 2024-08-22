@@ -3,14 +3,16 @@ using UExpo.Application.BackgroundServices;
 using UExpo.Application.Services.Admins;
 using UExpo.Application.Services.CallCenterChats;
 using UExpo.Application.Services.Catalogs;
-using UExpo.Application.Services.FairDates;
+using UExpo.Application.Services.Fairs;
 using UExpo.Application.Services.Places;
 using UExpo.Application.Services.Users;
 using UExpo.Application.Utils;
 using UExpo.Domain.Admins;
 using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Catalogs;
-using UExpo.Domain.FairDates;
+using UExpo.Domain.Fairs;
+using UExpo.Domain.Fairs.FairDates;
+using UExpo.Domain.Fairs.Segments;
 using UExpo.Domain.Places;
 using UExpo.Domain.Users;
 
@@ -27,6 +29,8 @@ public static class DependencyInjection
         services.AddScoped<ICatalogService, CatalogService>();
         services.AddScoped<IPlaceService, PlaceService>();
         services.AddScoped<IFairDateService, FairDateService>();
+        services.AddScoped<IFairService, FairService>();
+        services.AddScoped<ISegmentService, SegmentService>();
 
         services.AddHostedService<YearlyTaskService>();
     }

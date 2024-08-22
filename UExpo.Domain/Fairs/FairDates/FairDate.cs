@@ -1,6 +1,6 @@
 ﻿using UExpo.Domain.Shared;
 
-namespace UExpo.Domain.FairDates;
+namespace UExpo.Domain.Fairs.FairDates;
 
 public class FairDate : BaseModel
 {

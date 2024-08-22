@@ -5,7 +5,9 @@ using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
 using UExpo.Domain.Dao;
-using UExpo.Domain.FairDates;
+using UExpo.Domain.Fairs;
+using UExpo.Domain.Fairs.FairDates;
+using UExpo.Domain.Fairs.Segments;
 using UExpo.Domain.Places;
 using UExpo.Domain.Shared.Converters;
 using UExpo.Domain.Users;
@@ -35,5 +37,7 @@ public class DaoMapper : Profile
         // Fair Module
         CreateMap<PlaceDao, Place>().ReverseMap();
         CreateMap<FairDateDao, FairDate>().ReverseMap();
+        CreateMap<FairDao, Fair>().ReverseMap();
+        CreateMap<SegmentDao, Segment>().ReverseMap();
     }
 }

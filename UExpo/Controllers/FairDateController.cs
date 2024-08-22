@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UExpo.Domain.Admins;
-using UExpo.Domain.FairDates;
+using UExpo.Domain.Fairs.FairDates;
 
 namespace UExpo.Api.Controllers;
 

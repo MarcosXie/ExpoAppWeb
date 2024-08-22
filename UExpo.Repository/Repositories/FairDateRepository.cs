@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
-using UExpo.Domain.FairDates;
+using UExpo.Domain.Fairs.FairDates;
 using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;

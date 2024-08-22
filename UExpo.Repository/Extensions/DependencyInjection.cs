@@ -5,7 +5,9 @@ using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
-using UExpo.Domain.FairDates;
+using UExpo.Domain.Fairs;
+using UExpo.Domain.Fairs.FairDates;
+using UExpo.Domain.Fairs.Segments;
 using UExpo.Domain.Places;
 using UExpo.Domain.Users;
 using UExpo.Repository.Context;
@@ -26,8 +28,9 @@ public static class DependencyInjection
         services.AddDbContext<UExpoDbContext>();
 
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<ICallCenterChatRepository, CallCenterChatRepository>();
         services.AddScoped<IAdminRepository, AdminRepository>();
+
+        services.AddScoped<ICallCenterChatRepository, CallCenterChatRepository>();
 
         services.AddScoped<ICatalogRepository, CatalogRepository>();
         services.AddScoped<ICatalogPdfRepository, CatalogPdfRepository>();
@@ -35,5 +38,7 @@ public static class DependencyInjection
 
         services.AddScoped<IPlaceRepository, PlaceRepository>();
         services.AddScoped<IFairDateRepository, FairDateRepository>();
+        services.AddScoped<IFairRepository, FairRepository>();
+        services.AddScoped<ISegmentRepository, SegmentRepository>();
     }
 }

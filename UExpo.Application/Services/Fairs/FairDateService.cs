@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Exceptions;
-using UExpo.Domain.FairDates;
-namespace UExpo.Application.Services.FairDates;
+using UExpo.Domain.Fairs.FairDates;
+
+namespace UExpo.Application.Services.Fairs;
 
 public class FairDateService : IFairDateService
 {

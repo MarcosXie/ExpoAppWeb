@@ -1,7 +1,7 @@
 ﻿using UExpo.Domain.Dao;
 using UExpo.Domain.Shared;
 
-namespace UExpo.Domain.FairDates;
+namespace UExpo.Domain.Fairs.FairDates;
 
 public interface IFairDateRepository : IBaseRepository<FairDateDao, FairDate>
 {
