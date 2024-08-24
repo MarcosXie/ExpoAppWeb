@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Admins;
 using UExpo.Domain.Agendas;
+using UExpo.Domain.Calendar;
 using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
@@ -37,5 +38,10 @@ public class DaoMapper : Profile
         CreateMap<AgendaDao, Agenda>().ReverseMap();
         CreateMap<FairDao, Fair>().ReverseMap();
         CreateMap<SegmentDao, Segment>().ReverseMap();
+
+        // Calendar Module
+        CreateMap<CalendarDao, Calendar>().ReverseMap();
+        CreateMap<CalendarFairDao, CalendarFair>().ReverseMap();
+        CreateMap<CalendarSegmentDao, CalendarSegment>().ReverseMap();
     }
 }

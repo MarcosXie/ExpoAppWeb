@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using UExpo.Domain.Admins;
 using UExpo.Domain.Agendas;
+using UExpo.Domain.Calendar;
 using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
@@ -38,5 +39,9 @@ public static class DependencyInjection
         services.AddScoped<IAgendaRepository, AgendaRepository>();
         services.AddScoped<IFairRepository, FairRepository>();
         services.AddScoped<ISegmentRepository, SegmentRepository>();
+
+        services.AddScoped<ICalendarRepository, CalendarRepository>();
+        services.AddScoped<ICalendarFairRepository, CalendarFairRepository>();
+        services.AddScoped<ICalendarSegmentRepository, CalendarSegmentRepository>();
     }
 }
