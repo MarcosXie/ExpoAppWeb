@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Admins;
 using UExpo.Domain.Fairs;
 
 namespace UExpo.Api.Controllers;

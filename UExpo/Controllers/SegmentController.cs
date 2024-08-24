@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Admins;
-using UExpo.Domain.Fairs;
 using UExpo.Domain.Fairs.Segments;
 
 namespace UExpo.Api.Controllers;

@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Admins;
+using UExpo.Domain.Agendas;
 using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
 using UExpo.Domain.Dao;
 using UExpo.Domain.Fairs;
-using UExpo.Domain.Fairs.FairDates;
 using UExpo.Domain.Fairs.Segments;
-using UExpo.Domain.Places;
 using UExpo.Domain.Shared.Converters;
 using UExpo.Domain.Users;
 
@@ -35,8 +34,7 @@ public class DaoMapper : Profile
         CreateMap<CatalogPdfDao, CatalogPdf>().ReverseMap();
 
         // Fair Module
-        CreateMap<PlaceDao, Place>().ReverseMap();
-        CreateMap<FairDateDao, FairDate>().ReverseMap();
+        CreateMap<AgendaDao, Agenda>().ReverseMap();
         CreateMap<FairDao, Fair>().ReverseMap();
         CreateMap<SegmentDao, Segment>().ReverseMap();
     }

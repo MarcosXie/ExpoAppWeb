@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UExpo.Domain.Admins;
+using UExpo.Domain.Agendas;
 using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
 using UExpo.Domain.Fairs;
-using UExpo.Domain.Fairs.FairDates;
 using UExpo.Domain.Fairs.Segments;
-using UExpo.Domain.Places;
 using UExpo.Domain.Users;
 using UExpo.Repository.Context;
 using UExpo.Repository.Mapper;
@@ -36,8 +35,7 @@ public static class DependencyInjection
         services.AddScoped<ICatalogPdfRepository, CatalogPdfRepository>();
         services.AddScoped<ICatalogItemImageRepository, CatalogItemImageRepository>();
 
-        services.AddScoped<IPlaceRepository, PlaceRepository>();
-        services.AddScoped<IFairDateRepository, FairDateRepository>();
+        services.AddScoped<IAgendaRepository, AgendaRepository>();
         services.AddScoped<IFairRepository, FairRepository>();
         services.AddScoped<ISegmentRepository, SegmentRepository>();
     }

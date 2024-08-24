@@ -12,8 +12,8 @@ using UExpo.Repository.Context;
 namespace UExpo.Repository.Migrations
 {
     [DbContext(typeof(UExpoDbContext))]
-    [Migration("20240822225924_add-fair-and-segment-table")]
-    partial class addfairandsegmenttable
+    [Migration("20240824112639_add-fair-segment-and-agenda-tables")]
+    partial class addfairsegmentandagendatables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,34 @@ namespace UExpo.Repository.Migrations
                         .IsUnique();
 
                     b.ToTable("admin", (string)null);
+                });
+
+            modelBuilder.Entity("UExpo.Domain.Dao.AgendaDao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("BeginDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Place")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id")
+                        .HasName("agenda_pkey");
+
+                    b.ToTable("agenda", (string)null);
                 });
 
             modelBuilder.Entity("UExpo.Domain.Dao.CallCenterChatDao", b =>
@@ -265,61 +293,6 @@ namespace UExpo.Repository.Migrations
                         .HasName("fair_pkey");
 
                     b.ToTable("fair", (string)null);
-                });
-
-            modelBuilder.Entity("UExpo.Domain.Dao.FairDateDao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("BeginDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id")
-                        .HasName("fair_date_pkey");
-
-                    b.ToTable("fair_date", (string)null);
-                });
-
-            modelBuilder.Entity("UExpo.Domain.Dao.PlaceDao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id")
-                        .HasName("place_pkey");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("place", (string)null);
                 });
 
             modelBuilder.Entity("UExpo.Domain.Dao.SegmentDao", b =>

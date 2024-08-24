@@ -1,9 +1,9 @@
-﻿namespace UExpo.Domain.Fairs.FairDates;
+﻿namespace UExpo.Domain.Agendas;
 
-public class FairDateResponseDto
+public class AgendaResponseDto
 {
     public Guid Id { get; set; }
+    public string Place { get; set; } = null!;
     public DateTime BeginDate { get; set; }
     public DateTime EndDate { get; set; }
-    public bool IsDeletable { get; set; }
 }

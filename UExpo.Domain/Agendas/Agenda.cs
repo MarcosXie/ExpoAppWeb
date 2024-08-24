@@ -1,9 +1,10 @@
 ﻿using UExpo.Domain.Shared;
 
-namespace UExpo.Domain.Fairs.FairDates;
+namespace UExpo.Domain.Agendas;
 
-public class FairDate : BaseModel
+public class Agenda : BaseModel
 {
+    public string Place { get; set; } = null!;
     public DateTime BeginDate { get; set; }
     public DateTime EndDate { get; set; }
 }
