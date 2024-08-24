@@ -6,4 +6,5 @@ namespace UExpo.Domain.Fairs;
 public interface IFairRepository : IBaseRepository<FairDao, Fair>
 {
     Task<bool> AnyWithSameNameAsync(string name);
+    Task<List<Fair>> GetDetailedAsync();
 }

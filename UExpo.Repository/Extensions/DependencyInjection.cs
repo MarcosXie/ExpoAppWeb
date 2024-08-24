@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.SetProfileBuilder(_ => new DaoMapper());
         services.SetProfileBuilder(_ => new DomainToDto());
         services.SetProfileBuilder(_ => new DtoToDomain());
+        services.SetProfileBuilder(_ => new DomainToDomain());
         services.CreateMappers();
 
         services.AddDbContext<UExpoDbContext>();

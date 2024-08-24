@@ -5,4 +5,6 @@ namespace UExpo.Domain.Calendar;
 
 public interface ICalendarFairRepository : IBaseRepository<CalendarFairDao, CalendarFair>
 {
+    Task<List<CalendarFair>> GetByYearAsync(int year);
+    Task<List<CalendarFair>> GetNextAsync(int? year);
 }

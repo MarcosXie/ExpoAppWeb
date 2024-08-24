@@ -2,7 +2,7 @@
 
 public interface ICalendarService
 {
-    Task<int> GetYearsAsync();
+    Task<List<int>> GetYearsAsync();
     Task<bool> GetIsLockedAsync(int year);
     Task ExecuteAsync(int year);
     Task LockAsync(int year);

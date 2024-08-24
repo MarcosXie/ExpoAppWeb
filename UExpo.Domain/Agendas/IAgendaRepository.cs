@@ -5,5 +5,6 @@ namespace UExpo.Domain.Agendas;
 
 public interface IAgendaRepository : IBaseRepository<AgendaDao, Agenda>
 {
+    Task<List<Agenda>> GetByYearAsync(int year);
     Task<bool> HasDateInRangeAsync(DateTime beginDate, DateTime endDate, Guid? id);
 }

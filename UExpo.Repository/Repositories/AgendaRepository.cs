@@ -9,6 +9,13 @@ namespace UExpo.Repository.Repositories;
 public class AgendaRepository(UExpoDbContext context, IMapper mapper)
     : BaseRepository<AgendaDao, Agenda>(context, mapper), IAgendaRepository
 {
+    public async Task<List<Agenda>> GetByYearAsync(int year)
+    {
+        var agendas = await Database.Where(x => x.BeginDate.Year == year).ToListAsync();
+
+        return Mapper.Map<List<Agenda>>(agendas);
+    }
+
     public Task<bool> HasDateInRangeAsync(DateTime beginDate, DateTime endDate, Guid? id = null)
     {
         return Database.AnyAsync(x => 

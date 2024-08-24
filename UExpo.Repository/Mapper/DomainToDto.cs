@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Admins;
 using UExpo.Domain.Agendas;
+using UExpo.Domain.Calendar;
 using UExpo.Domain.Catalogs;
 using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Catalogs.Pdfs;
@@ -22,5 +23,7 @@ public class DomainToDto : Profile
         CreateMap<Agenda, AgendaResponseDto>();
         CreateMap<Fair, FairResponseDto>();
         CreateMap<Segment, SegmentResponseDto>();
+        CreateMap<Calendar, CalendarReponseDto>();
+        CreateMap<CalendarFair, CalendarFairResponseDto>();
     }
 }

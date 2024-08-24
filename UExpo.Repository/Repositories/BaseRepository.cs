@@ -47,7 +47,7 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
         await Context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<TEntity>> GetAsync(CancellationToken cancellationToken = default) =>
+    public virtual async Task<List<TEntity>> GetAsync(CancellationToken cancellationToken = default) =>
         Mapper.Map<List<TEntity>>(await Database.AsNoTracking().ToListAsync(cancellationToken));
 
     public virtual async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

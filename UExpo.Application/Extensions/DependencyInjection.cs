@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using UExpo.Application.Services.Admins;
 using UExpo.Application.Services.Agendas;
-using UExpo.Application.Services.Calendar;
+using UExpo.Application.Services.Calendars;
 using UExpo.Application.Services.CallCenterChats;
 using UExpo.Application.Services.Catalogs;
 using UExpo.Application.Services.Fairs;

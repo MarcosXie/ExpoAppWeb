@@ -13,4 +13,11 @@ public class FairRepository(UExpoDbContext context, IMapper mapper)
     {
         return await Database.AnyAsync(x => x.Name.Equals(name));
     }
+
+    public async Task<List<Fair>> GetDetailedAsync()
+    {
+        var fairs = await Database.Include(x => x.Segments).ToListAsync();
+
+        return Mapper.Map<List<Fair>>(fairs);
+    }
 }
