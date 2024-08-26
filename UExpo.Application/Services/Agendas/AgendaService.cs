@@ -27,8 +27,6 @@ public class AgendaService : IAgendaService
 
     public async Task DeleteAsync(Guid id)
     {
-        await ValidateDeleteAsync(id);
-
         await _repository.DeleteAsync(id);
     }
 
@@ -60,10 +58,5 @@ public class AgendaService : IAgendaService
 
         if (await _repository.HasDateInRangeAsync(agenda.BeginDate, agenda.EndDate, id))
             throw new BadRequestException("Already exist a configured date in this range");
-    }
-
-    private async Task ValidateDeleteAsync(Guid id)
-    {
-        //TODO: Adds validations
     }
 }

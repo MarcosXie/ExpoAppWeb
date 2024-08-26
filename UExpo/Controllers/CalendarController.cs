@@ -16,7 +16,7 @@ public class CalendarController(ICalendarService service) : ControllerBase
     }
 
     [HttpGet("IsLocked/{year}")]
-    public async Task<ActionResult<List<int>>> GetIsLockedAsync(int year)
+    public async Task<ActionResult<bool>> GetIsLockedAsync(int year)
     {
         var isLocked = await service.GetIsLockedAsync(year);
 

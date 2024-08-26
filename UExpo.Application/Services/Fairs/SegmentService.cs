@@ -41,9 +41,4 @@ public class SegmentService : ISegmentService
         if (await _repository.AnyWithSameNameInFairAsync(segment))
             throw new BadRequestException("Exist another place with same name in this fair!");
     }
-
-    private async Task ValidateDeleteAsync(Guid id)
-    {
-        // TODO: Add validation fair not running
-    }
 }

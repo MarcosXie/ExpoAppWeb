@@ -41,6 +41,8 @@ public class CalendarFairRepository(UExpoDbContext context, IMapper mapper)
             .OrderBy(x => x.Calendar.BeginDate)
             .ToListAsync();
 
+        if (fairs.Count == 0) return [];
+
         fairs = [.. fairs.GroupBy(x => x.Calendar.BeginDate).First()];
 
         return Mapper.Map<List<CalendarFair>>(fairs);

@@ -60,7 +60,7 @@ public class CalendarService : ICalendarService
 
     public async Task<List<CalendarReponseDto>> GetCalendarsAsync(int? year)
     {
-        var calendars = year is not null ?
+        var calendars = year > 0 ?
             await _calendarRepository.GetByYearAsync((int)year) :
             await _calendarRepository.GetAsync();
 
@@ -69,7 +69,7 @@ public class CalendarService : ICalendarService
 
     public async Task<List<CalendarFairResponseDto>> GetFairsAsync(int? year)
     {
-        var fairs = year is not null ?
+        var fairs = year > 0 ?
             await _calendarFairRepository.GetByYearAsync((int)year) :
             await _calendarFairRepository.GetAsync();
 
@@ -157,7 +157,7 @@ public class CalendarService : ICalendarService
             mappedFair.EndDate = fair.Calendar.EndDate;
         }
 
-        return [.. mappedFairs.OrderBy(x => x.BeginDate)];
+        return [.. mappedFairs.OrderBy(x => x.BeginDate).ThenBy(x => x.Name)];
     }
     #endregion
 }
