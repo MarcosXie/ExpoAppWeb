@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
 using UExpo.Domain.Entities.Users;
 using UExpo.Repository.Context;
-
 namespace UExpo.Repository.Repositories;
 
 public class UserRepository(UExpoDbContext context, IMapper mapper)
@@ -20,10 +19,48 @@ public class UserRepository(UExpoDbContext context, IMapper mapper)
         await Context.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<User> GetByIdDetailedAsync(Guid id)
+    {
+        var entity = await Database
+            .Include(x => x.Images)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id!.Equals(id));
+
+        return entity is null
+            ? throw new Exception($"{nameof(User)} com id = {id}")
+        : Mapper.Map<User>(entity);
+    }
+
+    public async Task<int> GetImageMaxOrderByUserIdAsync(Guid id)
+    {
+        var images = await Context.UserImages.Where(x => x.UserId == id).ToListAsync();
+
+        return images.Count > 0 ? images.Max(x => x.Order) : 1;
+    }
+
     public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         UserDao? userDao = await Database.FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email), cancellationToken: cancellationToken);
 
         return Mapper.Map<User>(userDao);
+    }
+
+    public async Task AddImagesAsync(List<UserImage> images)
+    {
+        var dbImages = Mapper.Map<List<UserImageDao>>(images);
+
+        Context.UserImages.AddRange(dbImages);
+
+        await Context.SaveChangesAsync();
+    }
+
+    public async  Task RemoveImagesAsync(List<UserImage> images)
+    {
+        var dbImages = Mapper.Map<List<UserImageDao>>(images);
+
+        foreach (var image in dbImages)
+            Context.UserImages.Remove(image);
+
+        await Context.SaveChangesAsync();
     }
 }

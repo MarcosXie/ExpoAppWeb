@@ -50,6 +50,20 @@ public class UserController(IUserService service) : ControllerBase
         return Ok();
     }
 
+    [HttpPost("Profile/Image/{id}")]
+    public async Task<ActionResult> AddImagesAsync(Guid id, List<IFormFile> images)
+    {
+        await service.AddImagesAsync(id, images);
+        return Ok();
+    }
+
+    [HttpPost("Profile/Image/Delete/{id}")]
+    public async Task<ActionResult> DeleteImageAsync(Guid id, [FromBody] ImageDeleteDto url)
+    {
+        await service.RemoveImageByUrlAsync(id, url.Url);
+        return Ok();
+    }
+
     [HttpGet("Profile/{id}")]
     public async Task<ActionResult<UserProfileResponseDto>> GetProfileAsync(Guid id)
     {

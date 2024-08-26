@@ -4,7 +4,7 @@ public class UserProfileResponseDto
 {
     public Guid Id { get; set; }
     public string Email { get; set; } = null!;
-    public string? Company { get; set; }
+    public string? Enterprise { get; set; }
     public string Name { get; set; } = null!;
     public string? Adress { get; set; }
     public string Country { get; set; } = null!;

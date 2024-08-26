@@ -17,6 +17,10 @@ public class DomainToDto : Profile
     public DomainToDto()
     {
         CreateMap<User, UserDto>();
+        CreateMap<UserImage, UserImageResponseDto>();
+
+        CreateMap<User, UserProfileResponseDto>()
+            .ForMember(x => x.Images, opt => opt.MapFrom(src => src.Images.Select(img => img.Uri)));
         CreateMap<Catalog, CatalogResponseDto>();
         CreateMap<CatalogItemImage, CatalogItemImageResponseDto>();
         CreateMap<CatalogPdf, CatalogPdfResponseDto>();

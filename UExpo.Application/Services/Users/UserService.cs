@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using UExpo.Application.Utils;
 using UExpo.Domain.Email;
@@ -90,32 +91,38 @@ public class UserService : IUserService
 
     public async Task UpdateProfileAsync(Guid id, UserProfileDto profile)
     {
-        var user = await _repository.GetByIdAsync(id);
+        var user = await _repository.GetByIdDetailedAsync(id);
 
         _mapper.Map(profile, user);
 
-        int order = 1; // TODO Pegar do banco o maior valor
-
-        foreach (var image in profile.Images)
-        {
-            UserImage userImage = new()
-            {
-                UserId = user.Id,
-                Order = order++,
-                Uri = ""
-            };
-
-            await _fileStorageService.UploadFileAsync(image, $"{user.Id}-{}");
-        }
-
-
-
-
+        await _repository.UpdateAsync(user);
     }
 
-    public Task<UserProfileResponseDto> GetProfileAsync(Guid id)
+    public async Task<UserProfileResponseDto> GetProfileAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var user = await _repository.GetByIdDetailedAsync(id);
+
+        var mappedUser = _mapper.Map<UserProfileResponseDto>(user);
+
+        return mappedUser;
+    }
+
+    public async Task AddImagesAsync(Guid id, List<IFormFile> images)
+    {
+        var user = await _repository.GetByIdDetailedAsync(id);
+
+        await _repository.AddImagesAsync(await CreateNewImagesAsync(images, user));
+    }
+
+    public async Task RemoveImageByUrlAsync(Guid id, string Url)
+    {
+        var user = await _repository.GetByIdDetailedAsync(id);
+
+        var imagesToDelete = user.Images.Where(x => x.Uri.Equals(Url)).ToList();
+
+        await RemoveImagesAsync(imagesToDelete);
+
+        await _repository.RemoveImagesAsync(imagesToDelete);
     }
 
     #region Utils
@@ -166,10 +173,49 @@ public class UserService : IUserService
 
     private static string GenerateBaseValidationCode(User user) =>
         $"{user.Name}{user.Email}{user.Password}";
+
     private static void ValidateUserEmail(User user)
     {
         if (!user.IsEmailValidated)
             throw new BadRequestException("Email not validated!");
+    }
+
+    private static string GetFileName(string name, params string[] ids)
+    {
+        string prefix = string.Join('-', ids);
+
+        return $"{prefix}-{Path.GetFileName(name)}";
+    }
+
+    private async Task<List<UserImage>> CreateNewImagesAsync(List<IFormFile> profileImages, User user)
+    {
+        List<UserImage> images = [];
+        int order = await _repository.GetImageMaxOrderByUserIdAsync(user.Id) + 1;
+
+        foreach (var image in profileImages)
+        {
+            var fileName = GetFileName(image.Name, user.Id.ToString(), order++.ToString());
+
+            UserImage userImage = new()
+            {
+                UserId = user.Id,
+                Order = order,
+                FileName = fileName,
+                Uri = await _fileStorageService.UploadFileAsync(image, fileName, FileStorageKeys.UserImages)
+            };
+
+            images.Add(userImage);
+        }
+
+        return images;
+    }
+
+    private async Task RemoveImagesAsync(List<UserImage> removedImages)
+    {
+        foreach(var image in removedImages)
+        {
+            await _fileStorageService.DeleteFileAsync(FileStorageKeys.UserImages, image.FileName);
+        }
     }
     #endregion
 }
