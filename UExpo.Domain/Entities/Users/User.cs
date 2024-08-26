@@ -13,5 +13,7 @@ public class User : BaseModel, IChatUser
     public bool IsEmailValidated { get; set; } = false;
     public TypeEnum Type { get; set; }
     public string Language { get; set; } = "en-US";
+
+    public List<UserImage> Images { get; set; } = [];
 }
 

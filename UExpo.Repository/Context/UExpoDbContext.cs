@@ -7,6 +7,7 @@ namespace UExpo.Repository.Context;
 public class UExpoDbContext : DbContext
 {
     public virtual DbSet<UserDao> Users { get; set; }
+    public virtual DbSet<UserImageDao> UserImages { get; set; }
     public virtual DbSet<CallCenterChatDao> CallCenterChats { get; set; }
     public virtual DbSet<CallCenterMessageDao> CallCenterMessages { get; set; }
     public virtual DbSet<AdminDao> Admins { get; set; }
@@ -20,7 +21,6 @@ public class UExpoDbContext : DbContext
     public virtual DbSet<CalendarFairDao> CalendarFairs{ get; set; }
     public virtual DbSet<CalendarSegmentDao> CalendarSegments { get; set; }
     public virtual DbSet<TutorialDao> Tutorials { get; set; }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

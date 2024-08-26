@@ -42,4 +42,18 @@ public class UserController(IUserService service) : ControllerBase
         await service.ForgotPasswordAsync(forgotPasswordDto);
         return Ok();
     }
+
+    [HttpPut("Profile/{id}")]
+    public async Task<ActionResult> UpdateProfileAsync(Guid id, UserProfileDto profile)
+    {
+        await service.UpdateProfileAsync(id, profile);
+        return Ok();
+    }
+
+    [HttpGet("Profile/{id}")]
+    public async Task<ActionResult<UserProfileResponseDto>> GetProfileAsync(Guid id)
+    {
+        UserProfileResponseDto profile = await service.GetProfileAsync(id);
+        return Ok(profile);
+    }
 }

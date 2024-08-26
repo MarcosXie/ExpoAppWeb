@@ -20,8 +20,9 @@ public class DaoMapper : Profile
     public DaoMapper()
     {
         // User Module
-        CreateMap<UserDao, User>().ReverseMap();
         CreateMap<AdminDao, Admin>().ReverseMap();
+        CreateMap<UserDao, User>().ReverseMap();
+        CreateMap<UserImageDao, UserImage>().ReverseMap();
 
         // CallCenter Module
         CreateMap<CallCenterChatDao, CallCenterChat>().ReverseMap();

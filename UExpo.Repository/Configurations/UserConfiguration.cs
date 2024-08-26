@@ -11,5 +11,11 @@ public class UserConfiguration : IEntityTypeConfiguration<UserDao>
         entity.HasKey(x => x.Id).HasName("user_pkey");
 
         entity.ToTable("user");
+
+        entity
+            .HasMany(x => x.Images)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -4,6 +4,7 @@ using UExpo.Application.Utils;
 using UExpo.Domain.Email;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
+using UExpo.Domain.FileStorage;
 
 namespace UExpo.Application.Services.Users;
 
@@ -13,17 +14,20 @@ public class UserService : IUserService
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
     private readonly IEmailService _emailService;
+    private readonly IFileStorageService _fileStorageService;
 
     public UserService(
         IUserRepository repository,
         IMapper mapper,
         IConfiguration config,
+        IFileStorageService fileStorageService,
         IEmailService emailService)
     {
         _repository = repository;
         _mapper = mapper;
         _config = config;
         _emailService = emailService;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<Guid> CreateUserAsync(UserDto userDto)
@@ -82,6 +86,36 @@ public class UserService : IUserService
         ValidateUserEmail(user);
 
         await SendEmailForgotPasswordAsync(user);
+    }
+
+    public async Task UpdateProfileAsync(Guid id, UserProfileDto profile)
+    {
+        var user = await _repository.GetByIdAsync(id);
+
+        _mapper.Map(profile, user);
+
+        int order = 1; // TODO Pegar do banco o maior valor
+
+        foreach (var image in profile.Images)
+        {
+            UserImage userImage = new()
+            {
+                UserId = user.Id,
+                Order = order++,
+                Uri = ""
+            };
+
+            await _fileStorageService.UploadFileAsync(image, $"{user.Id}-{}");
+        }
+
+
+
+
+    }
+
+    public Task<UserProfileResponseDto> GetProfileAsync(Guid id)
+    {
+        throw new NotImplementedException();
     }
 
     #region Utils
