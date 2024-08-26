@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using UExpo.Domain.Admins;
-using UExpo.Domain.Agendas;
-using UExpo.Domain.CallCenterChat;
-using UExpo.Domain.Fairs;
-using UExpo.Domain.Fairs.Segments;
-using UExpo.Domain.Users;
+using UExpo.Domain.Entities.Admins;
+using UExpo.Domain.Entities.Agendas;
+using UExpo.Domain.Entities.CallCenterChat;
+using UExpo.Domain.Entities.Fairs;
+using UExpo.Domain.Entities.Fairs.Segments;
+using UExpo.Domain.Entities.Users;
 
 namespace UExpo.Repository.Mapper;
 

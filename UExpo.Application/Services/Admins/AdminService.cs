@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using UExpo.Application.Utils;
-using UExpo.Domain.Admins;
+using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Exceptions;
 
 namespace UExpo.Application.Services.Admins;

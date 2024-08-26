@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using UExpo.Application.Utils;
-using UExpo.Domain.Catalogs;
-using UExpo.Domain.Catalogs.ItemImages;
-using UExpo.Domain.Catalogs.Pdfs;
+using UExpo.Domain.Entities.Catalogs;
+using UExpo.Domain.Entities.Catalogs.ItemImages;
+using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
 using UExpo.Domain.Shared;

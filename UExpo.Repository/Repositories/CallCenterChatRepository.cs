@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using UExpo.Domain.Admins;
 using UExpo.Domain.Authentication;
-using UExpo.Domain.CallCenterChat;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Entities.Admins;
+using UExpo.Domain.Entities.CallCenterChat;
+using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
-using UExpo.Domain.Users;
 using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;

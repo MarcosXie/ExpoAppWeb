@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using UExpo.Domain.Admins;
+using UExpo.Domain.Entities.Admins;
 
 namespace UExpo.Application.Utils;
 

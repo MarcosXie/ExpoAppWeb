@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using UExpo.Application.Utils;
-using UExpo.Domain.Admins;
-using UExpo.Domain.CallCenterChat;
+using UExpo.Domain.Entities.Admins;
+using UExpo.Domain.Entities.CallCenterChat;
+using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.Translation;
-using UExpo.Domain.Users;
 
 namespace UExpo.Application.Services.CallCenterChats;
 

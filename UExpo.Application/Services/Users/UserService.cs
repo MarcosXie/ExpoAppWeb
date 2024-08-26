@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using UExpo.Application.Utils;
 using UExpo.Domain.Email;
+using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
-using UExpo.Domain.Users;
 
 namespace UExpo.Application.Services.Users;
 

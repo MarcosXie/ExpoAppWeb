@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using UExpo.Domain.Agendas;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Entities.Agendas;
 using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;

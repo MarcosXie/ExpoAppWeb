@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UExpo.Application.Utils;
 using UExpo.Domain.Authentication;
-using UExpo.Domain.Catalogs;
-using UExpo.Domain.Catalogs.ItemImages;
-using UExpo.Domain.Catalogs.Pdfs;
+using UExpo.Domain.Entities.Catalogs;
+using UExpo.Domain.Entities.Catalogs.ItemImages;
+using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Shared;
 
 namespace UExpo.Api.Controllers;

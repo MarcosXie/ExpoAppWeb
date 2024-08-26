@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Admins;
+using UExpo.Domain.Entities.Admins;
 
 namespace UExpo.Api.Controllers;
 

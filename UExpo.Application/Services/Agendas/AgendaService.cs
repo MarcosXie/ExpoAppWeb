@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using UExpo.Domain.Agendas;
+using UExpo.Domain.Entities.Agendas;
 using UExpo.Domain.Exceptions;
 
 namespace UExpo.Application.Services.Agendas;

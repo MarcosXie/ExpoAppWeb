@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using UExpo.Domain.CallCenterChat;
+using UExpo.Domain.Entities.CallCenterChat;
 
 namespace UExpo.Api.Hubs;
 

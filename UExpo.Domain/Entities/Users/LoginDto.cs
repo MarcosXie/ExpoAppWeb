@@ -1,0 +1,13 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace UExpo.Domain.Entities.Users;
+
+public class LoginDto
+{
+    [Required]
+    public string Email { get; set; } = null!;
+    [Required]
+    public string Password { get; set; } = null!;
+    [Required]
+    public TypeEnum UserType { get; set; } = TypeEnum.Visitor;
+}

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Fairs.Segments;
+using UExpo.Domain.Entities.Fairs.Segments;
 
 namespace UExpo.Api.Controllers;
 

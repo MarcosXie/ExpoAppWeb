@@ -3,9 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using UExpo.Domain.Admins;
+using UExpo.Domain.Entities.Admins;
+using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Shared;
-using UExpo.Domain.Users;
 
 namespace UExpo.Application.Utils;
 

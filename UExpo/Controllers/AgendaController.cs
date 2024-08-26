@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Agendas;
+using UExpo.Domain.Entities.Agendas;
 
 namespace UExpo.Api.Controllers;
 

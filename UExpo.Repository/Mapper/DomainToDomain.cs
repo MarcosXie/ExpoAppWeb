@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using UExpo.Domain.Calendar;
-using UExpo.Domain.Fairs;
-using UExpo.Domain.Fairs.Segments;
+using UExpo.Domain.Entities.Calendar;
+using UExpo.Domain.Entities.Fairs;
+using UExpo.Domain.Entities.Fairs.Segments;
 
 namespace UExpo.Repository.Mapper;
 

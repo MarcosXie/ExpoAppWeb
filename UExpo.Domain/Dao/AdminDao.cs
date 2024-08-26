@@ -1,4 +1,4 @@
-﻿using UExpo.Domain.Admins;
+﻿using UExpo.Domain.Entities.Admins;
 
 namespace UExpo.Domain.Dao;
 

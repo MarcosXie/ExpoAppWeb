@@ -7,14 +7,14 @@ using UExpo.Application.Services.Catalogs;
 using UExpo.Application.Services.Fairs;
 using UExpo.Application.Services.Users;
 using UExpo.Application.Utils;
-using UExpo.Domain.Admins;
-using UExpo.Domain.Agendas;
-using UExpo.Domain.Calendar;
-using UExpo.Domain.CallCenterChat;
-using UExpo.Domain.Catalogs;
-using UExpo.Domain.Fairs;
-using UExpo.Domain.Fairs.Segments;
-using UExpo.Domain.Users;
+using UExpo.Domain.Entities.Admins;
+using UExpo.Domain.Entities.Agendas;
+using UExpo.Domain.Entities.Calendar;
+using UExpo.Domain.Entities.CallCenterChat;
+using UExpo.Domain.Entities.Catalogs;
+using UExpo.Domain.Entities.Fairs;
+using UExpo.Domain.Entities.Fairs.Segments;
+using UExpo.Domain.Entities.Users;
 
 namespace UExpo.Application.Extensions;
 

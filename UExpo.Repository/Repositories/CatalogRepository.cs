@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using UExpo.Domain.Catalogs;
-using UExpo.Domain.Catalogs.ItemImages;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Entities.Catalogs;
+using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;

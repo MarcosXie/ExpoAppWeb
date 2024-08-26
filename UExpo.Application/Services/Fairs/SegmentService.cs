@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using UExpo.Domain.Entities.Fairs.Segments;
 using UExpo.Domain.Exceptions;
-using UExpo.Domain.Fairs.Segments;
 
 namespace UExpo.Application.Services.Fairs;
 

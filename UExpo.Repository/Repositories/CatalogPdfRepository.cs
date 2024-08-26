@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using UExpo.Domain.Catalogs.Pdfs;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;

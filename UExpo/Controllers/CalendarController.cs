@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Calendar;
+using UExpo.Domain.Entities.Calendar;
 
 namespace UExpo.Api.Controllers;
 
