@@ -4,6 +4,7 @@ using UExpo.Domain.Entities.Agendas;
 using UExpo.Domain.Entities.CallCenterChat;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
+using UExpo.Domain.Entities.Tutorial;
 using UExpo.Domain.Entities.Users;
 
 namespace UExpo.Repository.Mapper;
@@ -20,5 +21,6 @@ public class DtoToDomain : Profile
         CreateMap<AgendaDto, Agenda>();
         CreateMap<FairDto, Fair>();
         CreateMap<SegmentDto, Segment>();
+        CreateMap<TutorialDto, Tutorial>();
     }
 }

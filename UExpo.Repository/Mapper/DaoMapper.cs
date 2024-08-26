@@ -9,6 +9,7 @@ using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
+using UExpo.Domain.Entities.Tutorial;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Shared.Converters;
 
@@ -18,10 +19,13 @@ public class DaoMapper : Profile
 {
     public DaoMapper()
     {
+        // User Module
         CreateMap<UserDao, User>().ReverseMap();
+        CreateMap<AdminDao, Admin>().ReverseMap();
+
+        // CallCenter Module
         CreateMap<CallCenterChatDao, CallCenterChat>().ReverseMap();
         CreateMap<CallCenterMessageDao, CallCenterMessage>().ReverseMap();
-        CreateMap<AdminDao, Admin>().ReverseMap();
 
         // Catalog Module
         CreateMap<CatalogDao, Catalog>()
@@ -43,5 +47,8 @@ public class DaoMapper : Profile
         CreateMap<CalendarDao, Calendar>().ReverseMap();
         CreateMap<CalendarFairDao, CalendarFair>().ReverseMap();
         CreateMap<CalendarSegmentDao, CalendarSegment>().ReverseMap();
+
+        // Tutorial Module
+        CreateMap<TutorialDao, Tutorial>().ReverseMap();
     }
 }

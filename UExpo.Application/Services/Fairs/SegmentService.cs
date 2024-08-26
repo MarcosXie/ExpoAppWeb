@@ -24,8 +24,6 @@ public class SegmentService : ISegmentService
 
     public async Task DeleteAsync(Guid id)
     {
-        await ValidateDeleteAsync(id);
-
         await _repository.DeleteAsync(id);
     }
 

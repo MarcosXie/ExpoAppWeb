@@ -9,6 +9,7 @@ using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
+using UExpo.Domain.Entities.Tutorial;
 using UExpo.Domain.Entities.Users;
 using UExpo.Repository.Context;
 using UExpo.Repository.Mapper;
@@ -44,5 +45,7 @@ public static class DependencyInjection
         services.AddScoped<ICalendarRepository, CalendarRepository>();
         services.AddScoped<ICalendarFairRepository, CalendarFairRepository>();
         services.AddScoped<ICalendarSegmentRepository, CalendarSegmentRepository>();
+
+        services.AddScoped<ITutorialRepository, TutorialRepository>();
     }
 }
