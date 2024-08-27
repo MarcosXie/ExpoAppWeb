@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace UExpo.Domain.Entities.Users;
+﻿namespace UExpo.Domain.Entities.Users;
 
 public class UserProfileDto
 {
@@ -9,8 +7,6 @@ public class UserProfileDto
     public string Country { get; set; } = null!;
     public string Password { get; set; } = null!;
     public string? Enterprise { get; set; }
-    public string? Adress { get; set; }
+    public string? Address { get; set; }
     public string? Description { get; set; }
-
-    public List<IFormFile> Images { get; set; } = [];
 }

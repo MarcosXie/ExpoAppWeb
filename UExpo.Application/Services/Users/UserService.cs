@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using UExpo.Application.Utils;
 using UExpo.Domain.Email;
+using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
@@ -16,19 +17,22 @@ public class UserService : IUserService
     private readonly IConfiguration _config;
     private readonly IEmailService _emailService;
     private readonly IFileStorageService _fileStorageService;
+    private readonly AuthUserHelper _authUserHelper;
 
     public UserService(
         IUserRepository repository,
         IMapper mapper,
         IConfiguration config,
         IFileStorageService fileStorageService,
-        IEmailService emailService)
+        IEmailService emailService,
+        AuthUserHelper authUserHelper)
     {
         _repository = repository;
         _mapper = mapper;
         _config = config;
         _emailService = emailService;
         _fileStorageService = fileStorageService;
+        _authUserHelper = authUserHelper;
     }
 
     public async Task<Guid> CreateUserAsync(UserDto userDto)
@@ -91,19 +95,30 @@ public class UserService : IUserService
 
     public async Task UpdateProfileAsync(Guid id, UserProfileDto profile)
     {
-        var user = await _repository.GetByIdDetailedAsync(id);
+        var signedInUser = _authUserHelper.GetUser();
 
+        if(signedInUser.Type == "Exhibitor")
+        {
+            if (string.IsNullOrEmpty(profile.Enterprise))
+                throw new BadRequestException("Company is required!");
+
+            if (string.IsNullOrEmpty(profile.Address))
+                throw new BadRequestException("Address is required!");
+
+            if (string.IsNullOrEmpty(profile.Description))
+                throw new BadRequestException("Description is required!");
+        }
+
+        var user = await _repository.GetByIdDetailedAsync(id);
         _mapper.Map(profile, user);
+        user.Password = user.Password.Equals(profile.Password) ? profile.Password : HashHelper.Hash(profile.Password);
 
         await _repository.UpdateAsync(user);
     }
-
     public async Task<UserProfileResponseDto> GetProfileAsync(Guid id)
     {
         var user = await _repository.GetByIdDetailedAsync(id);
-
         var mappedUser = _mapper.Map<UserProfileResponseDto>(user);
-
         return mappedUser;
     }
 

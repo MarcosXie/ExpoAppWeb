@@ -6,7 +6,7 @@ public class UserProfileResponseDto
     public string Email { get; set; } = null!;
     public string? Enterprise { get; set; }
     public string Name { get; set; } = null!;
-    public string? Adress { get; set; }
+    public string? Address { get; set; }
     public string Country { get; set; } = null!;
     public string? Description { get; set; }
     public string Password { get; set; } = null!;

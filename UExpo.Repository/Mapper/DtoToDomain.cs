@@ -15,7 +15,8 @@ public class DtoToDomain : Profile
     {
         CreateMap<UserDto, User>();
         CreateMap<UserProfileDto, User>()
-            .ForMember(x => x.Images, opt => opt.Ignore());
+            .ForMember(x => x.Images, opt => opt.Ignore())
+            .ForMember(x => x.Password, opt => opt.Ignore());
         CreateMap<CallCenterChatDto, CallCenterChat>();
         CreateMap<CallCenterSendMessageDto, CallCenterMessage>();
         CreateMap<AdminDto, Admin>();
