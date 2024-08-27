@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UExpo.Domain.Entities.Calendar;
+using UExpo.Domain.Entities.Calendar.Fairs;
 
 namespace UExpo.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CalendarController(ICalendarService service) : ControllerBase
+public class CalendarController(ICalendarService service, ICalendarFairService calendarFairService) : ControllerBase
 {
     [HttpGet("Year")]
     public async Task<ActionResult<List<int>>> GetYearsAsync()
@@ -50,7 +51,7 @@ public class CalendarController(ICalendarService service) : ControllerBase
     [HttpGet("Fair")]
     public async Task<ActionResult<List<CalendarFairResponseDto>>> GetFairsAsync([FromQuery] int? year)
     {
-        var fairs = await service.GetFairsAsync(year);
+        var fairs = await calendarFairService.GetFairsAsync(year);
 
         return Ok(fairs);
     }
@@ -58,7 +59,7 @@ public class CalendarController(ICalendarService service) : ControllerBase
     [HttpGet("Fair/Next")]
     public async Task<ActionResult<List<CalendarFairResponseDto>>> GetNextFairsAsync([FromQuery] int? year)
     {
-        var fairs = await service.GetNextFairAsync(year);
+        var fairs = await calendarFairService.GetUpcomingFairsAsync(year);
 
         return Ok(fairs);
     }

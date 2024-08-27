@@ -19,7 +19,7 @@ public class AuthUserHelper
 
         return new()
         {
-            Id = user.GetJwtClaim<string>("id")!,
+            Id = Guid.Parse(user.GetJwtClaim<string>("id")!),
             Name = user.GetJwtClaim<string>("name")!,
             Email = user.GetJwtClaim<string>("email"),
             Type = user.GetJwtClaim<string>("type"),

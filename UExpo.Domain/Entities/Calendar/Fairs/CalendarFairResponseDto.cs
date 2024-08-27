@@ -1,4 +1,4 @@
-﻿namespace UExpo.Domain.Entities.Calendar;
+﻿namespace UExpo.Domain.Entities.Calendar.Fairs;
 
 public class CalendarFairResponseDto
 {

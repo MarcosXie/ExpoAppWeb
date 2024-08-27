@@ -20,4 +20,5 @@ public class UserDao : BaseDao
     public CallCenterChatDao? CallCenterChat { get; set; }
     public CatalogDao? Catalog { get; set; }
     public List<UserImageDao> Images { get; set; } = [];
+    public List<ExhibitorFairRegisterDao> FairRegisters { get; set; } = [];
 }

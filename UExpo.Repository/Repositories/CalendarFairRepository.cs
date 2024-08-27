@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
-using UExpo.Domain.Entities.Calendar;
+using UExpo.Domain.Entities.Calendar.Fairs;
 using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;
@@ -34,6 +34,7 @@ public class CalendarFairRepository(UExpoDbContext context, IMapper mapper)
     {
         var fairs = await Database
             .Include(x => x.Calendar)
+            .Include(x => x.Segments)
             .AsNoTracking()
             .Where(x => 
                 (year == null || x.Calendar.Year == year)

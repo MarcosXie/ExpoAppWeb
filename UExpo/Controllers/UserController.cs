@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UExpo.Domain.Entities.Users;
-using UExpo.Domain.Exceptions;
 
 namespace UExpo.Api.Controllers;
 

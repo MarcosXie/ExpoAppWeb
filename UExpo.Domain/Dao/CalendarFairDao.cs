@@ -6,4 +6,6 @@ public class CalendarFairDao : BaseDao
     public Guid CalendarId { get; set; }
     public CalendarDao Calendar { get; set; } = null!;
     public List<CalendarSegmentDao> Segments { get; set; } = [];
+
+    public List<ExhibitorFairRegisterDao> FairRegisters { get; set; } = [];
 }

@@ -1,7 +1,7 @@
 ﻿using UExpo.Domain.Dao;
 using UExpo.Domain.Shared;
 
-namespace UExpo.Domain.Entities.Calendar;
+namespace UExpo.Domain.Entities.Calendar.Fairs;
 
 public interface ICalendarFairRepository : IBaseRepository<CalendarFairDao, CalendarFair>
 {

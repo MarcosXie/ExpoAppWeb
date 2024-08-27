@@ -1,4 +1,5 @@
-﻿using UExpo.Domain.Shared;
+﻿using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Domain.Shared;
 
 namespace UExpo.Domain.Entities.Calendar;
 

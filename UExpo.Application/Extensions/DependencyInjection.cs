@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using UExpo.Application.Services.Admins;
 using UExpo.Application.Services.Agendas;
+using UExpo.Application.Services.CalendarFairs;
 using UExpo.Application.Services.Calendars;
 using UExpo.Application.Services.CallCenterChats;
 using UExpo.Application.Services.Catalogs;
@@ -11,6 +12,7 @@ using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Agendas;
 using UExpo.Domain.Entities.Calendar;
+using UExpo.Domain.Entities.Calendar.Fairs;
 using UExpo.Domain.Entities.CallCenterChat;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Fairs;
@@ -33,7 +35,9 @@ public static class DependencyInjection
         services.AddScoped<IFairService, FairService>();
         services.AddScoped<ISegmentService, SegmentService>();
         services.AddScoped<ICalendarService, CalendarService>();
+        services.AddScoped<ICalendarFairService, CalendarFairService>();
         services.AddScoped<ITutorialService, TutorialService>();
+        
 
         //services.AddHostedService<YearlyTaskService>();
     }

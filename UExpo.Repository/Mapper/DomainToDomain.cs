@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using UExpo.Domain.Entities.Calendar;
+using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Domain.Entities.Calendar.Segments;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
 

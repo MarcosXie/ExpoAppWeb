@@ -1,6 +1,7 @@
-﻿using UExpo.Domain.Shared;
+﻿using UExpo.Domain.Entities.Calendar.Segments;
+using UExpo.Domain.Shared;
 
-namespace UExpo.Domain.Entities.Calendar;
+namespace UExpo.Domain.Entities.Calendar.Fairs;
 
 public class CalendarFair : BaseModel
 {

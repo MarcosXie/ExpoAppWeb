@@ -83,7 +83,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
     public async Task<CallCenterChat> GetOrCreateUserChatAsync(AuthenticatedUser authenticatedUser)
     {
-        Guid userId = Guid.Parse(authenticatedUser.Id);
+        Guid userId = authenticatedUser.Id;
 
         CallCenterChatDao? chat = await Database.AsNoTracking()
             .Include(x => x.User)
@@ -102,7 +102,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
             chat = await Database.AsNoTracking()
                 .Include(x => x.User)
-                .FirstOrDefaultAsync(x => x.UserId == Guid.Parse(authenticatedUser.Id));
+                .FirstOrDefaultAsync(x => x.UserId == authenticatedUser.Id);
         }
 
         return new CallCenterChat
@@ -116,7 +116,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
             UserId = chat.UserId,
             User = Mapper.Map<User>(chat.User),
             UserLang = chat.UserLang,
-            NotReadedMessages = chat.Messages.Where(x => !x.Readed && x.SenderId != Guid.Parse(authenticatedUser.Id)).Count()
+            NotReadedMessages = chat.Messages.Where(x => !x.Readed && x.SenderId != authenticatedUser.Id).Count()
         };
     }
 

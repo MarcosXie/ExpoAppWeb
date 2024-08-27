@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Entities.Agendas;
 using UExpo.Domain.Entities.Calendar;
+using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Domain.Entities.Calendar.Segments;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Exceptions;
 
@@ -67,22 +69,6 @@ public class CalendarService : ICalendarService
         return _mapper.Map<List<CalendarReponseDto>>(calendars);
     }
 
-    public async Task<List<CalendarFairResponseDto>> GetFairsAsync(int? year)
-    {
-        var fairs = year > 0 ?
-            await _calendarFairRepository.GetByYearAsync((int)year) :
-            await _calendarFairRepository.GetAsync();
-
-        return MapCalendarFairs(fairs);
-    }
-
-    public async Task<List<CalendarFairResponseDto>> GetNextFairAsync(int? year)
-    {
-        var fairs = await _calendarFairRepository.GetNextAsync(year);
-
-        return MapCalendarFairs(fairs);
-    }
-
     public async Task<bool> GetIsLockedAsync(int year)
     {
         var calendars = await _calendarRepository.GetByYearAsync(year);
@@ -143,21 +129,6 @@ public class CalendarService : ICalendarService
                 FairId = fair.Id
             };
         }
-    }
-
-    private List<CalendarFairResponseDto> MapCalendarFairs(List<CalendarFair> fairs)
-    {
-        var mappedFairs = _mapper.Map<List<CalendarFairResponseDto>>(fairs);
-
-        foreach (var fair in fairs)
-        {
-            var mappedFair = mappedFairs.First(x => x.Id == fair.Id);
-
-            mappedFair.BeginDate = fair.Calendar.BeginDate;
-            mappedFair.EndDate = fair.Calendar.EndDate;
-        }
-
-        return [.. mappedFairs.OrderBy(x => x.BeginDate).ThenBy(x => x.Name)];
     }
     #endregion
 }

@@ -11,6 +11,7 @@ public interface IBaseRepository<TDao, TEntity>
     Task<List<TEntity>> GetAsync(CancellationToken cancellationToken = default);
 
     Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<List<TEntity>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken = default);
 
     Task<TEntity?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> AnyAsync(Guid id, CancellationToken cancellationToken = default);

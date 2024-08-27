@@ -3,10 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Agendas;
 using UExpo.Domain.Entities.Calendar;
+using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Domain.Entities.Calendar.Segments;
 using UExpo.Domain.Entities.CallCenterChat;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
+using UExpo.Domain.Entities.Exhibitors;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
 using UExpo.Domain.Entities.Tutorial;
@@ -45,6 +48,7 @@ public static class DependencyInjection
         services.AddScoped<ICalendarRepository, CalendarRepository>();
         services.AddScoped<ICalendarFairRepository, CalendarFairRepository>();
         services.AddScoped<ICalendarSegmentRepository, CalendarSegmentRepository>();
+        services.AddScoped<IExhibitorFairRegisterRepository, ExhibitorFairRegisterRepository>();
 
         services.AddScoped<ITutorialRepository, TutorialRepository>();
     }
