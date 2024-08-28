@@ -7,7 +7,6 @@ using UExpo.Domain.Entities.Calendar.Fairs;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Exhibitors;
 using UExpo.Domain.Exceptions;
-using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.CalendarFairs;
 

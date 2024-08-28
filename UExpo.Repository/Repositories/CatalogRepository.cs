@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 using UExpo.Domain.Dao;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
@@ -9,7 +8,7 @@ using UExpo.Repository.Context;
 namespace UExpo.Repository.Repositories;
 
 public class CatalogRepository(UExpoDbContext context, IMapper mapper)
-    : BaseRepository<CatalogDao, Catalog>(context, mapper), ICatalogRepository
+	: BaseRepository<CatalogDao, Catalog>(context, mapper), ICatalogRepository
 {
     public async Task<Catalog?> GetByUserIdOrDefaultAsync(Guid id)
     {
@@ -65,4 +64,20 @@ public class CatalogRepository(UExpoDbContext context, IMapper mapper)
             .Where(x => x.Id == catalog.Id)
             .ExecuteUpdateAsync(setter => setter.SetProperty(x => x.Tags, catalog.Tags));
     }
+
+	public async Task<List<string>> GetAllTagsAsync()
+	{
+		var tempTags = await Database
+			.Select(x => x.Tags)
+			.ToListAsync();
+
+		List<string> tags = [];
+
+		foreach (var tag in tempTags)
+		{
+			tags.AddRange(tag.Split(','));
+		}
+
+		return tags;
+	}
 }

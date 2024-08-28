@@ -32,8 +32,8 @@ public class DomainToDto : Profile
         CreateMap<Segment, SegmentResponseDto>();
         CreateMap<Calendar, CalendarReponseDto>();
         CreateMap<CalendarFair, CalendarFairResponseDto>();
-        CreateMap<Tutorial, TutorialResponseDto>();
         CreateMap<CalendarFair, CalendarFairOptionResponseDto>();
+        CreateMap<Tutorial, TutorialResponseDto>();
         CreateMap<CalendarSegment, CalendarSegmentOptionResponseDto>();
     }
 }

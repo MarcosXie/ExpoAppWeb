@@ -21,8 +21,9 @@ public class UExpoDbContext : DbContext
     public virtual DbSet<CalendarFairDao> CalendarFairs{ get; set; }
     public virtual DbSet<CalendarSegmentDao> CalendarSegments { get; set; }
     public virtual DbSet<TutorialDao> Tutorials { get; set; }
+    public virtual DbSet<ExhibitorFairRegisterDao> FairRegisters { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfiguration).Assembly);
         base.OnModelCreating(modelBuilder);

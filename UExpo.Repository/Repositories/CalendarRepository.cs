@@ -48,6 +48,30 @@ public class CalendarRepository(UExpoDbContext context, IMapper mapper)
 		return Mapper.Map<Calendar>(calendar);
 	}
 
+	public async Task<Calendar> GetNextDetailedAsync()
+	{
+		var query = Database
+			.Where(x => x.EndDate > DateTime.Now)
+			.OrderBy(x => x.EndDate);
+
+		var tempCalendar = await query.FirstOrDefaultAsync();
+
+		if (DateTime.Now >= tempCalendar?.BeginDate && DateTime.Now <= tempCalendar.EndDate)
+		{
+			var startedCalendar = await query
+									.Include(x => x.Fairs)
+										.ThenInclude(f => f.Segments)
+									.Include(x => x.Fairs)
+										.ThenInclude(f => f.FairRegisters)
+											.ThenInclude(fr => fr.User)
+									.FirstOrDefaultAsync();
+
+			return Mapper.Map<Calendar>(startedCalendar);
+		}
+
+		return Mapper.Map<Calendar>(tempCalendar);
+	}
+
 	public async Task<List<int>> GetYearsAsync()
     {
         List<int> years = [];
