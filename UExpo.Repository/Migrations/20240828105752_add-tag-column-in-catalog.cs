@@ -5,14 +5,14 @@
 namespace UExpo.Repository.Migrations;
 
 /// <inheritdoc />
-public partial class addsfilenameinuserimage : Migration
+public partial class addtagcolumnincatalog : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.AddColumn<string>(
-            name: "FileName",
-            table: "user_image",
+            name: "Tags",
+            table: "catalog",
             type: "longtext",
             nullable: false)
             .Annotation("MySql:CharSet", "utf8mb4");
@@ -22,7 +22,7 @@ public partial class addsfilenameinuserimage : Migration
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.DropColumn(
-            name: "FileName",
-            table: "user_image");
+            name: "Tags",
+            table: "catalog");
     }
 }

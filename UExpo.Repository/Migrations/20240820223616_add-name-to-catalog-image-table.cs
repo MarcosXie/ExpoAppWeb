@@ -2,28 +2,27 @@
 
 #nullable disable
 
-namespace UExpo.Repository.Migrations
+namespace UExpo.Repository.Migrations;
+
+/// <inheritdoc />
+public partial class addnametocatalogimagetable : Migration
 {
     /// <inheritdoc />
-    public partial class addnametocatalogimagetable : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<string>(
-                name: "Name",
-                table: "catalog_item_image",
-                type: "longtext",
-                nullable: false)
-                .Annotation("MySql:CharSet", "utf8mb4");
-        }
+        migrationBuilder.AddColumn<string>(
+            name: "Name",
+            table: "catalog_item_image",
+            type: "longtext",
+            nullable: false)
+            .Annotation("MySql:CharSet", "utf8mb4");
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "Name",
-                table: "catalog_item_image");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "Name",
+            table: "catalog_item_image");
     }
 }

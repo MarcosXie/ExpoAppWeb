@@ -25,7 +25,15 @@ public class RegisterFairController(ICalendarFairService service) : ControllerBa
         return Ok(fairs);
     }
 
-    [HttpPost]
+	[HttpGet("NextExpoDate")]
+	public async Task<ActionResult<string>> GetNextExpoDate()
+	{
+		var calendar = await service.GetNextExpoDateAsync();
+
+		return Ok(calendar);
+	}
+
+	[HttpPost]
     public async Task<ActionResult<Guid>> RegisterAsync(ExhibitorFairRegisterDto registerDto)
     {
         var id = await service.RegisterAsync(registerDto.CalendarFairId);

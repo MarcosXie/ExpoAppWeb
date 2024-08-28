@@ -37,7 +37,8 @@ public class CalendarFairRepository(UExpoDbContext context, IMapper mapper)
             .Include(x => x.Segments)
             .AsNoTracking()
             .Where(x => 
-                (year == null || x.Calendar.Year == year)
+                (year == null || x.Calendar.Year == year) &&
+				x.Calendar.BeginDate > DateTime.Now
             )
             .OrderBy(x => x.Calendar.BeginDate)
             .ToListAsync();
@@ -48,4 +49,14 @@ public class CalendarFairRepository(UExpoDbContext context, IMapper mapper)
 
         return Mapper.Map<List<CalendarFair>>(fairs);
     }
+
+	public async Task<List<CalendarFair>> GetByIdsDetailedAsync(List<Guid> fairIds)
+	{
+		var fairs = await Database
+			.Include(x => x.Segments)
+			.AsNoTracking()
+			.Where(x => fairIds.Contains(x.Id)).ToListAsync();
+
+		return Mapper.Map<List<CalendarFair>>(fairs);
+	}
 }

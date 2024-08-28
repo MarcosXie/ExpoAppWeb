@@ -2,30 +2,39 @@
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using UExpo.Application.Utils;
+using UExpo.Domain.Entities.Calendar;
 using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Exhibitors;
 using UExpo.Domain.Exceptions;
+using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.CalendarFairs;
 
 public class CalendarFairService : ICalendarFairService
 {
     private readonly ICalendarFairRepository _calendarFairRepository;
-    private readonly AuthUserHelper _authUserHelper;
+	private readonly ICalendarRepository _calendarRepository;
+	private readonly AuthUserHelper _authUserHelper;
     private readonly IExhibitorFairRegisterRepository _fairRegisterRepository;
+    private readonly ICatalogService _catalogService;
     private readonly IConfiguration _config;
     private readonly IMapper _mapper;
 
     public CalendarFairService(
         ICalendarFairRepository calendarFairRepository,
+		ICalendarRepository calendarRepository,
         IExhibitorFairRegisterRepository exhibitorFairRegisterRepository,
+        ICatalogService catalogService,
         IMapper mapper,
         IConfiguration config,
         AuthUserHelper authUserHelper)
     {
         _calendarFairRepository = calendarFairRepository;
-        _authUserHelper = authUserHelper;
+		_calendarRepository = calendarRepository;
+		_authUserHelper = authUserHelper;
         _fairRegisterRepository = exhibitorFairRegisterRepository;
+        _catalogService = catalogService;
         _config = config;
         _mapper = mapper;
     }
@@ -62,20 +71,6 @@ public class CalendarFairService : ICalendarFairService
         return _mapper.Map<List<CalendarFairOptionResponseDto>>(fairs);
     }
 
-    public async Task<bool> PayAsync(List<Guid> fairRegisterIds)
-    {
-        var fairs = await _fairRegisterRepository.GetByIdsAsync(fairRegisterIds);
-
-        foreach (var fair in fairs)
-        {
-            fair.IsPaid = true;
-        }
-
-        await _fairRegisterRepository.UpdateAsync(fairs);
-
-        return true;
-    }
-
     public async Task<Guid> RegisterAsync(Guid calendarFairId)
     {
         var calendarFair = await _calendarFairRepository.GetByIdAsync(calendarFairId);
@@ -88,13 +83,36 @@ public class CalendarFairService : ICalendarFairService
             CalendarFairId = calendarFair.Id,
             ExhibitorId = exhibitorId,
             Value = double.Parse(_config.GetRequiredSection("PaymentInfo:FairPrice").Value!),
-            IsPaid = false,    
+            IsPaid = false,
         };
 
         return await _fairRegisterRepository.CreateAsync(fairRegister);
     }
+    public async Task<bool> PayAsync(List<Guid> fairRegisterIds)
+    {
+        var fairs = await _fairRegisterRepository.GetByIdsAsync(fairRegisterIds);
 
-    private List<CalendarFairResponseDto> MapCalendarFairs(List<CalendarFair> fairs)
+        foreach (var fair in fairs)
+        {
+            fair.IsPaid = true;
+        }
+
+		await _fairRegisterRepository.UpdateAsync(fairs);
+		await _catalogService.GenerateFairTagsAsync(
+			_authUserHelper.GetUser().Id, 
+			fairs.Select(x => x.CalendarFairId).ToList()
+		);
+
+        return true;
+    }
+
+	public async Task<string> GetNextExpoDateAsync()
+	{
+		var calendar = await _calendarRepository.GetNextAsync();
+		return BuildCalendarName(calendar);
+	}
+
+	private List<CalendarFairResponseDto> MapCalendarFairs(List<CalendarFair> fairs)
     {
         var mappedFairs = _mapper.Map<List<CalendarFairResponseDto>>(fairs);
 
@@ -111,7 +129,7 @@ public class CalendarFairService : ICalendarFairService
 
     private IEnumerable<ExhibitorFairRegisterResponseDto> MapExhibitorFairRegisterResponse(List<ExhibitorFairRegister> registers)
     {
-        foreach(var register in registers.OrderByDescending(x => x.CalendarFair.Calendar.BeginDate))
+        foreach (var register in registers.OrderByDescending(x => x.CalendarFair.Calendar.BeginDate))
         {
             var descount = double.Parse(_config.GetSection("PaymentInfo:FairDescount").Value!, CultureInfo.InvariantCulture);
 

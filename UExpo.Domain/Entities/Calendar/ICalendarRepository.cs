@@ -8,5 +8,6 @@ public interface ICalendarRepository : IBaseRepository<CalendarDao, Calendar>
     Task<bool> AnyLockedInSameYearAsync(int year);
     Task DeleteByYearAsync(int year);
     Task<List<Calendar>> GetByYearAsync(int year);
-    Task<List<int>> GetYearsAsync();
+	Task<Calendar> GetNextAsync();
+	Task<List<int>> GetYearsAsync();
 }

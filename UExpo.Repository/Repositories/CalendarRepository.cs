@@ -38,7 +38,17 @@ public class CalendarRepository(UExpoDbContext context, IMapper mapper)
         return Mapper.Map<List<Calendar>>(calendars);
     }
 
-    public async Task<List<int>> GetYearsAsync()
+	public async Task<Calendar> GetNextAsync()
+	{
+		var calendar = await Database
+			.Where(x => x.BeginDate > DateTime.Now)
+			.OrderBy(x => x.BeginDate)
+			.FirstOrDefaultAsync();
+
+		return Mapper.Map<Calendar>(calendar);
+	}
+
+	public async Task<List<int>> GetYearsAsync()
     {
         List<int> years = [];
 

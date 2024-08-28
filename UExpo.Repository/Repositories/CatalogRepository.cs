@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 using UExpo.Domain.Dao;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
@@ -28,6 +29,7 @@ public class CatalogRepository(UExpoDbContext context, IMapper mapper)
                 Id = x.Id,
                 ItemImages = x.ItemImages,
                 UserId = x.UserId,
+                Tags = x.Tags,
                 UpdatedAt = x.UpdatedAt,
                 CreatedAt = x.CreatedAt
             })
@@ -55,5 +57,12 @@ public class CatalogRepository(UExpoDbContext context, IMapper mapper)
             .Where(x => x.CatalogId == id && x.ItemId == productId).ToListAsync();
 
         return images.Select(Mapper.Map<CatalogItemImage>).ToList();
+    }
+
+    public async Task UpdateTagsAsync(Catalog catalog)
+    {
+        await Context.Catalogs
+            .Where(x => x.Id == catalog.Id)
+            .ExecuteUpdateAsync(setter => setter.SetProperty(x => x.Tags, catalog.Tags));
     }
 }

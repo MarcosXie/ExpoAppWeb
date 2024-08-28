@@ -10,4 +10,5 @@ public interface ICalendarFairService
     Task<Guid> RegisterAsync(Guid calendarFairId);
     Task<List<ExhibitorFairRegisterResponseDto>> GetRegisteredFairsAsync();
     Task<bool> PayAsync(List<Guid> fairRegisterIds);
+	Task<string> GetNextExpoDateAsync();
 }

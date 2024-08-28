@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using System.Text;
 using UExpo.Application.Utils;
+using UExpo.Domain.Entities.Calendar.Fairs;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
 using UExpo.Domain.Shared;
+using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.Catalogs;
 
@@ -16,20 +19,23 @@ public class CatalogService : ICatalogService
     private readonly ICatalogPdfRepository _pdfRepository;
     private readonly ICatalogItemImageRepository _itemImageRepository;
     private readonly IFileStorageService _fileStorageService;
-    private readonly IMapper _mapper;
+	private readonly ICalendarFairRepository _calendarFairRepository;
+	private readonly IMapper _mapper;
 
     public CatalogService(
         ICatalogRepository repository,
         ICatalogPdfRepository pdfRepository,
         ICatalogItemImageRepository itemImageRepository,
         IFileStorageService fileStorageService,
+		ICalendarFairRepository calendarFairRepository,
         IMapper mapper)
     {
         _repository = repository;
         _pdfRepository = pdfRepository;
         _itemImageRepository = itemImageRepository;
         _fileStorageService = fileStorageService;
-        _mapper = mapper;
+		_calendarFairRepository = calendarFairRepository;
+		_mapper = mapper;
     }
 
     public async Task<CatalogResponseDto> GetOrCreateAsync(string id)
@@ -166,7 +172,47 @@ public class CatalogService : ICatalogService
         );
     }
 
-    private static string GetFileName(string name, params string[] ids)
+    public async Task<string> GetTagsAsync(Guid id)
+    {
+        var catalog = await _repository.GetByIdAsync(id);
+
+        return catalog.Tags;
+    }
+
+    public async Task UpdateTagsAsync(Guid id, CatalogTagDto tags)
+    {
+        var catalog = await _repository.GetByIdAsync(id);
+
+        catalog.Tags = tags.Tags;
+
+        await _repository.UpdateTagsAsync(catalog);
+    }
+
+	public async Task GenerateFairTagsAsync(Guid UserId, List<Guid> fairIds)
+	{
+		var catalog = await _repository.GetByUserIdOrDefaultAsync(UserId);
+		var fairs = await _calendarFairRepository.GetByIdsDetailedAsync(fairIds);
+
+		List<string> tagsToAdd = new();
+
+		foreach (var fair in fairs) 
+		{
+			List<string> tempTagsToAdd = [];
+
+			tagsToAdd.Add(fair.Name);
+
+			foreach (var segment in fair.Segments)
+			{
+				tagsToAdd.Add(segment.Name);
+			}
+		}
+
+		catalog!.Tags = string.Join(',', tagsToAdd.Distinct()) + ',' + catalog!.Tags;
+
+		await _repository.UpdateTagsAsync(catalog);
+	}
+
+	private static string GetFileName(string name, params string[] ids)
     {
         string prefix = string.Join('-', ids);
 

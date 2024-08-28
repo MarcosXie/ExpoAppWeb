@@ -9,227 +9,226 @@ using UExpo.Repository.Context;
 
 #nullable disable
 
-namespace UExpo.Repository.Migrations
+namespace UExpo.Repository.Migrations;
+
+[DbContext(typeof(UExpoDbContext))]
+[Migration("20240810195551_initial-create")]
+partial class initialcreate
 {
-    [DbContext(typeof(UExpoDbContext))]
-    [Migration("20240810195551_initial-create")]
-    partial class initialcreate
+    /// <inheritdoc />
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+        modelBuilder
+            .HasAnnotation("ProductVersion", "8.0.7")
+            .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+        MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("UExpo.Repository.Dao.AdminDao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+        modelBuilder.Entity("UExpo.Repository.Dao.AdminDao", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("char(36)");
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("tinyint(1)");
+                b.Property<bool>("Active")
+                    .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("Password")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
+                b.Property<int>("Type")
+                    .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime>("UpdatedAt")
+                    .HasColumnType("datetime(6)");
 
-                    b.HasKey("Id")
-                        .HasName("admin_pkey");
+                b.HasKey("Id")
+                    .HasName("admin_pkey");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
+                b.HasIndex("Name")
+                    .IsUnique();
 
-                    b.ToTable("admin", (string)null);
-                });
+                b.ToTable("admin", (string)null);
+            });
 
-            modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+        modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("AdminId")
-                        .HasColumnType("char(36)");
+                b.Property<Guid?>("AdminId")
+                    .HasColumnType("char(36)");
 
-                    b.Property<string>("AdminLang")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("AdminLang")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime>("UpdatedAt")
+                    .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
+                b.Property<Guid>("UserId")
+                    .HasColumnType("char(36)");
 
-                    b.Property<string>("UserLang")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("UserLang")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.HasKey("Id")
-                        .HasName("call_center_pkey");
+                b.HasKey("Id")
+                    .HasName("call_center_pkey");
 
-                    b.HasIndex("AdminId");
+                b.HasIndex("AdminId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                b.HasIndex("UserId")
+                    .IsUnique();
 
-                    b.ToTable("call_center_chat", (string)null);
-                });
+                b.ToTable("call_center_chat", (string)null);
+            });
 
-            modelBuilder.Entity("UExpo.Repository.Dao.CallCenterMessageDao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+        modelBuilder.Entity("UExpo.Repository.Dao.CallCenterMessageDao", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("char(36)");
 
-                    b.Property<Guid>("ChatId")
-                        .HasColumnType("char(36)");
+                b.Property<Guid>("ChatId")
+                    .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("datetime(6)");
 
-                    b.Property<bool>("Readed")
-                        .HasColumnType("tinyint(1)");
+                b.Property<bool>("Readed")
+                    .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("ReceiverLang")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("ReceiverLang")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<string>("SendedMessage")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("SendedMessage")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<Guid>("SenderId")
-                        .HasColumnType("char(36)");
+                b.Property<Guid>("SenderId")
+                    .HasColumnType("char(36)");
 
-                    b.Property<string>("SenderLang")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("SenderLang")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<string>("SenderName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("SenderName")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<string>("TranslatedMessage")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("TranslatedMessage")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime>("UpdatedAt")
+                    .HasColumnType("datetime(6)");
 
-                    b.HasKey("Id")
-                        .HasName("call_center_message_pkey");
+                b.HasKey("Id")
+                    .HasName("call_center_message_pkey");
 
-                    b.HasIndex("ChatId");
+                b.HasIndex("ChatId");
 
-                    b.ToTable("call_center_message", (string)null);
-                });
+                b.ToTable("call_center_message", (string)null);
+            });
 
-            modelBuilder.Entity("UExpo.Repository.Dao.UserDao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+        modelBuilder.Entity("UExpo.Repository.Dao.UserDao", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("char(36)");
 
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("Country")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<string>("Enterprise")
-                        .HasColumnType("longtext");
+                b.Property<string>("Enterprise")
+                    .HasColumnType("longtext");
 
-                    b.Property<bool>("IsEmailValidated")
-                        .HasColumnType("tinyint(1)");
+                b.Property<bool>("IsEmailValidated")
+                    .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                b.Property<string>("Password")
+                    .IsRequired()
+                    .HasColumnType("longtext");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime>("UpdatedAt")
+                    .HasColumnType("datetime(6)");
 
-                    b.HasKey("Id")
-                        .HasName("user_pkey");
+                b.HasKey("Id")
+                    .HasName("user_pkey");
 
-                    b.ToTable("user", (string)null);
-                });
+                b.ToTable("user", (string)null);
+            });
 
-            modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
-                {
-                    b.HasOne("UExpo.Repository.Dao.AdminDao", "Admin")
-                        .WithMany("CallCenterChats")
-                        .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
+            {
+                b.HasOne("UExpo.Repository.Dao.AdminDao", "Admin")
+                    .WithMany("CallCenterChats")
+                    .HasForeignKey("AdminId")
+                    .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("UExpo.Repository.Dao.UserDao", "User")
-                        .WithOne("CallCenterChat")
-                        .HasForeignKey("UExpo.Repository.Dao.CallCenterChatDao", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("UExpo.Repository.Dao.UserDao", "User")
+                    .WithOne("CallCenterChat")
+                    .HasForeignKey("UExpo.Repository.Dao.CallCenterChatDao", "UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Admin");
+                b.Navigation("Admin");
 
-                    b.Navigation("User");
-                });
+                b.Navigation("User");
+            });
 
-            modelBuilder.Entity("UExpo.Repository.Dao.CallCenterMessageDao", b =>
-                {
-                    b.HasOne("UExpo.Repository.Dao.CallCenterChatDao", "CallCenterChat")
-                        .WithMany("Messages")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+        modelBuilder.Entity("UExpo.Repository.Dao.CallCenterMessageDao", b =>
+            {
+                b.HasOne("UExpo.Repository.Dao.CallCenterChatDao", "CallCenterChat")
+                    .WithMany("Messages")
+                    .HasForeignKey("ChatId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("CallCenterChat");
-                });
+                b.Navigation("CallCenterChat");
+            });
 
-            modelBuilder.Entity("UExpo.Repository.Dao.AdminDao", b =>
-                {
-                    b.Navigation("CallCenterChats");
-                });
+        modelBuilder.Entity("UExpo.Repository.Dao.AdminDao", b =>
+            {
+                b.Navigation("CallCenterChats");
+            });
 
-            modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
-                {
-                    b.Navigation("Messages");
-                });
+        modelBuilder.Entity("UExpo.Repository.Dao.CallCenterChatDao", b =>
+            {
+                b.Navigation("Messages");
+            });
 
-            modelBuilder.Entity("UExpo.Repository.Dao.UserDao", b =>
-                {
-                    b.Navigation("CallCenterChat");
-                });
+        modelBuilder.Entity("UExpo.Repository.Dao.UserDao", b =>
+            {
+                b.Navigation("CallCenterChat");
+            });
 #pragma warning restore 612, 618
-        }
     }
 }
