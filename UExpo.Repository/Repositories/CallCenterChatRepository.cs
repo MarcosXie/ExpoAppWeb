@@ -148,6 +148,8 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
     {
         CallCenterChatDao? chat = await Database.Include(x => x.Messages).FirstOrDefaultAsync(x => x.UserId == userId);
 
+		if (chat is null) return 0;
+
         return await Context.CallCenterMessages.CountAsync(x => !x.Readed && x.ChatId == chat!.Id && x.SenderId != chat!.UserId);
     }
 }

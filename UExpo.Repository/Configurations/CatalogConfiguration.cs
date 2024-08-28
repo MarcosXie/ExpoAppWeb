@@ -29,7 +29,7 @@ public class CatalogConfiguration : IEntityTypeConfiguration<CatalogDao>
         entity
             .HasOne(n => n.User)
             .WithOne(n => n.Catalog)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         entity.ToTable("catalog");
     }

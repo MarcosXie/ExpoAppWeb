@@ -18,7 +18,15 @@ public class UserController(IUserService service) : ControllerBase
         return Ok(id);
     }
 
-    [HttpPost("Login")]
+	[HttpGet("BeMember")]
+	[AllowAnonymous]
+	public ActionResult<string> GetBeMemberInfoAsync()
+	{
+		BeMemberInfoDto info = service.GetBeMemberInfo();
+		return Ok(info);
+	}
+
+	[HttpPost("Login")]
     [AllowAnonymous]
     public async Task<ActionResult<string>> LoginAsync(LoginDto loginDto)
     {

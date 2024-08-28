@@ -66,7 +66,7 @@ public class CalendarService : ICalendarService
             await _calendarRepository.GetByYearAsync((int)year) :
             await _calendarRepository.GetAsync();
 
-        return _mapper.Map<List<CalendarReponseDto>>(calendars);
+		return _mapper.Map<List<CalendarReponseDto>>(calendars).OrderBy(x => x.BeginDate).ToList();
     }
 
     public async Task<bool> GetIsLockedAsync(int year)
@@ -80,7 +80,7 @@ public class CalendarService : ICalendarService
     {
         var years = await _calendarRepository.GetYearsAsync();
 
-        return years;
+        return [.. years.OrderByDescending(x => x)];
     }
 
     public async Task LockAsync(int year)

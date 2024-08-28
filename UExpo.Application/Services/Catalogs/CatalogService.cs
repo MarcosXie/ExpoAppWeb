@@ -134,7 +134,7 @@ public class CatalogService : ICatalogService
 
         foreach(var image in images)
         {
-            string fileName = GetFileName(image.FileName, catalog.Id.ToString(), productId);
+            string fileName = GetFileName(image.FileName, catalog.Id.ToString(), productId, order.ToString());
 
             CatalogItemImage catalogItemImage = new()
             {

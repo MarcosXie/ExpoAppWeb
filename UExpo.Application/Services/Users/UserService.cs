@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Win32;
+using System.Globalization;
 using UExpo.Application.Utils;
 using UExpo.Domain.Email;
-using UExpo.Domain.Entities.Admins;
+using UExpo.Domain.Entities.Calendar;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
@@ -140,8 +142,24 @@ public class UserService : IUserService
         await _repository.RemoveImagesAsync(imagesToDelete);
     }
 
-    #region Utils
-    private async Task ValidateCreateAsync(UserDto userDto)
+	public BeMemberInfoDto GetBeMemberInfo()
+	{
+		var value = double.Parse(_config.GetSection("PaymentInfo:MemberPrice").Value!, CultureInfo.InvariantCulture);
+		var descount = double.Parse(_config.GetSection("PaymentInfo:MemberDescount").Value!, CultureInfo.InvariantCulture);
+
+		if (descount > 100) descount = 100;
+		if (descount < 0) descount = 0;
+
+		return new()
+		{
+			Value = value,
+			Descount = descount,
+			FinalValue = Math.Round(value * (1 - descount / 100), 2)
+		};
+	}
+
+	#region Utils
+	private async Task ValidateCreateAsync(UserDto userDto)
     {
         if (!userDto.Password.Equals(userDto.ConfirmPassword))
             throw new BadRequestException("The passwords don`t match! Please try again!");
@@ -232,5 +250,5 @@ public class UserService : IUserService
             await _fileStorageService.DeleteFileAsync(FileStorageKeys.UserImages, image.FileName);
         }
     }
-    #endregion
+	#endregion
 }

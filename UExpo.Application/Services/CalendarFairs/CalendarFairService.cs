@@ -153,6 +153,7 @@ public class CalendarFairService : ICalendarFairService
 
     private static string BuildCalendarName(Domain.Entities.Calendar.Calendar calendar)
     {
+		if (calendar is null) return "";
         return $"{calendar.Place} {calendar.Year} {calendar.BeginDate.Month}/{calendar.BeginDate.Day} - {calendar.EndDate.Month}/{calendar.EndDate.Day}";
     }
 

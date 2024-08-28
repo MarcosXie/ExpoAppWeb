@@ -19,8 +19,11 @@ public class AgendaRepository(UExpoDbContext context, IMapper mapper)
     public Task<bool> HasDateInRangeAsync(DateTime beginDate, DateTime endDate, Guid? id = null)
     {
         return Database.AnyAsync(x => 
-            ((x.BeginDate <= beginDate && x.EndDate >= beginDate) ||
-            (x.BeginDate <= endDate && x.EndDate >= endDate)) 
+            (
+				(x.BeginDate <= beginDate && x.EndDate >= beginDate) ||
+				(x.BeginDate <= endDate && x.EndDate >= endDate) ||
+				(x.BeginDate >= beginDate && x.EndDate <= endDate)
+			) 
             &&
             (id == null || x.Id != id)
         );

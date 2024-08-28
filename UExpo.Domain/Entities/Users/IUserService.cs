@@ -12,4 +12,5 @@ public interface IUserService
     Task<string?> LoginAsync(LoginDto loginDto);
     Task UpdateProfileAsync(Guid id, UserProfileDto profile);
     Task VerifyEmailAsync(Guid id, string code);
+	BeMemberInfoDto GetBeMemberInfo();
 }
