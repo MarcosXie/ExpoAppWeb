@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Win32;
 using System.Globalization;
 using UExpo.Application.Utils;
 using UExpo.Domain.Email;
-using UExpo.Domain.Entities.Calendar;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;

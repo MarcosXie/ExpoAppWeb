@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using UExpo.Domain.Dao;
+﻿using UExpo.Domain.Dao;
 using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Shared;
 

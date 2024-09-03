@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using System.Text;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Calendar.Fairs;
 using UExpo.Domain.Entities.Catalogs;
@@ -9,7 +8,6 @@ using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
 using UExpo.Domain.Shared;
-using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.Catalogs;
 
@@ -181,6 +179,7 @@ public class CatalogService : ICatalogService
 
     public async Task UpdateTagsAsync(Guid id, CatalogTagDto tags)
     {
+		tags.Tags = tags.Tags.ToLower();
         var catalog = await _repository.GetByIdAsync(id);
 
         catalog.Tags = tags.Tags;
@@ -208,6 +207,8 @@ public class CatalogService : ICatalogService
 		}
 
 		catalog!.Tags = string.Join(',', tagsToAdd.Distinct()) + ',' + catalog!.Tags;
+
+		catalog!.Tags = catalog!.Tags.ToLower();
 
 		await _repository.UpdateTagsAsync(catalog);
 	}

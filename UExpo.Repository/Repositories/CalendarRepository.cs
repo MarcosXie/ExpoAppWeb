@@ -64,6 +64,7 @@ public class CalendarRepository(UExpoDbContext context, IMapper mapper)
 									.Include(x => x.Fairs)
 										.ThenInclude(f => f.FairRegisters)
 											.ThenInclude(fr => fr.User)
+												.ThenInclude(u => u.Catalog)
 									.FirstOrDefaultAsync();
 
 			return Mapper.Map<Calendar>(startedCalendar);

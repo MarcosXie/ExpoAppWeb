@@ -67,14 +67,14 @@ public class UserRepository(UExpoDbContext context, IMapper mapper)
 
 	public async Task<List<User>> GetAsync(ExpoSearchDto search)
 	{
-		var users = await Database
+		var preQuery = await Database
 					.Include(x => x.Catalog)
+					.Where(x => x.FairRegisters.Any(f => f.CalendarFair.CalendarId == search.CalendarId && f.IsPaid)).ToListAsync();
+
+		var users = preQuery
 					.Where(x =>
-						x.FairRegisters.Any(f => f.CalendarFair.CalendarId == search.CalendarId) &&
-						(search.Fairs.Count == 0 || x.FairRegisters.Any(f => search.Fairs.Contains(f.CalendarFairId))) &&
-						(search.Segments.Count == 0 || x.FairRegisters.Any(f => f.CalendarFair.Segments.Any(s => search.Segments.Contains(s.Id)))) &&
-						(search.Tags.Count == 0 || search.Tags.Any(tag => x.Catalog!.Tags.Split(',', StringSplitOptions.None).ToList().Contains(tag)))
-					).ToListAsync();
+						search.Tags.Count == 0 || search.Tags.Any(tag => x.Catalog!.Tags.Split(',', StringSplitOptions.None).ToList().Contains(tag.ToLower()))
+					).ToList();
 
 		return Mapper.Map<List<User>>(users);
 	}

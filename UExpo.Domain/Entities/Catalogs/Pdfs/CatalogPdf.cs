@@ -1,5 +1,4 @@
-﻿using UExpo.Domain.Entities.Catalogs;
-using UExpo.Domain.Shared;
+﻿using UExpo.Domain.Shared;
 
 namespace UExpo.Domain.Entities.Catalogs.Pdfs;
 

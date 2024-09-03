@@ -43,7 +43,7 @@ public class ExpoService : IExpoService
 			Id = x.Id,
 			Country = x.Country,
 			Enterprise = x.Enterprise ?? string.Empty,
-			Tags = x.Catalog?.Tags
+			Tags = searchDto.Tags.Count > 0 ? string.Join(',', x.Catalog!.Tags.Split(',').Where(tag => searchDto.Tags.Contains(tag.ToLower()))) : x.Catalog!.Tags,
 		}).ToList();
 	}
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
-using UExpo.Domain.Entities.Exhibitors;
 using UExpo.Domain.Shared;
 
 namespace UExpo.Domain.Entities.Catalogs;
