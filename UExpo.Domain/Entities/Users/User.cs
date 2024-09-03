@@ -1,4 +1,5 @@
 ﻿using UExpo.Domain.Entities.CallCenterChat;
+using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Shared;
 
 namespace UExpo.Domain.Entities.Users;
@@ -17,5 +18,6 @@ public class User : BaseModel, IChatUser
     public string? Description { get; set; }
 
     public List<UserImage> Images { get; set; } = [];
+	public Catalog? Catalog { get; set; }
 }
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Shared;
 
 namespace UExpo.Domain.Entities.Users;
@@ -12,4 +13,5 @@ public interface IUserRepository : IBaseRepository<UserDao, User>
     Task<User> GetByIdDetailedAsync(Guid id);
     Task AddImagesAsync(List<UserImage> images);
     Task RemoveImagesAsync(List<UserImage> images);
+	Task<List<User>> GetAsync(ExpoSearchDto searchDto);
 }

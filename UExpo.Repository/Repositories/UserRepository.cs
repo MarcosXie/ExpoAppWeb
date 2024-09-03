@@ -1,66 +1,81 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Entities.Users;
 using UExpo.Repository.Context;
 namespace UExpo.Repository.Repositories;
 
 public class UserRepository(UExpoDbContext context, IMapper mapper)
-    : BaseRepository<UserDao, User>(context, mapper), IUserRepository
+	: BaseRepository<UserDao, User>(context, mapper), IUserRepository
 {
-    public async Task DeleteUserWithNotValidatedEmailsAsync(string email, CancellationToken cancellationToken = default)
-    {
-        IQueryable<UserDao> invalidEmails = Database.Where(x => x.Email.ToLower().Equals(email.ToLower()) && !x.IsEmailValidated);
+	public async Task DeleteUserWithNotValidatedEmailsAsync(string email, CancellationToken cancellationToken = default)
+	{
+		IQueryable<UserDao> invalidEmails = Database.Where(x => x.Email.ToLower().Equals(email.ToLower()) && !x.IsEmailValidated);
 
-        if (!invalidEmails.Any()) return;
+		if (!invalidEmails.Any()) return;
 
-        Database.RemoveRange(invalidEmails);
+		Database.RemoveRange(invalidEmails);
 
-        await Context.SaveChangesAsync(cancellationToken);
-    }
+		await Context.SaveChangesAsync(cancellationToken);
+	}
 
-    public async Task<User> GetByIdDetailedAsync(Guid id)
-    {
-        var entity = await Database
-            .Include(x => x.Images)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id!.Equals(id));
+	public async Task<User> GetByIdDetailedAsync(Guid id)
+	{
+		var entity = await Database
+			.Include(x => x.Images)
+			.AsNoTracking()
+			.FirstOrDefaultAsync(x => x.Id!.Equals(id));
 
-        return entity is null
-            ? throw new Exception($"{nameof(User)} com id = {id}")
-        : Mapper.Map<User>(entity);
-    }
+		return entity is null
+			? throw new Exception($"{nameof(User)} com id = {id}")
+		: Mapper.Map<User>(entity);
+	}
 
-    public async Task<int> GetImageMaxOrderByUserIdAsync(Guid id)
-    {
-        var images = await Context.UserImages.Where(x => x.UserId == id).ToListAsync();
+	public async Task<int> GetImageMaxOrderByUserIdAsync(Guid id)
+	{
+		var images = await Context.UserImages.Where(x => x.UserId == id).ToListAsync();
 
-        return images.Count > 0 ? images.Max(x => x.Order) : 1;
-    }
+		return images.Count > 0 ? images.Max(x => x.Order) : 1;
+	}
 
-    public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
-    {
-        UserDao? userDao = await Database.FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email), cancellationToken: cancellationToken);
+	public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
+	{
+		UserDao? userDao = await Database.FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email), cancellationToken: cancellationToken);
 
-        return Mapper.Map<User>(userDao);
-    }
+		return Mapper.Map<User>(userDao);
+	}
 
-    public async Task AddImagesAsync(List<UserImage> images)
-    {
-        var dbImages = Mapper.Map<List<UserImageDao>>(images);
+	public async Task AddImagesAsync(List<UserImage> images)
+	{
+		var dbImages = Mapper.Map<List<UserImageDao>>(images);
 
-        Context.UserImages.AddRange(dbImages);
+		Context.UserImages.AddRange(dbImages);
 
-        await Context.SaveChangesAsync();
-    }
+		await Context.SaveChangesAsync();
+	}
 
-    public async  Task RemoveImagesAsync(List<UserImage> images)
-    {
-        var dbImages = Mapper.Map<List<UserImageDao>>(images);
+	public async Task RemoveImagesAsync(List<UserImage> images)
+	{
+		var dbImages = Mapper.Map<List<UserImageDao>>(images);
 
-        foreach (var image in dbImages)
-            Context.UserImages.Remove(image);
+		foreach (var image in dbImages)
+			Context.UserImages.Remove(image);
 
-        await Context.SaveChangesAsync();
-    }
+		await Context.SaveChangesAsync();
+	}
+
+	public async Task<List<User>> GetAsync(ExpoSearchDto search)
+	{
+		var users = await Database
+					.Include(x => x.Catalog)
+					.Where(x =>
+						x.FairRegisters.Any(f => f.CalendarFair.CalendarId == search.CalendarId) &&
+						(search.Fairs.Count == 0 || x.FairRegisters.Any(f => search.Fairs.Contains(f.CalendarFairId))) &&
+						(search.Segments.Count == 0 || x.FairRegisters.Any(f => f.CalendarFair.Segments.Any(s => search.Segments.Contains(s.Id)))) &&
+						(search.Tags.Count == 0 || search.Tags.Any(tag => x.Catalog!.Tags.Split(',', StringSplitOptions.None).ToList().Contains(tag)))
+					).ToListAsync();
+
+		return Mapper.Map<List<User>>(users);
+	}
 }

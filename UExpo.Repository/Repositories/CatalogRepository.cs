@@ -78,6 +78,6 @@ public class CatalogRepository(UExpoDbContext context, IMapper mapper)
 			tags.AddRange(tag.Split(','));
 		}
 
-		return tags;
+		return [.. tags.Where(x => !string.IsNullOrEmpty(x)).OrderBy(x => x)];
 	}
 }
