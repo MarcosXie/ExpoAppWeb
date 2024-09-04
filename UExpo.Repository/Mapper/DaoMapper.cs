@@ -10,6 +10,7 @@ using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Entities.Exhibitors;
+using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
 using UExpo.Domain.Entities.Tutorial;
@@ -57,5 +58,8 @@ public class DaoMapper : Profile
 
         // Exhibitor Module
         CreateMap<ExhibitorFairRegisterDao, ExhibitorFairRegister>().ReverseMap();
-    }
+
+		// Visitor Module
+        CreateMap<LastSearchedTagsDao, LastSearchedTags>().ReverseMap();
+	}
 }

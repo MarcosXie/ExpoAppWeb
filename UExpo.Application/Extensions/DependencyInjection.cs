@@ -40,6 +40,7 @@ public static class DependencyInjection
         services.AddScoped<ICalendarFairService, CalendarFairService>();
         services.AddScoped<ITutorialService, TutorialService>();
         services.AddScoped<IExpoService, ExpoService>();
+        services.AddScoped<ILastSearchedTagsService, LastSearchedTagsService>();
 
 		//services.AddHostedService<YearlyTaskService>();
 	}

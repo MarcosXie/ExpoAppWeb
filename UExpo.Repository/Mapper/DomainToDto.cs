@@ -7,6 +7,7 @@ using UExpo.Domain.Entities.Calendar.Segments;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
+using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
 using UExpo.Domain.Entities.Tutorial;
@@ -35,5 +36,6 @@ public class DomainToDto : Profile
         CreateMap<CalendarFair, CalendarFairOptionResponseDto>();
         CreateMap<Tutorial, TutorialResponseDto>();
         CreateMap<CalendarSegment, CalendarSegmentOptionResponseDto>();
-    }
+		CreateMap<LastSearchedTags, LastSearchedTagsResponseDto>();
+	}
 }
