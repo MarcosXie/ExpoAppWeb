@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using UExpo.Domain.Dao;
 using UExpo.Repository.Configurations;
 
 namespace UExpo.Repository.Context;
 
-public class UExpoDbContext : DbContext
+public class UExpoDbContext(IConfiguration config) : DbContext
 {
     public virtual DbSet<UserDao> Users { get; set; }
     public virtual DbSet<UserImageDao> UserImages { get; set; }
@@ -31,7 +32,7 @@ public class UExpoDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySql("server=uexpo-db.cbasq20g4rj4.us-east-1.rds.amazonaws.com;database=uexpo_db;user=root;password=RootAws123!",
+        optionsBuilder.UseMySql(config.GetConnectionString("DB"),
             new MySqlServerVersion(new Version(8, 0, 37)));
     }
 }
