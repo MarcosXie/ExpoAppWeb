@@ -7,7 +7,7 @@ namespace UExpo.Domain.Entities.Catalogs;
 
 public interface ICatalogService
 {
-    Task<CatalogResponseDto> GetOrCreateAsync(string id);
+    Task<CatalogResponseDto> GetOrCreateAsync(Guid id);
     Task<CatalogPdfResponseDto> AddPdfAsync(CatalogPdfDto tag);
     Task DeletePdfAsync(Guid id, Guid pdfId);
     Task<List<Dictionary<string, object>>> AddCatalogDataAsync(Guid id, IFormFile data);

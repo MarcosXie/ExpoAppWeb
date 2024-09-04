@@ -36,17 +36,16 @@ public class CatalogService : ICatalogService
 		_mapper = mapper;
     }
 
-    public async Task<CatalogResponseDto> GetOrCreateAsync(string id)
+    public async Task<CatalogResponseDto> GetOrCreateAsync(Guid id)
     {
-        Guid parsedId = Guid.Parse(id);
-        Catalog? catalog = await _repository.GetByUserIdOrDefaultAsync(parsedId);
+        Catalog? catalog = await _repository.GetByUserIdOrDefaultAsync(id);
 
         if (catalog is null)
         {
             catalog = new()
             {
-                UserId = parsedId
-            };
+                UserId = id
+			};
 
             await _repository.CreateAsync(catalog);
         }

@@ -14,11 +14,9 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
 {
 
     [HttpPost]
-    public async Task<ActionResult<CatalogResponseDto>> GetOrCreateAsync()
+	public async Task<ActionResult<CatalogResponseDto>> GetOrCreateAsync(GetCatalogDto? dto = null)
     {
-        AuthenticatedUser user = userHelper.GetUser();
-
-        CatalogResponseDto catalog = await service.GetOrCreateAsync(user.Id.ToString());
+        CatalogResponseDto catalog = await service.GetOrCreateAsync(dto?.Id ?? userHelper.GetUser().Id!);
 
         return Ok(catalog);
     }
