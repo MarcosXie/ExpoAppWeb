@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Dao;
-using UExpo.Domain.Entities.Calendar.Segments;
+using UExpo.Domain.Entities.Calendars.Segments;
 using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;

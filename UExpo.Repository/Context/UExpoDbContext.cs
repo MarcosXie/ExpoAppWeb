@@ -23,6 +23,7 @@ public class UExpoDbContext() : DbContext
     public virtual DbSet<TutorialDao> Tutorials { get; set; }
     public virtual DbSet<ExhibitorFairRegisterDao> FairRegisters { get; set; }
     public virtual DbSet<LastSearchedTagsDao> LastSearchedTags { get; set; }
+    public virtual DbSet<RelationshipDao> Relationships { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

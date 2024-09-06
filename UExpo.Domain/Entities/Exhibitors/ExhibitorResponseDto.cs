@@ -6,4 +6,5 @@ public class ExhibitorResponseDto
 	public string Enterprise { get; set; } = null!;
 	public string Country { get; set; } = null!;
 	public string? Tags { get; set; }
+	public bool HasRelationship { get; set; }
 }

@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using UExpo.Application.Utils;
-using UExpo.Domain.Entities.Calendar;
-using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Domain.Entities.Calendars;
+using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Exhibitors;
 using UExpo.Domain.Exceptions;
@@ -150,7 +150,7 @@ public class CalendarFairService : ICalendarFairService
         }
     }
 
-    private static string BuildCalendarName(Domain.Entities.Calendar.Calendar calendar)
+    private static string BuildCalendarName(Domain.Entities.Calendars.Calendar calendar)
     {
 		if (calendar is null) return "";
         return $"{calendar.Place} {calendar.Year} {calendar.BeginDate.Month}/{calendar.BeginDate.Day} - {calendar.EndDate.Month}/{calendar.EndDate.Day}";

@@ -1,5 +1,5 @@
-﻿using UExpo.Domain.Entities.Calendar.Fairs;
-using UExpo.Domain.Entities.Calendar.Segments;
+﻿using UExpo.Domain.Entities.Calendars.Fairs;
+using UExpo.Domain.Entities.Calendars.Segments;
 using UExpo.Domain.Entities.Exhibitors;
 
 namespace UExpo.Domain.Entities.Expo;

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Entities.Agendas;
-using UExpo.Domain.Entities.Calendar;
-using UExpo.Domain.Entities.Calendar.Fairs;
-using UExpo.Domain.Entities.Calendar.Segments;
+using UExpo.Domain.Entities.Calendars;
+using UExpo.Domain.Entities.Calendars.Fairs;
+using UExpo.Domain.Entities.Calendars.Segments;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Exceptions;
 
@@ -60,13 +60,13 @@ public class CalendarService : ICalendarService
         await _calendarRepository.CreateAsync(calendars);
     }
 
-    public async Task<List<CalendarReponseDto>> GetCalendarsAsync(int? year)
+    public async Task<List<CalendarResponseDto>> GetCalendarsAsync(int? year)
     {
         var calendars = year > 0 ?
             await _calendarRepository.GetByYearAsync((int)year) :
             await _calendarRepository.GetAsync();
 
-		return _mapper.Map<List<CalendarReponseDto>>(calendars).OrderBy(x => x.BeginDate).ToList();
+		return _mapper.Map<List<CalendarResponseDto>>(calendars).OrderBy(x => x.BeginDate).ToList();
     }
 
     public async Task<bool> GetIsLockedAsync(int year)

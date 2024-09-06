@@ -1,15 +1,17 @@
 ﻿using AutoMapper;
+using UExpo.Domain.Dao;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Agendas;
-using UExpo.Domain.Entities.Calendar;
-using UExpo.Domain.Entities.Calendar.Fairs;
-using UExpo.Domain.Entities.Calendar.Segments;
+using UExpo.Domain.Entities.Calendars;
+using UExpo.Domain.Entities.Calendars.Fairs;
+using UExpo.Domain.Entities.Calendars.Segments;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
+using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Entities.Tutorial;
 using UExpo.Domain.Entities.Users;
 
@@ -31,11 +33,12 @@ public class DomainToDto : Profile
         CreateMap<Agenda, AgendaResponseDto>();
         CreateMap<Fair, FairResponseDto>();
         CreateMap<Segment, SegmentResponseDto>();
-        CreateMap<Calendar, CalendarReponseDto>();
+        CreateMap<Calendar, CalendarResponseDto>();
         CreateMap<CalendarFair, CalendarFairResponseDto>();
         CreateMap<CalendarFair, CalendarFairOptionResponseDto>();
         CreateMap<Tutorial, TutorialResponseDto>();
         CreateMap<CalendarSegment, CalendarSegmentOptionResponseDto>();
 		CreateMap<LastSearchedTags, LastSearchedTagsResponseDto>();
+		CreateMap<Relationship, RelationshipResponseDto>();
 	}
 }

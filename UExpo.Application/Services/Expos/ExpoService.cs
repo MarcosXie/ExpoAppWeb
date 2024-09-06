@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
-using UExpo.Domain.Entities.Calendar;
-using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Application.Utils;
+using UExpo.Domain.Entities.Calendars;
+using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Exhibitors;
 using UExpo.Domain.Entities.Expo;
+using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Entities.Users;
+using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.Expos;
 
@@ -13,30 +16,38 @@ public class ExpoService : IExpoService
 	private ICalendarRepository _calendarRepository;
 	private ICatalogRepository _catalogRepository;
 	private IUserRepository _userRepository;
+	private IRelationshipRepository _relationshipRepository;
+	private AuthUserHelper _authUserHelper;
 	private IMapper _mapper;
 
 	public ExpoService(
 		ICalendarRepository calendarRepository, 
 		ICatalogRepository catalogRepository,
 		IUserRepository userRepository,
+		IRelationshipRepository relationshipRepository,
+		AuthUserHelper authUserHelper,
 		IMapper mapper)
 	{
 		_calendarRepository = calendarRepository;
 		_catalogRepository = catalogRepository;
 		_userRepository = userRepository;
+		_relationshipRepository = relationshipRepository;
+		_authUserHelper = authUserHelper;
 		_mapper = mapper;
 	}
 
 	public async Task<ExpoResponseDto> GetCurrentExpoAsync()
 	{
 		var calendar = await _calendarRepository.GetNextDetailedAsync();
+		var relationships = await GetUserRelationshipsAsync();
 
-		return await CreateExpoResponseAsync(calendar);
+		return await CreateExpoResponseAsync(calendar, relationships);
 	}
 
 	public async Task<List<ExhibitorResponseDto>> GetExhibitorsAsync(ExpoSearchDto searchDto)
 	{
 		List<User> users = await _userRepository.GetAsync(searchDto);
+		List<Relationship> relationships = await GetUserRelationshipsAsync();
 
 		return users.Select(x => new ExhibitorResponseDto()
 		{
@@ -44,10 +55,16 @@ public class ExpoService : IExpoService
 			Country = x.Country,
 			Enterprise = x.Enterprise ?? string.Empty,
 			Tags = searchDto.Tags.Count > 0 ? string.Join(',', x.Catalog!.Tags.Split(',').Where(tag => searchDto.Tags.Contains(tag.ToLower()))) : x.Catalog!.Tags,
+			HasRelationship = relationships.Any(r => r.SupplierUserId == x.Id)
 		}).ToList();
 	}
 
-	private async Task<ExpoResponseDto> CreateExpoResponseAsync(Calendar calendar)
+	private async Task<List<Relationship>> GetUserRelationshipsAsync()
+	{
+		return await _relationshipRepository.GetByUserIdAsync(_authUserHelper.GetUser().Id);
+	}
+
+	private async Task<ExpoResponseDto> CreateExpoResponseAsync(Calendar calendar, List<Relationship> relationships)
 	{
 		ExpoResponseDto expo = new()
 		{
@@ -74,7 +91,8 @@ public class ExpoService : IExpoService
 							Id = register.User.Id,
 							Country = register.User.Country,
 							Enterprise = register.User.Enterprise ?? string.Empty,
-							Tags = register.User.Catalog?.Tags
+							Tags = register.User.Catalog?.Tags,
+							HasRelationship = relationships.Any(r => r.SupplierUserId == register.User.Id)
 						});
 					}
 				}

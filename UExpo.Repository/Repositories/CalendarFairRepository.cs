@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
-using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;

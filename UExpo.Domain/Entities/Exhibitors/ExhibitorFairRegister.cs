@@ -1,4 +1,4 @@
-﻿using UExpo.Domain.Entities.Calendar.Fairs;
+﻿using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Shared;
 

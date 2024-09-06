@@ -7,18 +7,20 @@ using UExpo.Application.Services.CallCenterChats;
 using UExpo.Application.Services.Catalogs;
 using UExpo.Application.Services.Expos;
 using UExpo.Application.Services.Fairs;
+using UExpo.Application.Services.Relationships;
 using UExpo.Application.Services.Tutorials;
 using UExpo.Application.Services.Users;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Agendas;
-using UExpo.Domain.Entities.Calendar;
-using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Domain.Entities.Calendars;
+using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.CallCenterChat;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
+using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Entities.Tutorial;
 using UExpo.Domain.Entities.Users;
 
@@ -41,6 +43,7 @@ public static class DependencyInjection
         services.AddScoped<ITutorialService, TutorialService>();
         services.AddScoped<IExpoService, ExpoService>();
         services.AddScoped<ILastSearchedTagsService, LastSearchedTagsService>();
+        services.AddScoped<IRelationshipService, RelationshipService>();
 
 		//services.AddHostedService<YearlyTaskService>();
 	}

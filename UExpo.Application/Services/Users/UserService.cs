@@ -178,7 +178,7 @@ public class UserService : IUserService
             Subject = $"Welcome {user.Name} to UExpo! Please verify your email.",
             Body = @$"<p>Click in the link bellow to authenticate your email: 
                     <br>
-                    <a href=""{_config["FrontEndUrl"]}/080_verify_email/{user.Id}/{code}"">Authenticate</a>
+                    <a href=""{_config["FrontEndUrl"]}/025_verify_email/{user.Id}/{code}"">Authenticate</a>
                     <br>
                     Thank you!</p>"
         };

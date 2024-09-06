@@ -8,4 +8,5 @@ public class CalendarDao : BaseDao
     public DateTime EndDate { get; set; }
     public List<CalendarFairDao> Fairs { get; set; } = [];
     public bool IsLocked { get; set; } = false;
+	public List<RelationshipDao> Relationships { get; set; } = [];
 }

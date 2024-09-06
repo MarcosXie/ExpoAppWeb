@@ -21,4 +21,6 @@ public class UserDao : BaseDao
     public CatalogDao? Catalog { get; set; }
     public List<UserImageDao> Images { get; set; } = [];
     public List<ExhibitorFairRegisterDao> FairRegisters { get; set; } = [];
+    public List<RelationshipDao> BuyerRelationships { get; set; } = [];
+    public List<RelationshipDao> SupplierRelationships { get; set; } = [];
 }

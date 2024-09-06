@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Calendar;
-using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Domain.Entities.Calendars;
+using UExpo.Domain.Entities.Calendars.Fairs;
 
 namespace UExpo.Api.Controllers;
 
@@ -41,7 +41,7 @@ public class CalendarController(ICalendarService service, ICalendarFairService c
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CalendarReponseDto>>> GetAsync([FromQuery] int? year)
+    public async Task<ActionResult<List<CalendarResponseDto>>> GetAsync([FromQuery] int? year)
     {
         var calendars = await service.GetCalendarsAsync(year);
 

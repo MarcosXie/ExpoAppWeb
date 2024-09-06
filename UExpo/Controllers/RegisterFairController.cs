@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Calendar.Fairs;
+using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.Exhibitors;
 
 namespace UExpo.Api.Controllers;
