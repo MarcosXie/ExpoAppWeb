@@ -26,14 +26,6 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
         await service.UpdateChatAsync(callCenterChat);
     }
 
-    public async Task LeaveRoom(CallCenterChatDto callCenterChat)
-    {
-        string roomId = callCenterChat.Id.ToString();
-
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
-        await Clients.Groups(roomId).SendAsync("ReceiveMessage", $"{Context.ConnectionId} has left the room.");
-    }
-
     public async Task<List<CallCenterChatResponseDto>> JoinAdminRoom()
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, _adminRoom);

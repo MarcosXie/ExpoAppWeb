@@ -145,6 +145,7 @@ public class CallCenterChatService : ICallCenterChatService
             UserCountry = chat.User.Country,
             RegisterDate = chat.User.CreatedAt,
             NotReadedMessages = chat.NotReadedMessages,
+			Lang = "pt", // Alterar para ser dinamico
             IsUser = isUser
         };
     }
