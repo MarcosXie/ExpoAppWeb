@@ -205,7 +205,7 @@ public class CatalogService : ICatalogService
 			}
 		}
 
-		catalog!.Tags = string.Join(',', tagsToAdd.Distinct()) + ',' + catalog!.Tags;
+		catalog!.Tags = string.Join(',', tagsToAdd.Where(x => !string.IsNullOrEmpty(x)).Distinct()) + ',' + catalog!.Tags;
 
 		catalog!.Tags = catalog!.Tags.ToLower();
 
