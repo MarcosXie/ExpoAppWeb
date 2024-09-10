@@ -78,4 +78,18 @@ public class UserController(IUserService service) : ControllerBase
         UserProfileResponseDto profile = await service.GetProfileAsync(id);
         return Ok(profile);
     }
+
+	[HttpPatch("{id}/Language")]
+	public async Task<ActionResult<UserProfileResponseDto>> UpdateLanguage(Guid id, UpdateLanguageDto updateDto)
+	{
+		await service.UpdateLanguageAsync(id, updateDto);
+		return Ok();
+	}
+
+	[HttpGet("{id}/Language")]
+	public async Task<ActionResult<UserProfileResponseDto>> GetLanguage(Guid id)
+	{
+		var lang = await service.GetLanguageAsync(id);
+		return Ok(lang);
+	}
 }

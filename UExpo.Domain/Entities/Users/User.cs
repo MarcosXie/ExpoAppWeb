@@ -14,11 +14,11 @@ public class User : BaseModel, IChatUser
     public string Country { get; set; } = null!;
     public bool IsEmailValidated { get; set; } = false;
     public TypeEnum Type { get; set; }
-    public string Language { get; set; } = "en-US";
+    public string Lang { get; set; } = "en";
     public string? Address { get; set; }
     public string? Description { get; set; }
 
-    public List<UserImage> Images { get; set; } = [];
+	public List<UserImage> Images { get; set; } = [];
 	public Catalog? Catalog { get; set; }
 	public List<Relationship> BuyerRelationships { get; set; } = [];
 	public List<Relationship> SupplierRelationships { get; set; } = [];

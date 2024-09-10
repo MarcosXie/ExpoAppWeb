@@ -9,5 +9,5 @@ public class Admin : BaseModel, IChatUser
     public string Password { get; set; } = null!;
     public AdminType Type { get; set; }
     public bool Active { get; set; } = true;
-    public string Language { get; set; } = "pt-BR";
+    public string Lang { get; set; } = "pt-BR";
 }

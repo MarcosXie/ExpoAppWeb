@@ -4,16 +4,19 @@ using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using UExpo.Application.Utils;
 using UExpo.Domain.Email;
+using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
+using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.Users;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _repository;
-    private readonly IMapper _mapper;
+	private readonly IAdminRepository _adminRepository;
+	private readonly IMapper _mapper;
     private readonly IConfiguration _config;
     private readonly IEmailService _emailService;
     private readonly IFileStorageService _fileStorageService;
@@ -21,6 +24,7 @@ public class UserService : IUserService
 
     public UserService(
         IUserRepository repository,
+		IAdminRepository adminRepository,
         IMapper mapper,
         IConfiguration config,
         IFileStorageService fileStorageService,
@@ -28,7 +32,8 @@ public class UserService : IUserService
         AuthUserHelper authUserHelper)
     {
         _repository = repository;
-        _mapper = mapper;
+		_adminRepository = adminRepository;
+		_mapper = mapper;
         _config = config;
         _emailService = emailService;
         _fileStorageService = fileStorageService;
@@ -154,6 +159,37 @@ public class UserService : IUserService
 			Descount = descount,
 			FinalValue = Math.Round(value * (1 - descount / 100), 2)
 		};
+	}
+
+	public async Task UpdateLanguageAsync(Guid id, UpdateLanguageDto updateDto)
+	{
+		var user = await _repository.GetByIdOrDefaultAsync(id);
+
+		if (user is not null)
+		{
+			user.Lang = updateDto.Lang;
+
+			await _repository.UpdateAsync(user);
+
+			return;
+		}
+
+		var admin = await _adminRepository.GetByIdAsync(id);
+
+		admin.Lang = updateDto.Lang;
+
+		await _adminRepository.UpdateAsync(admin);
+	}
+
+	public async Task<string> GetLanguageAsync(Guid id)
+	{
+		var user = await _repository.GetByIdOrDefaultAsync(id);
+		if (user is not null)
+			return user.Lang;
+
+		var admin = await _adminRepository.GetByIdAsync(id);
+
+		return admin.Lang;
 	}
 
 	#region Utils

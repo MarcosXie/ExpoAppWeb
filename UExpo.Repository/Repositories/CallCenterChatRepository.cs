@@ -64,16 +64,18 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
     {
         List<CallCenterChat> chats = await Database.AsNoTracking()
             .Include(x => x.User)
+			.Include(x => x.Admin)
             .Select(chat => new CallCenterChat
             {
                 Id = chat.Id,
                 AdminId = chat.AdminId,
-                AdminLang = chat.AdminLang,
+				Admin = Mapper.Map<Admin>(chat.Admin),
+                AdminLang = chat.Admin.Lang,
                 CreatedAt = chat.CreatedAt,
                 UpdatedAt = chat.UpdatedAt,
                 UserId = chat.UserId,
                 User = Mapper.Map<User>(chat.User),
-                UserLang = chat.UserLang,
+                UserLang = chat.User.Lang,
                 NotReadedMessages = chat.Messages.Where(x => !x.Readed && x.SenderId == chat.UserId).Count()
             })
             .ToListAsync();
@@ -92,10 +94,12 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 
         if (chat is null)
         {
-            CallCenterChat callCenterChat = new()
+			var user = await Context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+
+			CallCenterChat callCenterChat = new()
             {
                 UserId = userId,
-                UserLang = "en", //TODO: Deixar dinamico
+                UserLang = user!.Lang,
             };
 
             await CreateAsync(callCenterChat);
@@ -110,12 +114,12 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
             Id = chat!.Id,
             AdminId = chat.AdminId,
             Admin = Mapper.Map<Admin>(chat.Admin),
-            AdminLang = chat.AdminLang,
+            AdminLang = chat.Admin?.Lang ?? "en",
             CreatedAt = chat.CreatedAt,
             UpdatedAt = chat.UpdatedAt,
             UserId = chat.UserId,
             User = Mapper.Map<User>(chat.User),
-            UserLang = chat.UserLang,
+            UserLang = chat.User.Lang,
             NotReadedMessages = chat.Messages.Where(x => !x.Readed && x.SenderId != authenticatedUser.Id).Count()
         };
     }

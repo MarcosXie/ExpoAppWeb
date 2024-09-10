@@ -43,7 +43,7 @@ public class CallCenterChatService : ICallCenterChatService
         // Se o usuario esta acessando um chat que ja existia
         if (user is User && !dbChat.UserLang.Equals(chat.Lang))
         {
-            dbChat.UserLang = chat.Lang;
+            dbChat.UserLang = user.Lang;
 
             await _repository.UpdateAsync(dbChat);
         }
@@ -52,7 +52,7 @@ public class CallCenterChatService : ICallCenterChatService
         else if (user is Admin && (!dbChat.AdminLang.Equals(chat.Lang) || dbChat.AdminId != chat.UserId))
         {
             dbChat.AdminId = chat.UserId;
-            dbChat.AdminLang = chat.Lang;
+            dbChat.AdminLang = user.Lang;
 
             await _repository.UpdateAsync(dbChat);
         }
@@ -66,8 +66,8 @@ public class CallCenterChatService : ICallCenterChatService
 
         IChatUser senderUser = await GetChatUser(message.SenderId, chat);
 
-        string senderLang = senderUser.Language;
-        string receiverLang = chat.UserLang.Equals(senderUser.Language) ? chat.AdminLang : chat.UserLang;
+        string senderLang = senderUser.Lang;
+        string receiverLang = chat.UserLang.Equals(senderUser.Lang) ? chat.AdminLang : chat.UserLang;
 
         CallCenterMessage callCenterMessage = new()
         {
@@ -145,7 +145,7 @@ public class CallCenterChatService : ICallCenterChatService
             UserCountry = chat.User.Country,
             RegisterDate = chat.User.CreatedAt,
             NotReadedMessages = chat.NotReadedMessages,
-			Lang = "pt", // Alterar para ser dinamico
+			Lang = isUser ? chat.User.Lang : chat.Admin?.Lang ?? "en",
             IsUser = isUser
         };
     }
@@ -160,13 +160,13 @@ public class CallCenterChatService : ICallCenterChatService
         try
         {
             User user = await _userRepository.GetByIdAsync(id);
-            user.Language = chat.UserLang;
+            user.Lang = user.Lang;
             return user;
         }
         catch (Exception)
         {
             Admin attendent = await _adminRepository.GetByIdAsync(id);
-            attendent.Language = chat.AdminLang;
+            attendent.Lang = attendent.Lang;
             return attendent;
         }
     }
