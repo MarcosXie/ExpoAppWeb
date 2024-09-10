@@ -5,6 +5,7 @@ namespace UExpo.Domain.Entities.Relationships;
 
 public class RelationshipResponseDto
 {
+	public Guid Id { get; set; }
 	public RelationshipType Type { get; set; }
 	public Guid UserId { get; set; }
 	public CalendarResponseDto Calendar { get; set; } = null!;

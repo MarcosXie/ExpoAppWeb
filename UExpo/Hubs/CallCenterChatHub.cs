@@ -8,7 +8,7 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
 {
     private readonly string _adminRoom = "AdminRoom";
 
-    public async Task<JoinChatResponseDto> JoinRoom(ChatDto callCenterChat)
+    public async Task<JoinChatResponseDto> JoinChatRoom(ChatDto callCenterChat)
     {
         Guid roomId = await service.CreateCallCenterChatAsync(callCenterChat);
 
@@ -18,10 +18,11 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
 
         return new()
         {
+            RoomId = roomId,
             Messages = await service.GetMessagesByChatAsync(callCenterChat),
-            RoomId = roomId
         };
     }
+
     public async Task ChangeUserLang(ChatDto callCenterChat)
     {
         await service.UpdateChatAsync(callCenterChat);
@@ -39,7 +40,7 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
         return await service.GetNotReadedMessagesByUserId(userId);
     }
 
-    public async Task SendMessageToRoom(SendMessageDto message)
+    public async Task SendMessage(SendMessageDto message)
     {
         (ReceiveMessageDto msgDto, bool isSendedByUser) = await service.AddMessageAsync(message);
 

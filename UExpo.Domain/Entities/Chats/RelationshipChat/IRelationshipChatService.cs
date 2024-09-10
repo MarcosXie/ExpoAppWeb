@@ -6,7 +6,7 @@ public interface IRelationshipChatService
 {
 	Task<ReceiveMessageDto> AddMessageAsync(SendMessageDto message);
 	Task<List<BaseMessage>> GetMessagesByChatAsync(ChatDto joinChatDto);
-	Task<List<RelationshipNotReadedMessagesDto>> GetNotReadedMessagesAsync();
+	Task<List<RelationshipNotReadedMessagesDto>> GetNotReadedMessagesAsync(Guid userId);
 	Task UpdateLangAsync(ChatDto callCenterChat);
 	Task VisualizeMessagesAsync(ChatDto chat);
 }

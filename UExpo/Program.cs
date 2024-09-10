@@ -137,7 +137,7 @@ app.MapControllers();
 app.MapHub<CallCenterChatHub>("/call-center-chathub")
     .RequireAuthorization();
 
-app.MapHub<CallCenterChatHub>("/relationship-chathub")
+app.MapHub<RelationshipChatHub>("/relationship-chathub")
 	.RequireAuthorization();
 
 SeedDataHelper.BootstrapAdmin(app.Services);

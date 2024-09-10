@@ -21,10 +21,10 @@ public class RelationshipChatHub(IRelationshipChatService service) : Hub
 		};
 	}
 
-	public async Task<List<RelationshipNotReadedMessagesDto>> JoinRelationshipNotificationRoom()
+	public async Task<List<RelationshipNotReadedMessagesDto>> JoinRelationshipNotificationRoom(Guid userId)
 	{
 		await Groups.AddToGroupAsync(Context.ConnectionId, _relationshipNotificationRoom);
-		return await service.GetNotReadedMessagesAsync();
+		return await service.GetNotReadedMessagesAsync(userId);
 	}
 
 	public async Task ChangeUserLang(ChatDto callCenterChat)
@@ -39,7 +39,7 @@ public class RelationshipChatHub(IRelationshipChatService service) : Hub
 		await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
 
 		await Clients.Groups(_relationshipNotificationRoom)
-			.SendAsync("UpdatedChats", await service.GetNotReadedMessagesAsync());		
+			.SendAsync("UpdatedChats", await service.GetNotReadedMessagesAsync(message.SenderId));		
 	}
 
 	public async Task VisualizeMessages(ChatDto chat)

@@ -57,6 +57,7 @@ public class RelationshipService : IRelationshipService
 
 			yield return new RelationshipResponseDto
 			{
+				Id = relationship.Id,
 				Type = type,
 				CreatedAt = relationship.CreatedAt,
 				UserId = type == RelationshipType.Buyer ? relationship.BuyerUserId : relationship.SupplierUserId,

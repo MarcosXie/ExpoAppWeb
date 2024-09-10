@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using UExpo.Application.Utils;
+using UExpo.Domain.Entities.Chats.CallCenterChat;
 using UExpo.Domain.Entities.Chats.RelationshipChat;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Relationships;
@@ -70,7 +71,6 @@ public class RelationshipChatService : IRelationshipChatService
 
 	public async Task<List<BaseMessage>> GetMessagesByChatAsync(ChatDto joinChatDto)
 	{
-		var userId = _authUserHelper.GetUser()!.Id;	
 		var messages = await _relationshipRepository.GetLastMessagesByChat(joinChatDto.Id);
 
 		return messages.Select(x => new BaseMessage
@@ -85,19 +85,36 @@ public class RelationshipChatService : IRelationshipChatService
 		}).ToList();
 	}
 
-	public Task<List<RelationshipNotReadedMessagesDto>> GetNotReadedMessagesAsync()
+	public async Task<List<RelationshipNotReadedMessagesDto>> GetNotReadedMessagesAsync(Guid userId)
 	{
-		throw new NotImplementedException();
+		List<BaseMessage> notReadedMessages = await _relationshipRepository.GetNotReadedMessages(userId);
+
+		return notReadedMessages
+			.GroupBy(x => x.ChatId)
+			.Select(x => new RelationshipNotReadedMessagesDto
+			{
+				RelationshipId = x.Key,
+				NotReadedMessages = x.Count()
+			}).ToList();
 	}
 
 	public async Task UpdateLangAsync(ChatDto chat)
 	{
-		await _relationshipRepository.VisualizeMessagesAsync(chat);
+		var dbChat = await _relationshipRepository.GetByIdAsync(chat.Id);
+
+		var isSupplier = dbChat.SupplierUserId == chat.UserId;
+
+		if (isSupplier)
+			dbChat.SupplierLang = chat.Lang;
+		else
+			dbChat.BuyerLang = chat.Lang;
+
+		await _relationshipRepository.UpdateAsync(dbChat);
 	}
 
-	public Task VisualizeMessagesAsync(ChatDto chat)
+	public async Task VisualizeMessagesAsync(ChatDto chat)
 	{
-		throw new NotImplementedException();
+		await _relationshipRepository.VisualizeMessagesAsync(chat);
 	}
 }
 

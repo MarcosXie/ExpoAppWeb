@@ -65,6 +65,13 @@ public class RelationshipRepository(UExpoDbContext context, IMapper mapper)
 		return [.. messages.Select(Mapper.Map<BaseMessage>).OrderBy(x => x.CreatedAt)];
 	}
 
+	public async Task<List<BaseMessage>> GetNotReadedMessages(Guid currentUserId)
+	{
+		var msgs = await Context.RelationshipsMessages.Where(x => !x.Readed &&  x.SenderId != currentUserId).ToListAsync();
+
+		return Mapper.Map<List<BaseMessage>>(msgs);
+	}
+
 	public async Task<int> GetNotReadedMessagesByChatId(Guid roomId, Guid? currentUserId = null)
 	{
 		var chat = await Database.Include(x => x.Messages).FirstOrDefaultAsync(x => x.Id == roomId);

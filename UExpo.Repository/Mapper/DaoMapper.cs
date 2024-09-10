@@ -9,6 +9,8 @@ using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Entities.Chats.CallCenterChat;
+using UExpo.Domain.Entities.Chats.RelationshipChat;
+using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Exhibitors;
 using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Entities.Fairs;
@@ -63,5 +65,8 @@ public class DaoMapper : Profile
 		// Visitor Module
         CreateMap<LastSearchedTagsDao, LastSearchedTags>().ReverseMap();
         CreateMap<RelationshipDao, Relationship>().ReverseMap();
+        CreateMap<RelationshipMessageDao, RelationshipMessage>().ReverseMap();
+        CreateMap<RelationshipMessageDao, BaseMessage>().ReverseMap();
+        CreateMap<CallCenterMessageDao, BaseMessage>().ReverseMap();
 	}
 }
