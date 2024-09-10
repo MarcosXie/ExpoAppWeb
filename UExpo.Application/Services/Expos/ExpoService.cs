@@ -7,7 +7,6 @@ using UExpo.Domain.Entities.Exhibitors;
 using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Entities.Users;
-using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.Expos;
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.CallCenterChat;
+using UExpo.Domain.Entities.Chats.CallCenterChat;
 
 namespace UExpo.Api.Controllers;
 

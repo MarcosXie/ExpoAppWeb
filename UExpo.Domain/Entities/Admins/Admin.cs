@@ -1,4 +1,4 @@
-﻿using UExpo.Domain.Entities.CallCenterChat;
+﻿using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Shared;
 
 namespace UExpo.Domain.Entities.Admins;

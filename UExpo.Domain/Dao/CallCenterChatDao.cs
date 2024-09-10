@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using UExpo.Domain.Dao.Shared;
 
 namespace UExpo.Domain.Dao;
 
@@ -11,8 +11,6 @@ public class CallCenterChatDao : BaseDao
     public AdminDao? Admin { get; set; }
     public string UserLang { get; set; } = "en-US";
     public string AdminLang { get; set; } = "pt-BR";
-    [NotMapped]
-    public int NotReadedMessages { get; set; }
 
     public ICollection<CallCenterMessageDao> Messages { get; set; } = [];
 }

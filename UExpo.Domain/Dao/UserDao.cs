@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using UExpo.Domain.Dao.Shared;
 using UExpo.Domain.Entities.Users;
 
 namespace UExpo.Domain.Dao;

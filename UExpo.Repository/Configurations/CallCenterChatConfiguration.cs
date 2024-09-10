@@ -14,7 +14,7 @@ public class CallCenterChatConfiguration : IEntityTypeConfiguration<CallCenterCh
 
         entity
             .HasMany(n => n.Messages)
-            .WithOne(n => n.CallCenterChat)
+            .WithOne(n => n.Chat)
             .HasForeignKey(n => n.ChatId)
             .OnDelete(DeleteBehavior.Cascade);
 

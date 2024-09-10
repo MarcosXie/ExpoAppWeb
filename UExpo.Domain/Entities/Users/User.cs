@@ -1,5 +1,5 @@
-﻿using UExpo.Domain.Entities.CallCenterChat;
-using UExpo.Domain.Entities.Catalogs;
+﻿using UExpo.Domain.Entities.Catalogs;
+using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Shared;
 

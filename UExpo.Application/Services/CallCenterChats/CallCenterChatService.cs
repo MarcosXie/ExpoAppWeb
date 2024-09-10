@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Admins;
-using UExpo.Domain.Entities.CallCenterChat;
+using UExpo.Domain.Entities.Chats.CallCenterChat;
+using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.Translation;
@@ -33,7 +34,7 @@ public class CallCenterChatService : ICallCenterChatService
         _mapper = mapper;
     }
 
-    public async Task<Guid> CreateCallCenterChatAsync(CallCenterChatDto chat)
+    public async Task<Guid> CreateCallCenterChatAsync(ChatDto chat)
     {
         CallCenterChat dbChat = await _repository.GetByIdOrDefaultAsync(chat.Id) ??
             throw new NotFoundException("chat");
@@ -60,7 +61,7 @@ public class CallCenterChatService : ICallCenterChatService
         return dbChat.Id;
     }
 
-    public async Task<(CallCenterReceiveMessageDto, bool)> AddMessageAsync(CallCenterSendMessageDto message)
+    public async Task<(ReceiveMessageDto, bool)> AddMessageAsync(SendMessageDto message)
     {
         CallCenterChat? chat = await _repository.GetByIdOrDefaultAsync(message.RoomId);
 
@@ -83,7 +84,7 @@ public class CallCenterChatService : ICallCenterChatService
 
         await _repository.AddMessageAsync(callCenterMessage);
 
-        CallCenterReceiveMessageDto msgDto = new()
+        ReceiveMessageDto msgDto = new()
         {
             RoomId = chat.Id.ToString(),
             SenderId = callCenterMessage.SenderId,
@@ -97,7 +98,7 @@ public class CallCenterChatService : ICallCenterChatService
         return (msgDto, senderUser is User);
     }
 
-    public async Task UpdateChatAsync(CallCenterChatDto chat)
+    public async Task UpdateChatAsync(ChatDto chat)
     {
         CallCenterChat? dbChat = await _repository.GetByIdOrDefaultAsync(chat.Id!);
 
@@ -111,11 +112,11 @@ public class CallCenterChatService : ICallCenterChatService
         await _repository.UpdateAsync(dbChat);
     }
 
-    public async Task<List<CallCenterReceiveMessageDto>> GetMessagesByChatAsync(CallCenterChatDto chat)
+    public async Task<List<BaseMessage>> GetMessagesByChatAsync(ChatDto chat)
     {
-        List<CallCenterMessage> messages = await _repository.GetLastMessagesByChat(chat.Id);
+        var messages = await _repository.GetLastMessagesByChat(chat.Id);
 
-        return messages.Select(x => new CallCenterReceiveMessageDto
+        return messages.Select(x => new BaseMessage
         {
             RoomId = x.ChatId.ToString(),
             SenderId = x.SenderId,
@@ -150,7 +151,7 @@ public class CallCenterChatService : ICallCenterChatService
         };
     }
 
-    public async Task VisualizeMessagesAsync(CallCenterChatDto callCenterChat)
+    public async Task VisualizeMessagesAsync(ChatDto callCenterChat)
     {
         await _repository.VisualizeMessagesAsync(callCenterChat);
     }

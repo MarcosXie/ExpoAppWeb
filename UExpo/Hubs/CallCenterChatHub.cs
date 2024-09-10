@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using UExpo.Domain.Entities.CallCenterChat;
+using UExpo.Domain.Entities.Chats.CallCenterChat;
+using UExpo.Domain.Entities.Chats.Shared;
 
 namespace UExpo.Api.Hubs;
 
@@ -7,7 +8,7 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
 {
     private readonly string _adminRoom = "AdminRoom";
 
-    public async Task<JoinChatResponseDto> JoinRoom(CallCenterChatDto callCenterChat)
+    public async Task<JoinChatResponseDto> JoinRoom(ChatDto callCenterChat)
     {
         Guid roomId = await service.CreateCallCenterChatAsync(callCenterChat);
 
@@ -21,7 +22,7 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
             RoomId = roomId
         };
     }
-    public async Task ChangeUserLang(CallCenterChatDto callCenterChat)
+    public async Task ChangeUserLang(ChatDto callCenterChat)
     {
         await service.UpdateChatAsync(callCenterChat);
     }
@@ -38,9 +39,9 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
         return await service.GetNotReadedMessagesByUserId(userId);
     }
 
-    public async Task SendMessageToRoom(CallCenterSendMessageDto message)
+    public async Task SendMessageToRoom(SendMessageDto message)
     {
-        (CallCenterReceiveMessageDto msgDto, bool isSendedByUser) = await service.AddMessageAsync(message);
+        (ReceiveMessageDto msgDto, bool isSendedByUser) = await service.AddMessageAsync(message);
 
         await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
 
@@ -53,7 +54,7 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
         }
     }
 
-    public async Task VisualizeMessages(CallCenterChatDto callCenterChat)
+    public async Task VisualizeMessages(ChatDto callCenterChat)
     {
         await service.VisualizeMessagesAsync(callCenterChat);
 

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using UExpo.Domain.Dao;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Agendas;
 using UExpo.Domain.Entities.Calendars;

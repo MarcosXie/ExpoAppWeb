@@ -1,4 +1,5 @@
-﻿using UExpo.Domain.Entities.Users;
+﻿using UExpo.Domain.Dao.Shared;
+using UExpo.Domain.Entities.Users;
 
 namespace UExpo.Domain.Dao;
 

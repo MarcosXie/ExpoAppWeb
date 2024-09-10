@@ -1,6 +1,7 @@
 ﻿using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Shared;
 using UExpo.Domain.Entities.Calendars;
+using UExpo.Domain.Entities.Chats.RelationshipChat;
 
 namespace UExpo.Domain.Entities.Relationships;
 
@@ -12,6 +13,8 @@ public class Relationship : BaseModel
 	public User SupplierUser { get; set; } = null!;
 	public Guid CalendarId { get; set; }
 	public Calendar Calendar { get; set; } = null!;
-	public Guid ChatId { get; set; }
-	//TODO: Adds Chat entity
+	public string SupplierLang { get; set; } = "en";
+	public string BuyerLang { get; set; } = "en";
+
+	public List<RelationshipMessage> Messages { get; set; } = [];
 }

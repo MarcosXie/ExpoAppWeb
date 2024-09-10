@@ -469,9 +469,6 @@ namespace UExpo.Repository.Migrations
                     b.Property<Guid>("CalendarId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("ChatId")
-                        .HasColumnType("char(36)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
@@ -491,6 +488,55 @@ namespace UExpo.Repository.Migrations
                     b.HasIndex("SupplierUserId");
 
                     b.ToTable("relationship", (string)null);
+                });
+
+            modelBuilder.Entity("UExpo.Domain.Dao.RelationshipMessageDao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("Readed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("ReceiverLang")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SendedMessage")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("SenderLang")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SenderName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TranslatedMessage")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id")
+                        .HasName("relationship_message_pkey");
+
+                    b.HasIndex("ChatId");
+
+                    b.ToTable("relationship_message", (string)null);
                 });
 
             modelBuilder.Entity("UExpo.Domain.Dao.SegmentDao", b =>
@@ -678,13 +724,13 @@ namespace UExpo.Repository.Migrations
 
             modelBuilder.Entity("UExpo.Domain.Dao.CallCenterMessageDao", b =>
                 {
-                    b.HasOne("UExpo.Domain.Dao.CallCenterChatDao", "CallCenterChat")
+                    b.HasOne("UExpo.Domain.Dao.CallCenterChatDao", "Chat")
                         .WithMany("Messages")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CallCenterChat");
+                    b.Navigation("Chat");
                 });
 
             modelBuilder.Entity("UExpo.Domain.Dao.CatalogDao", b =>
@@ -777,6 +823,17 @@ namespace UExpo.Repository.Migrations
                     b.Navigation("SupplierUser");
                 });
 
+            modelBuilder.Entity("UExpo.Domain.Dao.RelationshipMessageDao", b =>
+                {
+                    b.HasOne("UExpo.Domain.Dao.RelationshipDao", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+                });
+
             modelBuilder.Entity("UExpo.Domain.Dao.SegmentDao", b =>
                 {
                     b.HasOne("UExpo.Domain.Dao.FairDao", "Fair")
@@ -833,6 +890,11 @@ namespace UExpo.Repository.Migrations
             modelBuilder.Entity("UExpo.Domain.Dao.FairDao", b =>
                 {
                     b.Navigation("Segments");
+                });
+
+            modelBuilder.Entity("UExpo.Domain.Dao.RelationshipDao", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("UExpo.Domain.Dao.UserDao", b =>

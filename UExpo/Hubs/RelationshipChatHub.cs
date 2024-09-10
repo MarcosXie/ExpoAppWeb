@@ -1,64 +1,51 @@
 using Microsoft.AspNetCore.SignalR;
-using UExpo.Domain.Entities.CallCenterChat;
+using UExpo.Domain.Entities.Chats.RelationshipChat;
+using UExpo.Domain.Entities.Chats.Shared;
 
 namespace UExpo.Api.Hubs;
 
-public class RelationshipChatHub(ICallCenterChatService service) : Hub
+public class RelationshipChatHub(IRelationshipChatService service) : Hub
 {
 	private readonly string _relationshipNotificationRoom = "RelationshipNotificationRoom";
 
-	public async Task<JoinChatResponseDto> JoinRoom(CallCenterChatDto callCenterChat)
+	public async Task<JoinChatResponseDto> JoinChatRoom(ChatDto joinChatDto)
 	{
-		Guid roomId = await service.CreateCallCenterChatAsync(callCenterChat);
+		var roomId = joinChatDto.Id;
 
 		await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
 
-		callCenterChat.Id = roomId;
-
 		return new()
 		{
-			Messages = await service.GetMessagesByChatAsync(callCenterChat),
-			RoomId = roomId
+			RoomId = roomId,
+			Messages = await service.GetMessagesByChatAsync(joinChatDto),
 		};
 	}
 
-	public async Task ChangeUserLang(CallCenterChatDto callCenterChat)
-	{
-		await service.UpdateChatAsync(callCenterChat);
-	}
-
-	public async Task<List<CallCenterChatResponseDto>> JoinRelationshipNotificationRoom()
+	public async Task<List<RelationshipNotReadedMessagesDto>> JoinRelationshipNotificationRoom()
 	{
 		await Groups.AddToGroupAsync(Context.ConnectionId, _relationshipNotificationRoom);
-		return await service.GetChatsAsync();
+		return await service.GetNotReadedMessagesAsync();
 	}
 
-	public async Task<int> JoinUserRoom(string userId)
+	public async Task ChangeUserLang(ChatDto callCenterChat)
 	{
-		await Groups.AddToGroupAsync(Context.ConnectionId, userId);
-		return await service.GetNotReadedMessagesByUserId(userId);
+		await service.UpdateLangAsync(callCenterChat);
 	}
 
-	public async Task SendMessageToRoom(CallCenterSendMessageDto message)
+	public async Task SendMessage(SendMessageDto message)
 	{
-		(CallCenterReceiveMessageDto msgDto, bool isSendedByUser) = await service.AddMessageAsync(message);
+		ReceiveMessageDto msgDto = await service.AddMessageAsync(message);
 
 		await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
 
-		if (isSendedByUser)
-			await Clients.Groups(_relationshipNotificationRoom)
-				.SendAsync("UpdatedChats", await service.GetChatsAsync());
-		else
-		{
-			(int count, string userId) = await service.GetNotReadedMessagesByRoomId(message.RoomId);
-			await Clients.Groups(userId).SendAsync("UpdatedCallCenter", count);
-		}
+		await Clients.Groups(_relationshipNotificationRoom)
+			.SendAsync("UpdatedChats", await service.GetNotReadedMessagesAsync());		
 	}
 
-	public async Task VisualizeMessages(CallCenterChatDto callCenterChat)
+	public async Task VisualizeMessages(ChatDto chat)
 	{
-		await service.VisualizeMessagesAsync(callCenterChat);
+		await service.VisualizeMessagesAsync(chat);
 
-		await Clients.Group(callCenterChat.Id.ToString()!).SendAsync("VisualizedMessages", callCenterChat.UserId);
+		await Clients.Group(chat.Id.ToString()!).SendAsync("VisualizedMessages", chat.UserId);
 	}
 }

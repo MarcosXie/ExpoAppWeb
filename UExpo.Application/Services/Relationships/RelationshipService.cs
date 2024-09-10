@@ -9,22 +9,29 @@ namespace UExpo.Application.Services.Relationships;
 public class RelationshipService : IRelationshipService
 {
 	private IRelationshipRepository _repository;
+	private IUserRepository _userRepository;
 	private AuthUserHelper _authUserHelper;
 	private IMapper _mapper;
 
-	public RelationshipService(IRelationshipRepository repository, IMapper mapper, AuthUserHelper authUserHelper)
+	public RelationshipService(IRelationshipRepository repository, IUserRepository userRepository, IMapper mapper, AuthUserHelper authUserHelper)
 	{
 		_repository = repository;
+		_userRepository = userRepository;
 		_authUserHelper = authUserHelper;
 		_mapper = mapper;
 	}
 
-	public Task<Guid> CreateAsync(RelationshipDto relationship)
+	public async Task<Guid> CreateAsync(RelationshipDto relationship)
 	{
-		var mappedRelationship = _mapper.Map<Relationship>(relationship);
-		//TODO: Create Chat
+		var buyer = await _userRepository.GetByIdAsync(relationship.BuyerUserId);
+		var supplier = await _userRepository.GetByIdAsync(relationship.SupplierUserId);
 
-		return _repository.CreateAsync(mappedRelationship);
+		var mappedRelationship = _mapper.Map<Relationship>(relationship);
+
+		mappedRelationship.BuyerLang = buyer.Lang;	
+		mappedRelationship.SupplierLang = supplier.Lang;
+
+		return await _repository.CreateAsync(mappedRelationship);
 	}
 
 	public async Task<List<RelationshipResponseDto>> GetRelationshipsByUserIdAsync(Guid? id)

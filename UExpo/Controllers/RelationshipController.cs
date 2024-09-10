@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using UExpo.Domain.Entities.Relationships;
-using UExpo.Domain.Entities.Tutorial;
 
 namespace UExpo.Api.Controllers;
 

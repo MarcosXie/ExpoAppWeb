@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace UExpo.Repository.Migrations
 {
-    /// <inheritdoc />
-    public partial class addslastsearchedtags : Migration
+	/// <inheritdoc />
+	public partial class addslastsearchedtags : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

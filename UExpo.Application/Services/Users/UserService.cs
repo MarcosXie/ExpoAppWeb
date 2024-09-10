@@ -8,7 +8,6 @@ using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
-using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.Users;
 

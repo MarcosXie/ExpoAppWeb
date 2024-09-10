@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Agendas;
-using UExpo.Domain.Entities.CallCenterChat;
+using UExpo.Domain.Entities.Chats.CallCenterChat;
+using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
@@ -19,8 +20,8 @@ public class DtoToDomain : Profile
         CreateMap<UserProfileDto, User>()
             .ForMember(x => x.Images, opt => opt.Ignore())
             .ForMember(x => x.Password, opt => opt.Ignore());
-        CreateMap<CallCenterChatDto, CallCenterChat>();
-        CreateMap<CallCenterSendMessageDto, CallCenterMessage>();
+        CreateMap<ChatDto, CallCenterChat>();
+        CreateMap<SendMessageDto, CallCenterMessage>();
         CreateMap<AdminDto, Admin>();
 
         CreateMap<AgendaDto, Agenda>();

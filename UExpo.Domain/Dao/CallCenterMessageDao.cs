@@ -1,14 +1,8 @@
-﻿namespace UExpo.Domain.Dao;
+﻿using UExpo.Domain.Dao.Shared;
 
-public class CallCenterMessageDao : BaseDao
+namespace UExpo.Domain.Dao;
+
+public class CallCenterMessageDao : BaseMessageDao
 {
-    public Guid ChatId { get; set; }
-    public CallCenterChatDao CallCenterChat { get; set; } = null!;
-    public Guid SenderId { get; set; }
-    public string SenderName { get; set; } = null!;
-    public string SenderLang { get; set; } = null!;
-    public string SendedMessage { get; set; } = null!;
-    public string ReceiverLang { get; set; } = null!;
-    public string TranslatedMessage { get; set; } = null!;
-    public bool Readed { get; set; }
+    public CallCenterChatDao Chat { get; set; } = null!;
 }

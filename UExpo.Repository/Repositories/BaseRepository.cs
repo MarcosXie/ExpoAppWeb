@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using UExpo.Domain.Dao;
+using UExpo.Domain.Dao.Shared;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.Shared;
 using UExpo.Repository.Context;

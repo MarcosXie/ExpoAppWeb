@@ -1,4 +1,6 @@
-﻿namespace UExpo.Domain.Dao;
+﻿using UExpo.Domain.Dao.Shared;
+
+namespace UExpo.Domain.Dao;
 
 public class UserImageDao : BaseDao
 {
