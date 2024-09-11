@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using UExpo.Application.Utils;
-using UExpo.Domain.Entities.Chats.CallCenterChat;
 using UExpo.Domain.Entities.Chats.RelationshipChat;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Relationships;
@@ -50,7 +49,7 @@ public class RelationshipChatService : IRelationshipChatService
 			SenderLang = senderLang,
 			TranslatedMessage = await _translationService.TranslateText(message.SendedMessage, senderLang, receiverLang),
 			ReceiverLang = receiverLang,
-			Readed = false
+			Readed = false,
 		};
 
 		await _relationshipRepository.AddMessageAsync(relationshipMessage);
@@ -63,6 +62,7 @@ public class RelationshipChatService : IRelationshipChatService
 			TranslatedMessage = relationshipMessage.TranslatedMessage,
 			SenderName = message.SenderName,
 			SendedTime = relationshipMessage.CreatedAt,
+			ReceiverId = isSupplier ? chat.SupplierUserId : chat.BuyerUserId,
 			Readed = relationshipMessage.Readed
 		};
 

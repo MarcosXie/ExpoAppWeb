@@ -11,6 +11,5 @@ public interface ICallCenterChatService
 	Task<List<CallCenterChatResponseDto>> GetChatsAsync();
 	Task VisualizeMessagesAsync(ChatDto callCenterChat);
 	Task<CallCenterChatResponseDto> GetChatByUserIdAsync();
-	Task<(int, string)> GetNotReadedMessagesByRoomId(Guid roomId);
-	Task<int> GetNotReadedMessagesByUserId(string userId);
+	Task<int> GetNotReadedMessagesByUserId(Guid userId);
 }

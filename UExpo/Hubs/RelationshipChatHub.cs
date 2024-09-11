@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.SignalR;
+using UExpo.Api.Hubs.Interfaces;
 using UExpo.Domain.Entities.Chats.RelationshipChat;
 using UExpo.Domain.Entities.Chats.Shared;
 
 namespace UExpo.Api.Hubs;
 
-public class RelationshipChatHub(IRelationshipChatService service) : Hub
+public class RelationshipChatHub(IRelationshipChatService service) : Hub, IChatHub
 {
 	private readonly string _relationshipNotificationRoom = "RelationshipNotificationRoom";
 
@@ -21,12 +22,6 @@ public class RelationshipChatHub(IRelationshipChatService service) : Hub
 		};
 	}
 
-	public async Task<List<RelationshipNotReadedMessagesDto>> JoinRelationshipNotificationRoom(Guid userId)
-	{
-		await Groups.AddToGroupAsync(Context.ConnectionId, _relationshipNotificationRoom);
-		return await service.GetNotReadedMessagesAsync(userId);
-	}
-
 	public async Task ChangeUserLang(ChatDto callCenterChat)
 	{
 		await service.UpdateLangAsync(callCenterChat);
@@ -38,8 +33,11 @@ public class RelationshipChatHub(IRelationshipChatService service) : Hub
 
 		await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
 
-		await Clients.Groups(_relationshipNotificationRoom)
-			.SendAsync("UpdatedChats", await service.GetNotReadedMessagesAsync(message.SenderId));		
+		await Clients.Groups(msgDto.ReceiverId.ToString()).SendAsync("Notification",
+			new UserRoomNotificationsDto
+			{
+				RelationshipNotifications = await service.GetNotReadedMessagesAsync(message.RoomId),
+			});
 	}
 
 	public async Task VisualizeMessages(ChatDto chat)

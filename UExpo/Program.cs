@@ -140,6 +140,9 @@ app.MapHub<CallCenterChatHub>("/call-center-chathub")
 app.MapHub<RelationshipChatHub>("/relationship-chathub")
 	.RequireAuthorization();
 
+app.MapHub<NotificationsHub>("/notifications-hub")
+	.RequireAuthorization();
+
 SeedDataHelper.BootstrapAdmin(app.Services);
 
 app.Run();

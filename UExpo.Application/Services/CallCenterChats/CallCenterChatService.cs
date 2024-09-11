@@ -183,15 +183,8 @@ public class CallCenterChatService : ICallCenterChatService
         return responseDto;
     }
 
-    public async Task<(int, string)> GetNotReadedMessagesByRoomId(Guid roomId)
+    public async Task<int> GetNotReadedMessagesByUserId(Guid userId)
     {
-        CallCenterChat? chat = await _repository.GetByIdOrDefaultAsync(roomId);
-
-        return (await _repository.GetNotReadedMessagesByChatId(roomId), chat!.UserId.ToString());
-    }
-
-    public async Task<int> GetNotReadedMessagesByUserId(string userId)
-    {
-        return await _repository.GetNotReadedMessagesByUserId(Guid.Parse(userId));
+        return await _repository.GetNotReadedMessagesByUserId(userId);
     }
 }

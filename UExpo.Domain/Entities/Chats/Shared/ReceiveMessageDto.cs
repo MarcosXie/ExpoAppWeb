@@ -9,4 +9,5 @@ public class ReceiveMessageDto
 	public string? TranslatedMessage { get; set; } = null!;
 	public DateTime SendedTime { get; set; }
 	public bool Readed { get; set; }
+	public Guid ReceiverId { get; set; }
 }
