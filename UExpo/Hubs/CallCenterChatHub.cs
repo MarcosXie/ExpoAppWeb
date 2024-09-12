@@ -4,7 +4,7 @@ using UExpo.Domain.Entities.Chats.Shared;
 
 namespace UExpo.Api.Hubs;
 
-public class CallCenterChatHub(ICallCenterChatService service) : Hub
+public class CallCenterChatHub(ICallCenterChatService service, IHubContext<NotificationsHub> notificationHub) : Hub
 {
 	private readonly string _adminNotificationRoom = "AdminRoom";
 
@@ -52,7 +52,7 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
 		}
 		else
 		{// User Notification Room
-			await Clients.Groups(msgDto.ReceiverId.ToString()).SendAsync("Notification",
+			await notificationHub.Clients.Groups(msgDto.ReceiverId.ToString()).SendAsync("Notification",
 				new UserRoomNotificationsDto
 				{
 					CallCenterNotReadedMessages = await service.GetNotReadedMessagesByUserId(msgDto.ReceiverId),
@@ -66,5 +66,12 @@ public class CallCenterChatHub(ICallCenterChatService service) : Hub
 		await service.VisualizeMessagesAsync(callCenterChat);
 
 		await Clients.Group(callCenterChat.Id.ToString()!).SendAsync("VisualizedMessages", callCenterChat.UserId);
+
+		await notificationHub.Clients.Groups(callCenterChat.UserId.ToString()).SendAsync("Notification",
+			new UserRoomNotificationsDto
+			{
+				CallCenterNotReadedMessages = 0,
+			}
+		);
 	}
 }

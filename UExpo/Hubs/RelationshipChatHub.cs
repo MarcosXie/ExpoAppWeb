@@ -5,7 +5,7 @@ using UExpo.Domain.Entities.Chats.Shared;
 
 namespace UExpo.Api.Hubs;
 
-public class RelationshipChatHub(IRelationshipChatService service) : Hub, IChatHub
+public class RelationshipChatHub(IRelationshipChatService service, IHubContext<NotificationsHub> notificationHub) : Hub, IChatHub
 {
 	private readonly string _relationshipNotificationRoom = "RelationshipNotificationRoom";
 
@@ -33,10 +33,10 @@ public class RelationshipChatHub(IRelationshipChatService service) : Hub, IChatH
 
 		await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
 
-		await Clients.Groups(msgDto.ReceiverId.ToString()).SendAsync("Notification",
+		await notificationHub.Clients.Groups(msgDto.ReceiverId.ToString()).SendAsync("Notification",
 			new UserRoomNotificationsDto
 			{
-				RelationshipNotifications = await service.GetNotReadedMessagesAsync(message.RoomId),
+				RelationshipNotifications = await service.GetNotReadedMessagesAsync(msgDto.ReceiverId),
 			});
 	}
 
@@ -45,5 +45,11 @@ public class RelationshipChatHub(IRelationshipChatService service) : Hub, IChatH
 		await service.VisualizeMessagesAsync(chat);
 
 		await Clients.Group(chat.Id.ToString()!).SendAsync("VisualizedMessages", chat.UserId);
+
+		await notificationHub.Clients.Groups(chat.UserId.ToString()).SendAsync("Notification",
+			new UserRoomNotificationsDto
+			{
+				RelationshipNotifications = await service.GetNotReadedMessagesAsync(chat.UserId),
+			});
 	}
 }

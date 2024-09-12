@@ -84,16 +84,17 @@ public class CallCenterChatService : ICallCenterChatService
 
         await _repository.AddMessageAsync(callCenterMessage);
 
-        ReceiveMessageDto msgDto = new()
-        {
-            RoomId = chat.Id.ToString(),
-            SenderId = callCenterMessage.SenderId,
-            SendedMessage = callCenterMessage.SendedMessage,
-            TranslatedMessage = callCenterMessage.TranslatedMessage,
-            SenderName = message.SenderName,
-            SendedTime = callCenterMessage.CreatedAt,
-            Readed = callCenterMessage.Readed
-        };
+		ReceiveMessageDto msgDto = new()
+		{
+			RoomId = chat.Id.ToString(),
+			SenderId = callCenterMessage.SenderId,
+			SendedMessage = callCenterMessage.SendedMessage,
+			TranslatedMessage = callCenterMessage.TranslatedMessage,
+			SenderName = message.SenderName,
+			SendedTime = callCenterMessage.CreatedAt,
+			Readed = callCenterMessage.Readed,
+			ReceiverId = (Guid)(message.SenderId == chat.UserId ? chat.AdminId! : chat.UserId)
+		};
 
         return (msgDto, senderUser is User);
     }

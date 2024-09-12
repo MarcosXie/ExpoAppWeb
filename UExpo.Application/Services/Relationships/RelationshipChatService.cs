@@ -62,7 +62,7 @@ public class RelationshipChatService : IRelationshipChatService
 			TranslatedMessage = relationshipMessage.TranslatedMessage,
 			SenderName = message.SenderName,
 			SendedTime = relationshipMessage.CreatedAt,
-			ReceiverId = isSupplier ? chat.SupplierUserId : chat.BuyerUserId,
+			ReceiverId = isSupplier ? chat.BuyerUserId : chat.SupplierUserId,
 			Readed = relationshipMessage.Readed
 		};
 
