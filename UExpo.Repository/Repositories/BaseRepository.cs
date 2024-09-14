@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Threading;
 using UExpo.Domain.Dao.Shared;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.Shared;
@@ -50,7 +52,17 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
     public virtual async Task<List<TEntity>> GetAsync(CancellationToken cancellationToken = default) =>
         Mapper.Map<List<TEntity>>(await Database.AsNoTracking().ToListAsync(cancellationToken));
 
-    public virtual async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+	public async Task<List<TEntity>> GetAsync(Expression<Func<TDao, bool>> expression)
+	{
+		var items = await Database
+			.AsNoTracking()
+			.Where(expression)
+			.ToListAsync();
+
+		return Mapper.Map<List<TEntity>>(items);
+	}
+
+	public virtual async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         TDao? entity = await Database
             .AsNoTracking()
@@ -67,7 +79,12 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
             .AnyAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
 
 
-    public virtual async Task<TEntity?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default)
+	public async Task<bool> AnyAsync(Expression<Func<TDao, bool>> expression) =>
+	   await Database
+			.AsNoTracking()
+			.AnyAsync(expression);
+
+	public virtual async Task<TEntity?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default)
     {
         TDao? entity = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
 

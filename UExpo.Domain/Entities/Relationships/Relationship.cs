@@ -19,8 +19,8 @@ public class Relationship : BaseModel
 	public string SupplierMemo { get; set; } = string.Empty;
 	public RelationshipStatus SupplierStatus { get; set; } = RelationshipStatus.Normal;
 
-	public Guid CalendarId { get; set; }
-	public Calendar Calendar { get; set; } = null!;
+	public Guid? CalendarId { get; set; }
+	public Calendar? Calendar { get; set; } = null!;
 
 	public List<RelationshipMessage> Messages { get; set; } = [];
 }

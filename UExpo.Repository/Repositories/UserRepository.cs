@@ -57,10 +57,11 @@ public class UserRepository(UExpoDbContext context, IMapper mapper)
 
 	public async Task RemoveImagesAsync(List<UserImage> images)
 	{
-		var dbImages = Mapper.Map<List<UserImageDao>>(images);
-
-		foreach (var image in dbImages)
-			Context.UserImages.Remove(image);
+		Context.UserImages
+			.Where(x => 
+				images.Select(dbImage => dbImage.Id).Contains(x.Id)
+			)
+			.ExecuteDelete();
 
 		await Context.SaveChangesAsync();
 	}

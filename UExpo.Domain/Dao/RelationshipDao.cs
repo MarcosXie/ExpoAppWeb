@@ -17,8 +17,8 @@ public class RelationshipDao : BaseDao
 	public string SupplierMemo { get; set; } = string.Empty;
 	public RelationshipStatus SupplierStatus { get; set; } = RelationshipStatus.Normal;
 
-	public Guid CalendarId { get; set; }
-	public CalendarDao Calendar { get; set; } = null!;
+	public Guid? CalendarId { get; set; }
+	public CalendarDao? Calendar { get; set; } = null!;
 
 	public ICollection<RelationshipMessageDao> Messages { get; set; } = [];
 }

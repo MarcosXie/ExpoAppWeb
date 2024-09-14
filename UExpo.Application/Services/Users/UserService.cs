@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
+using UExpo.Application.Services.Relationships;
 using UExpo.Application.Utils;
 using UExpo.Domain.Email;
 using UExpo.Domain.Entities.Admins;
+using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
@@ -19,7 +21,8 @@ public class UserService : IUserService
     private readonly IConfiguration _config;
     private readonly IEmailService _emailService;
     private readonly IFileStorageService _fileStorageService;
-    private readonly AuthUserHelper _authUserHelper;
+	private readonly IRelationshipService _relationshipService;
+	private readonly AuthUserHelper _authUserHelper;
 
     public UserService(
         IUserRepository repository,
@@ -28,7 +31,8 @@ public class UserService : IUserService
         IConfiguration config,
         IFileStorageService fileStorageService,
         IEmailService emailService,
-        AuthUserHelper authUserHelper)
+		IRelationshipService relationshipService,
+		AuthUserHelper authUserHelper)
     {
         _repository = repository;
 		_adminRepository = adminRepository;
@@ -36,7 +40,8 @@ public class UserService : IUserService
         _config = config;
         _emailService = emailService;
         _fileStorageService = fileStorageService;
-        _authUserHelper = authUserHelper;
+		_relationshipService = relationshipService;
+		_authUserHelper = authUserHelper;
     }
 
     public async Task<Guid> CreateUserAsync(UserDto userDto)
@@ -83,9 +88,11 @@ public class UserService : IUserService
         await _repository.UpdateAsync(user);
 
         await _repository.DeleteUserWithNotValidatedEmailsAsync(user.Email);
+
+		await CreateSelfRelationshipAsync(user);
     }
 
-    public async Task ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
+	public async Task ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
     {
         User? user = await _repository.GetUserByEmailAsync(forgotPasswordDto.Email);
 
@@ -122,7 +129,9 @@ public class UserService : IUserService
     public async Task<UserProfileResponseDto> GetProfileAsync(Guid id)
     {
         var user = await _repository.GetByIdDetailedAsync(id);
-        var mappedUser = _mapper.Map<UserProfileResponseDto>(user);
+		user.Images = user.Images.OrderByDescending(x => x.Order).ToList();
+
+		var mappedUser = _mapper.Map<UserProfileResponseDto>(user);
         return mappedUser;
     }
 
@@ -283,5 +292,15 @@ public class UserService : IUserService
             await _fileStorageService.DeleteFileAsync(FileStorageKeys.UserImages, image.FileName);
         }
     }
+
+	private async Task CreateSelfRelationshipAsync(User user)
+	{
+		await _relationshipService.CreateAsync(new()
+		{
+			BuyerUserId = user.Id,
+			SupplierUserId = user.Id,
+			CalendarId = null
+		});
+	}
 	#endregion
 }

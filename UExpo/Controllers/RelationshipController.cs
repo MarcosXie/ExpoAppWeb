@@ -24,11 +24,29 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 		return Ok(relationships);
 	}
 
-	[HttpPatch("{id}")]
-	public async Task<ActionResult<List<RelationshipResponseDto>>> GetAsync(
+	[HttpPatch("{id}/Status")]
+	public async Task<ActionResult<List<RelationshipResponseDto>>> UpdateStatusAsync(
 		Guid id, RelationshipStatusUpdateDto updateDto)
 	{
 		await service.UpdateStatusAsync(id, updateDto);
+
+		return Ok();
+	}
+
+
+	[HttpGet("{id}/Memo")]
+	public async Task<ActionResult<List<RelationshipResponseDto>>> GetMemoAsync(Guid id)
+	{
+		var memo = await service.GetMemoAsync(id);
+
+		return Ok(memo);
+	}
+
+	[HttpPatch("{id}/Memo")]
+	public async Task<ActionResult<List<RelationshipResponseDto>>> UpdateMemoAsync(
+	Guid id, RelationshipMemoUpdateDto updateDto)
+	{
+		await service.UpdateMemoAsync(id, updateDto);
 
 		return Ok();
 	}
