@@ -9,12 +9,18 @@ public class Relationship : BaseModel
 {
 	public Guid BuyerUserId { get; set; }
 	public User BuyerUser { get; set; } = null!;
+	public string BuyerLang { get; set; } = "en";
+	public string BuyerMemo { get; set; } = string.Empty;
+	public RelationshipStatus BuyerStatus { get; set; } = RelationshipStatus.Normal;
+
 	public Guid SupplierUserId { get; set; }
 	public User SupplierUser { get; set; } = null!;
+	public string SupplierLang { get; set; } = "en";
+	public string SupplierMemo { get; set; } = string.Empty;
+	public RelationshipStatus SupplierStatus { get; set; } = RelationshipStatus.Normal;
+
 	public Guid CalendarId { get; set; }
 	public Calendar Calendar { get; set; } = null!;
-	public string SupplierLang { get; set; } = "en";
-	public string BuyerLang { get; set; } = "en";
 
 	public List<RelationshipMessage> Messages { get; set; } = [];
 }

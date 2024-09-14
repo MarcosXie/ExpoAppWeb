@@ -23,4 +23,13 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 
 		return Ok(relationships);
 	}
+
+	[HttpPatch("{id}")]
+	public async Task<ActionResult<List<RelationshipResponseDto>>> GetAsync(
+		Guid id, RelationshipStatusUpdateDto updateDto)
+	{
+		await service.UpdateStatusAsync(id, updateDto);
+
+		return Ok();
+	}
 }

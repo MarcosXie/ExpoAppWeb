@@ -11,4 +11,5 @@ public class RelationshipResponseDto
 	public CalendarResponseDto Calendar { get; set; } = null!;
 	public UserProfileResponseDto UserProfile { get; set; } = null!;
 	public DateTime CreatedAt { get; set; }
+	public RelationshipStatus Status { get; set; }
 }

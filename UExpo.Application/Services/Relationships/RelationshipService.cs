@@ -43,6 +43,24 @@ public class RelationshipService : IRelationshipService
 		return MapRelationships(relationships, (Guid)id).ToList();
 	}
 
+	public async Task UpdateStatusAsync(Guid id, RelationshipStatusUpdateDto updateDto)
+	{
+		var relationship = await _repository.GetByIdAsync(id);
+
+		var isSupplier = _authUserHelper.GetUser().Id == relationship.SupplierUserId;
+
+		if (isSupplier)
+		{
+			relationship.SupplierStatus = updateDto.Status;
+		}
+		else
+		{
+			 relationship.BuyerStatus = updateDto.Status;
+		}
+
+		await _repository.UpdateAsync(relationship);
+	}
+
 	private IEnumerable<RelationshipResponseDto> MapRelationships(List<Relationship> relationships, Guid id)
 	{
 		foreach (var relationship in relationships.OrderByDescending(x => x.CreatedAt))
@@ -63,6 +81,7 @@ public class RelationshipService : IRelationshipService
 				UserId = type == RelationshipType.Buyer ? relationship.BuyerUserId : relationship.SupplierUserId,
 				UserProfile = _mapper.Map<UserProfileResponseDto>(user),
 				Calendar = _mapper.Map<CalendarResponseDto>(relationship.Calendar),
+				Status = type == RelationshipType.Buyer ? relationship.BuyerStatus : relationship.SupplierStatus,
 			};
 		}
 	}
