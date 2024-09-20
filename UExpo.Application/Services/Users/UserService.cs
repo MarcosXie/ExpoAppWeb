@@ -200,6 +200,30 @@ public class UserService : IUserService
 		return admin.Lang;
 	}
 
+	public async Task<string> AddProfileImageAsync(Guid id, IFormFile image)
+	{
+		var user = await _repository.GetByIdAsync(id);
+		var fileName = GetFileName(image.Name, id.ToString());
+
+		user.ProfileImageName = fileName;
+		user.ProfileImageUri = await _fileStorageService.UploadFileAsync(image, fileName, FileStorageKeys.UserImages);
+
+		await _repository.UpdateAsync(user);
+		return user.ProfileImageUri;
+	}
+
+	public async Task RemoveProfileImageAsync(Guid id)
+	{
+		var user = await _repository.GetByIdAsync(id);
+
+		await _fileStorageService.DeleteFileAsync(FileStorageKeys.UserImages, user.ProfileImageName);
+
+		user.ProfileImageName = default;
+		user.ProfileImageUri = default;
+
+		await _repository.UpdateAsync(user);
+	}
+
 	#region Utils
 	private async Task ValidateCreateAsync(UserDto userDto)
     {

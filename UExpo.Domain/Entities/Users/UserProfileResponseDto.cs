@@ -11,5 +11,6 @@ public class UserProfileResponseDto
     public string? Description { get; set; }
     public string Password { get; set; } = null!;
 
-    public List<string> Images { get; set; } = [];
+	public string? ProfileImageUri { get; set; }
+	public List<string> Images { get; set; } = [];
 }

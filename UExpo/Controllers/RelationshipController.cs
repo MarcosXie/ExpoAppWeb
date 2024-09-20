@@ -33,7 +33,6 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 		return Ok();
 	}
 
-
 	[HttpGet("{id}/Memo")]
 	public async Task<ActionResult<List<RelationshipResponseDto>>> GetMemoAsync(Guid id)
 	{

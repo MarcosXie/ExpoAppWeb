@@ -17,6 +17,8 @@ public class User : BaseModel, IChatUser
     public string Lang { get; set; } = "en";
     public string? Address { get; set; }
     public string? Description { get; set; }
+	public string? ProfileImageName { get; set; }
+	public string? ProfileImageUri { get; set; }
 
 	public List<UserImage> Images { get; set; } = [];
 	public Catalog? Catalog { get; set; }

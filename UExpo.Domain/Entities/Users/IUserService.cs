@@ -15,4 +15,6 @@ public interface IUserService
 	BeMemberInfoDto GetBeMemberInfo();
 	Task UpdateLanguageAsync(Guid id, UpdateLanguageDto updateDto);
 	Task<string> GetLanguageAsync(Guid id);
+	Task<string> AddProfileImageAsync(Guid id, IFormFile image);
+	Task RemoveProfileImageAsync(Guid id);
 }

@@ -15,8 +15,10 @@ public class UserDao : BaseDao
     public string? Address { get; set; }
     public string? Description { get; set; }
 	public string Lang { get; set; } = "en";
+	public string? ProfileImageName { get; set; }
+	public string? ProfileImageUri { get; set; }
 
-    [NotMapped]
+	[NotMapped]
     public TypeEnum Type { get; set; }
 
     public CallCenterChatDao? CallCenterChat { get; set; }
