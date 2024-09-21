@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Threading;
 using UExpo.Domain.Dao.Shared;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.Shared;
@@ -24,7 +23,7 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
         Mapper = mapper;
     }
 
-    public async Task<Guid> CreateAsync(TEntity item, CancellationToken cancellationToken = default)
+    public virtual async Task<Guid> CreateAsync(TEntity item, CancellationToken cancellationToken = default)
     {
         TDao entityDao = Mapper.Map<TDao>(item);
 

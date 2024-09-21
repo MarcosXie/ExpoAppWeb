@@ -1,6 +1,8 @@
-﻿namespace UExpo.Domain.Entities.Cart;
+﻿using UExpo.Domain.Shared;
 
-public class CartItem
+namespace UExpo.Domain.Entities.Cart;
+
+public class CartItem : BaseModel
 {
 	public string ItemId { get; set; } = null!;
 	public Guid CartId { get; set; }

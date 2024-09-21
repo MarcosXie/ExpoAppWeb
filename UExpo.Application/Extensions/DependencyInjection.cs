@@ -4,6 +4,7 @@ using UExpo.Application.Services.Agendas;
 using UExpo.Application.Services.CalendarFairs;
 using UExpo.Application.Services.Calendars;
 using UExpo.Application.Services.CallCenterChats;
+using UExpo.Application.Services.Carts;
 using UExpo.Application.Services.Catalogs;
 using UExpo.Application.Services.Expos;
 using UExpo.Application.Services.Fairs;
@@ -15,6 +16,7 @@ using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Agendas;
 using UExpo.Domain.Entities.Calendars;
 using UExpo.Domain.Entities.Calendars.Fairs;
+using UExpo.Domain.Entities.Cart;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Chats.CallCenterChat;
 using UExpo.Domain.Entities.Chats.RelationshipChat;
@@ -46,6 +48,7 @@ public static class DependencyInjection
         services.AddScoped<ILastSearchedTagsService, LastSearchedTagsService>();
         services.AddScoped<IRelationshipService, RelationshipService>();
         services.AddScoped<IRelationshipChatService, RelationshipChatService>();
+        services.AddScoped<ICartService, CartService>();
 
 		//services.AddHostedService<YearlyTaskService>();
 	}

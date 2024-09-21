@@ -5,6 +5,7 @@ using UExpo.Domain.Entities.Agendas;
 using UExpo.Domain.Entities.Calendars;
 using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.Calendars.Segments;
+using UExpo.Domain.Entities.Cart;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
@@ -55,5 +56,7 @@ public static class DependencyInjection
 
 		services.AddScoped<ITutorialRepository, TutorialRepository>();
 		services.AddScoped<IRelationshipRepository, RelationshipRepository>();
+
+		services.AddScoped<ICartRepository, CartRepository>();
 	}
 }

@@ -12,8 +12,8 @@ using UExpo.Repository.Context;
 namespace UExpo.Repository.Migrations
 {
     [DbContext(typeof(UExpoDbContext))]
-    [Migration("20240921134956_adds-cart-tables")]
-    partial class addscarttables
+    [Migration("20240921175546_adds_cart-tables")]
+    partial class adds_carttables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -279,8 +279,9 @@ namespace UExpo.Repository.Migrations
                     b.Property<Guid>("BuyerUserId")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("CartNo")
-                        .HasColumnType("int");
+                    b.Property<string>("CartNo")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");

@@ -276,8 +276,9 @@ namespace UExpo.Repository.Migrations
                     b.Property<Guid>("BuyerUserId")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("CartNo")
-                        .HasColumnType("int");
+                    b.Property<string>("CartNo")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");

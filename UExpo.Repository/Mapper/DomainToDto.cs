@@ -4,6 +4,7 @@ using UExpo.Domain.Entities.Agendas;
 using UExpo.Domain.Entities.Calendars;
 using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.Calendars.Segments;
+using UExpo.Domain.Entities.Cart;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
@@ -39,5 +40,7 @@ public class DomainToDto : Profile
         CreateMap<CalendarSegment, CalendarSegmentOptionResponseDto>();
 		CreateMap<LastSearchedTags, LastSearchedTagsResponseDto>();
 		CreateMap<Relationship, RelationshipResponseDto>();
+		CreateMap<Cart, CartResponseDto>();
+		CreateMap<CartItem, CartItemResponseDto>();
 	}
 }
