@@ -18,7 +18,7 @@ public class RelationshipChatHub(IRelationshipChatService service, IHubContext<N
 		return new()
 		{
 			RoomId = roomId,
-			Messages = await service.GetMessagesByChatAsync(joinChatDto),
+			Messages = await service.GetMessagesByChatAsync(joinChatDto)
 		};
 	}
 

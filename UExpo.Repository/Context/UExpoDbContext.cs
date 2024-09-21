@@ -25,6 +25,8 @@ public class UExpoDbContext() : DbContext
     public virtual DbSet<LastSearchedTagsDao> LastSearchedTags { get; set; }
     public virtual DbSet<RelationshipDao> Relationships { get; set; }
     public virtual DbSet<RelationshipMessageDao> RelationshipsMessages { get; set; }
+	public virtual DbSet<CartDao> Carts { get; set; }
+	public virtual DbSet<CartItemDao> CartItems { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -27,4 +27,6 @@ public class UserDao : BaseDao
     public List<ExhibitorFairRegisterDao> FairRegisters { get; set; } = [];
     public List<RelationshipDao> BuyerRelationships { get; set; } = [];
     public List<RelationshipDao> SupplierRelationships { get; set; } = [];
+	public List<CartDao> BuyerCarts { get; set; } = [];
+	public List<CartDao> SupplierCarts { get; set; } = [];
 }
