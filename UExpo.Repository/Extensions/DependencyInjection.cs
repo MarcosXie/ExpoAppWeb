@@ -58,5 +58,6 @@ public static class DependencyInjection
 		services.AddScoped<IRelationshipRepository, RelationshipRepository>();
 
 		services.AddScoped<ICartRepository, CartRepository>();
+		services.AddScoped<ICartItemRepository, CartItemRepository>();
 	}
 }

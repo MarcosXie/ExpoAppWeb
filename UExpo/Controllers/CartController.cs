@@ -39,4 +39,11 @@ public class CartController(ICartService service) : ControllerBase
 		return Ok(carts);
 	}
 
+	[HttpGet("{supplierId}/Items/Count")]
+	public async Task<ActionResult> GetItemCountAsync(Guid supplierId)
+	{
+		int itemCount = await service.GetItemCountAsync(supplierId);
+
+		return Ok(itemCount);
+	}
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Entities.Cart;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Exceptions;
@@ -67,8 +68,8 @@ public class RelationshipRepository(UExpoDbContext context, IMapper mapper)
 
 	public async Task<List<BaseMessage>> GetNotReadedMessages(Guid currentUserId)
 	{
-		var msgs = await Context.RelationshipsMessages.Where(x => 
-			!x.Readed && 
+		var msgs = await Context.RelationshipsMessages.Where(x =>
+			!x.Readed &&
 			x.SenderId != currentUserId &&
 			(x.Chat.BuyerUserId == currentUserId || x.Chat.SupplierUserId == currentUserId)
 		).ToListAsync();

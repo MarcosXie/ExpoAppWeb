@@ -23,4 +23,6 @@ public class Relationship : BaseModel
 	public Calendar? Calendar { get; set; } = null!;
 
 	public List<RelationshipMessage> Messages { get; set; } = [];
+
+	public Guid CartId { get; set; }
 }

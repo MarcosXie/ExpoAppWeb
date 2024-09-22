@@ -1,4 +1,5 @@
-﻿using UExpo.Domain.Dao.Shared;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using UExpo.Domain.Dao.Shared;
 using UExpo.Domain.Entities.Relationships;
 
 namespace UExpo.Domain.Dao;
@@ -21,4 +22,7 @@ public class RelationshipDao : BaseDao
 	public CalendarDao? Calendar { get; set; } = null!;
 
 	public ICollection<RelationshipMessageDao> Messages { get; set; } = [];
+
+	[NotMapped]
+	public Guid? CartId { get; set; }
 }

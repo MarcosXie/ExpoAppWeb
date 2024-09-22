@@ -12,4 +12,5 @@ public class RelationshipResponseDto
 	public UserProfileResponseDto UserProfile { get; set; } = null!;
 	public DateTime CreatedAt { get; set; }
 	public RelationshipStatus Status { get; set; }
+	public Guid? CartId { get; set; }
 }

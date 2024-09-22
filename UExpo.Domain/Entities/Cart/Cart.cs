@@ -13,7 +13,7 @@ public class Cart : BaseModel
 	public string SupplierLang { get; set; } = "en";
 	public string CartNo { get; set; } = null!;
 	public bool IsFavorite { get; set; } = false;
-	public CartStatus Status { get; set; } = CartStatus.Active;
+	public CartStatus Status { get; set; } = CartStatus.Building;
 
 	public List<CartItem> Items { get; set; } = [];
 }

@@ -2,6 +2,7 @@
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Cart;
 using UExpo.Domain.Entities.Users;
+using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.Carts;
 
@@ -9,15 +10,23 @@ public class CartService : ICartService
 {
 	private AuthUserHelper _authUserHelper;
 	private ICartRepository _repository;
+	private ICartItemRepository _cartItemRepositoryRepository;
 	private IMapper _mapper;
 	private char _cartNoSeparator = '-';
 
-	public CartService(ICartRepository repository, AuthUserHelper authUserHelper, IMapper mapper)
+	public CartService(
+		ICartRepository repository, 
+		AuthUserHelper authUserHelper, 
+		IMapper mapper,
+		ICartItemRepository cartItemRepository
+	)
 	{
 		_authUserHelper = authUserHelper;
 		_repository = repository;
+		_cartItemRepositoryRepository = cartItemRepository;
 		_mapper = mapper;
 	}
+
 	public async Task CreateAsync(CartDto cart)
 	{
 		var nextCartNo = await _repository.GetNextCartNoAsync(_cartNoSeparator);
@@ -26,7 +35,7 @@ public class CartService : ICartService
 		dbCart.BuyerUserId = _authUserHelper.GetUser().Id;
 		dbCart.CartNo = $"{nextCartNo}{_cartNoSeparator}{DateTime.Now.Year % 100}";
 
-		await _repository.CreateAsync(dbCart); 
+		await _repository.CreateAsync(dbCart);
 	}
 
 	public async Task AddItemAsync(Guid id, CartItemDto item)
@@ -36,18 +45,14 @@ public class CartService : ICartService
 		var cartItem = _mapper.Map<CartItem>(item);
 		cartItem.CartId = cart.Id;
 
-		cart.Items.Add(cartItem);
-
-		await _repository.UpdateAsync(cart);
+		await _cartItemRepositoryRepository.CreateAsync(cartItem);
 	}
 
 	public async Task RemoveItemAsync(Guid id, Guid itemId)
 	{
-		var cart = await _repository.GetByIdDetailedAsync(id);
+		var _ = await _repository.GetByIdDetailedAsync(id);
 
-		cart.Items = cart.Items.Where(x => x.Id == itemId).ToList();
-
-		await _repository.UpdateAsync(cart);
+		await _cartItemRepositoryRepository.DeleteAsync(itemId);
 	}
 
 	public async Task<List<CartResponseDto>> GetAsync()
@@ -57,6 +62,18 @@ public class CartService : ICartService
 		List<Cart> carts = await _repository.GetDetailedAsync(userId);
 
 		return MapCarts(carts, userId).ToList();
+	}
+
+	public async Task<int> GetItemCountAsync(Guid supplierId)
+	{
+		var buyerId = _authUserHelper.GetUser().Id;
+
+		return await _repository.GetItemCountAsync(buyerId, supplierId);
+	}
+
+	public async Task<List<Cart>> GetByRelationshipBuyerIdsAsync(List<Guid> buyerIds)
+	{
+		return await _repository.GetAsync(x => buyerIds.Contains(x.BuyerUserId));
 	}
 
 	private IEnumerable<CartResponseDto> MapCarts(List<Cart> carts, Guid userId)

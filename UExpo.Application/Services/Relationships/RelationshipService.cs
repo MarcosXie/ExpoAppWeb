@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using UExpo.Application.Services.Carts;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Calendars;
+using UExpo.Domain.Entities.Cart;
 using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Entities.Users;
 
@@ -8,17 +10,25 @@ namespace UExpo.Application.Services.Relationships;
 
 public class RelationshipService : IRelationshipService
 {
-	private IRelationshipRepository _repository;
-	private IUserRepository _userRepository;
-	private AuthUserHelper _authUserHelper;
-	private IMapper _mapper;
+	private readonly IRelationshipRepository _repository;
+	private readonly IUserRepository _userRepository;
+	private readonly AuthUserHelper _authUserHelper;
+	private readonly IMapper _mapper;
+	private readonly ICartService _cartService;
 
-	public RelationshipService(IRelationshipRepository repository, IUserRepository userRepository, IMapper mapper, AuthUserHelper authUserHelper)
+	public RelationshipService(
+		IRelationshipRepository repository, 
+		IUserRepository userRepository, 
+		IMapper mapper, 
+		AuthUserHelper authUserHelper,
+		ICartService cartService
+	)
 	{
 		_repository = repository;
 		_userRepository = userRepository;
 		_authUserHelper = authUserHelper;
 		_mapper = mapper;
+		_cartService = cartService;
 	}
 
 	public async Task<Guid> CreateAsync(RelationshipDto relationship)
@@ -33,8 +43,16 @@ public class RelationshipService : IRelationshipService
 
 		if (await RelationshipAlreadyExistsAsync(mappedRelationship))
 			return Guid.NewGuid();
-		
-		return await _repository.CreateAsync(mappedRelationship);
+
+		var relationshipId = await _repository.CreateAsync(mappedRelationship);
+
+		await _cartService.CreateAsync(new()
+		{
+			SupplierUserId = supplier.Id,
+			Items = []
+		});
+
+		return relationshipId;
 	}
 
 	public async Task<string> GetMemoAsync(Guid id)
@@ -57,7 +75,9 @@ public class RelationshipService : IRelationshipService
 
 		List<Relationship> relationships = await _repository.GetByUserIdAsync((Guid)id);
 
-		return MapRelationships(relationships, (Guid)id).OrderBy(x => x.Status).ToList();
+		var carts = await _cartService.GetByRelationshipBuyerIdsAsync(relationships.Select(x => x.BuyerUserId).ToList());
+
+		return MapRelationships(relationships, (Guid)id, carts).OrderBy(x => x.Status).ToList();
 	}
 
 	public async Task UpdateMemoAsync(Guid id, RelationshipMemoUpdateDto updateDto)
@@ -102,7 +122,7 @@ public class RelationshipService : IRelationshipService
 		await _repository.UpdateAsync(relationship);
 	}
 
-	private IEnumerable<RelationshipResponseDto> MapRelationships(List<Relationship> relationships, Guid id)
+	private IEnumerable<RelationshipResponseDto> MapRelationships(List<Relationship> relationships, Guid id, List<Cart> carts)
 	{
 		foreach (var relationship in relationships.OrderByDescending(x => x.CreatedAt))
 		{
@@ -124,6 +144,9 @@ public class RelationshipService : IRelationshipService
 				UserProfile = _mapper.Map<UserProfileResponseDto>(user),
 				Calendar = _mapper.Map<CalendarResponseDto>(relationship.Calendar),
 				Status = type == RelationshipType.Buyer ? relationship.BuyerStatus : relationship.SupplierStatus,
+				CartId = carts.FirstOrDefault(x => 
+					x.BuyerUserId == relationship.BuyerUserId && 
+					x.SupplierUserId == relationship.SupplierUserId)?.Id,
 			};
 		}
 	}

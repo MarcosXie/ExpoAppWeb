@@ -34,6 +34,17 @@ public class CartRepository(UExpoDbContext context, IMapper mapper)
 		return Mapper.Map<List<Cart>>(carts);
 	}
 
+	public async Task<int> GetItemCountAsync(Guid buyerId, Guid supplierId)
+	{
+		return (await Database
+			.Include(x => x.Items)
+			.FirstOrDefaultAsync(x =>
+				x.Status == CartStatus.Building &&
+				x.BuyerUserId == buyerId &&
+				x.SupplierUserId == supplierId))
+			?.Items.Count ?? 0;
+	}
+
 	public async Task<string> GetNextCartNoAsync(char separator)
 	{
 		var currentYear = (DateTime.Now.Year % 100).ToString();
