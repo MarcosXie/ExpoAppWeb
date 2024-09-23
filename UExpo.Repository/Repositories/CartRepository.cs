@@ -34,15 +34,17 @@ public class CartRepository(UExpoDbContext context, IMapper mapper)
 		return Mapper.Map<List<Cart>>(carts);
 	}
 
-	public async Task<int> GetItemCountAsync(Guid buyerId, Guid supplierId)
+	public async Task<List<CartItem>> GetItemsAsync(Guid buyerId, Guid supplierId)
 	{
-		return (await Database
+		var items = (await Database
 			.Include(x => x.Items)
 			.FirstOrDefaultAsync(x =>
 				x.Status == CartStatus.Building &&
 				x.BuyerUserId == buyerId &&
 				x.SupplierUserId == supplierId))
-			?.Items.Count ?? 0;
+			?.Items;
+
+		return Mapper.Map<List<CartItem>>(items);
 	}
 
 	public async Task<string> GetNextCartNoAsync(char separator)

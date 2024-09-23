@@ -26,9 +26,9 @@ public class CartController(ICartService service) : ControllerBase
 	[HttpPost("{id}/Item")]
 	public async Task<ActionResult> AddItemAsync(Guid id, CartItemDto item)
 	{
-		await service.AddItemAsync(id, item);
+		var count = await service.AddItemAsync(id, item);
 
-		return Ok();
+		return Ok(count);
 	}
 
 	[HttpGet]
@@ -39,11 +39,19 @@ public class CartController(ICartService service) : ControllerBase
 		return Ok(carts);
 	}
 
-	[HttpGet("{supplierId}/Items/Count")]
+	[HttpGet("{supplierId}/Items")]
 	public async Task<ActionResult> GetItemCountAsync(Guid supplierId)
 	{
-		int itemCount = await service.GetItemCountAsync(supplierId);
+		var items = await service.GetItemsAsync(supplierId);
 
-		return Ok(itemCount);
+		return Ok(items);
+	}
+
+	[HttpPut("Item/{itemId}")]
+	public async Task<ActionResult> UpdateItem(Guid itemId, CartItemUpdateDto item)
+	{
+		await service.UpdateItemAsync(itemId, item);
+
+		return Ok();
 	}
 }

@@ -2,7 +2,6 @@
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Cart;
 using UExpo.Domain.Entities.Users;
-using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.Carts;
 
@@ -38,14 +37,20 @@ public class CartService : ICartService
 		await _repository.CreateAsync(dbCart);
 	}
 
-	public async Task AddItemAsync(Guid id, CartItemDto item)
+	public async Task<List<CartItemResponseDto>> AddItemAsync(Guid id, CartItemDto item)
 	{
 		var cart = await _repository.GetByIdDetailedAsync(id);
+
+		if (cart.Items.Any(x => x.ItemId == item.ItemId))
+			return _mapper.Map<List<CartItemResponseDto>>(cart.Items);
 
 		var cartItem = _mapper.Map<CartItem>(item);
 		cartItem.CartId = cart.Id;
 
-		await _cartItemRepositoryRepository.CreateAsync(cartItem);
+		cartItem.Id = await _cartItemRepositoryRepository.CreateAsync(cartItem);
+		cart.Items.Add(cartItem);
+
+		return _mapper.Map<List<CartItemResponseDto>>(cart.Items);
 	}
 
 	public async Task RemoveItemAsync(Guid id, Guid itemId)
@@ -64,11 +69,11 @@ public class CartService : ICartService
 		return MapCarts(carts, userId).ToList();
 	}
 
-	public async Task<int> GetItemCountAsync(Guid supplierId)
+	public async Task<List<CartItemResponseDto>> GetItemsAsync(Guid supplierId)
 	{
 		var buyerId = _authUserHelper.GetUser().Id;
 
-		return await _repository.GetItemCountAsync(buyerId, supplierId);
+		return _mapper.Map<List<CartItemResponseDto>>(await _repository.GetItemsAsync(buyerId, supplierId));
 	}
 
 	public async Task<List<Cart>> GetByRelationshipBuyerIdsAsync(List<Guid> buyerIds)
@@ -92,5 +97,10 @@ public class CartService : ICartService
 				Items = _mapper.Map<List<CartItemResponseDto>>(cart.Items)
 			};
 		}
+	}
+
+	public Task UpdateItemAsync(Guid itemId, CartItemUpdateDto item)
+	{
+		throw new NotImplementedException();
 	}
 }

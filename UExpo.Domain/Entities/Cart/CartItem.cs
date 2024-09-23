@@ -10,4 +10,5 @@ public class CartItem : BaseModel
 	public string JsonData { get; set; } = null!;
 	public double Quantity { get; set; }
 	public double Price { get; set; }
+	public string? ImgUrl { get; set; } 
 }
