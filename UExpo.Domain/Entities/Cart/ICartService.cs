@@ -3,6 +3,7 @@
 public interface ICartService
 {
 	Task CreateAsync(CartDto cart);
+	Task<string> UpdateStatusAsync(Guid id, CartStatusUpdateDto status);
 	Task RemoveItemAsync(Guid id, Guid itemId);
 	Task<List<CartItemResponseDto>> AddItemAsync(Guid id, CartItemDto item);
 	Task<List<CartResponseDto>> GetAsync();

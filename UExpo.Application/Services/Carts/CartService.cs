@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Cart;
 using UExpo.Domain.Entities.Users;
@@ -9,7 +10,7 @@ public class CartService : ICartService
 {
 	private AuthUserHelper _authUserHelper;
 	private ICartRepository _repository;
-	private ICartItemRepository _cartItemRepositoryRepository;
+	private ICartItemRepository _cartItemRepository;
 	private IMapper _mapper;
 	private char _cartNoSeparator = '-';
 
@@ -22,7 +23,7 @@ public class CartService : ICartService
 	{
 		_authUserHelper = authUserHelper;
 		_repository = repository;
-		_cartItemRepositoryRepository = cartItemRepository;
+		_cartItemRepository = cartItemRepository;
 		_mapper = mapper;
 	}
 
@@ -46,8 +47,9 @@ public class CartService : ICartService
 
 		var cartItem = _mapper.Map<CartItem>(item);
 		cartItem.CartId = cart.Id;
+		cartItem.JsonData = JsonConvert.SerializeObject(item.JsonData);
 
-		cartItem.Id = await _cartItemRepositoryRepository.CreateAsync(cartItem);
+		cartItem.Id = await _cartItemRepository.CreateAsync(cartItem);
 		cart.Items.Add(cartItem);
 
 		return _mapper.Map<List<CartItemResponseDto>>(cart.Items);
@@ -57,7 +59,7 @@ public class CartService : ICartService
 	{
 		var _ = await _repository.GetByIdDetailedAsync(id);
 
-		await _cartItemRepositoryRepository.DeleteAsync(itemId);
+		await _cartItemRepository.DeleteAsync(itemId);
 	}
 
 	public async Task<List<CartResponseDto>> GetAsync()
@@ -78,7 +80,26 @@ public class CartService : ICartService
 
 	public async Task<List<Cart>> GetByRelationshipBuyerIdsAsync(List<Guid> buyerIds)
 	{
-		return await _repository.GetAsync(x => buyerIds.Contains(x.BuyerUserId));
+		return await _repository.GetAsync(x => buyerIds.Contains(x.BuyerUserId) );
+	}
+
+	public async Task<string> UpdateStatusAsync(Guid id, CartStatusUpdateDto status)
+	{
+		var cart = await _repository.GetByIdAsync(id);
+
+		cart.Status = status.Status;
+
+		await _repository.UpdateAsync(cart);
+
+		if (status.Status == CartStatus.Active)
+		{
+			await CreateAsync(new CartDto()
+			{
+				SupplierUserId = cart.SupplierUserId,
+			});
+		}
+
+		return cart.CartNo;
 	}
 
 	private IEnumerable<CartResponseDto> MapCarts(List<Cart> carts, Guid userId)
@@ -99,8 +120,16 @@ public class CartService : ICartService
 		}
 	}
 
-	public Task UpdateItemAsync(Guid itemId, CartItemUpdateDto item)
+	public async Task UpdateItemAsync(Guid itemId, CartItemUpdateDto item)
 	{
-		throw new NotImplementedException();
+		var dbItem = await _cartItemRepository.GetByIdAsync(itemId);
+
+		if (item.Quantity is not null)
+			dbItem.Quantity = (double)item.Quantity;
+
+		if (item.Price is not null)
+			dbItem.Price = (double)item.Price;
+
+		await _cartItemRepository.UpdateAsync(dbItem);
 	}
 }

@@ -15,6 +15,14 @@ public class CartController(ICartService service) : ControllerBase
 		return Ok();
 	}
 
+	[HttpPut("{id}")]
+	public async Task<ActionResult> UpdateItem(Guid id, CartStatusUpdateDto status)
+	{
+		var cartNo = await service.UpdateStatusAsync(id, status);
+
+		return Ok(cartNo);
+	}
+
 	[HttpDelete("{id}/Item/{itemId}")]
 	public async Task<ActionResult> RemoveAsync(Guid id, Guid itemId)
 	{

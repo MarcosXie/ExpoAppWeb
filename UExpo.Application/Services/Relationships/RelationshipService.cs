@@ -145,6 +145,7 @@ public class RelationshipService : IRelationshipService
 				Calendar = _mapper.Map<CalendarResponseDto>(relationship.Calendar),
 				Status = type == RelationshipType.Buyer ? relationship.BuyerStatus : relationship.SupplierStatus,
 				CartId = carts.FirstOrDefault(x => 
+					x.Status == CartStatus.Building &&
 					x.BuyerUserId == relationship.BuyerUserId && 
 					x.SupplierUserId == relationship.SupplierUserId)?.Id,
 			};
