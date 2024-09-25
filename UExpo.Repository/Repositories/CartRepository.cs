@@ -28,7 +28,7 @@ public class CartRepository(UExpoDbContext context, IMapper mapper)
 			.Include(x => x.SupplierUser)
 			.Include(x => x.Items)
 			.AsSplitQuery()
-			.Where(x => x.SupplierUserId == userId || x.BuyerUserId == userId)
+			.Where(x => x.SupplierUserId == userId || x.BuyerUserId == userId && x.Status != CartStatus.Building)
 			.ToListAsync();
 
 		return Mapper.Map<List<Cart>>(carts);

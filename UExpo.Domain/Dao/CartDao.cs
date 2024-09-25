@@ -12,7 +12,6 @@ public class CartDao : BaseDao
 	public UserDao SupplierUser { get; set; } = null!;
 	public string SupplierLang { get; set; } = "en";
 	public string CartNo { get; set; } = null!;
-	public bool IsFavorite { get; set; } = false;
 	public CartStatus Status { get; set; } = CartStatus.Building;
 
 	public List<CartItemDao> Items { get; set; } = [];

@@ -7,7 +7,7 @@ public class CartResponseDto
 	public Guid UserId { get; set; }
 	public UserProfileResponseDto User { get; set; } = null!;
 	public string CartNo { get; set; } = null!;
-	public bool IsFavorite { get; set; } = false;
+	public bool IsSupplier { get; set; }
 	public CartStatus Status { get; set; } = CartStatus.Active;
 
 	public List<CartItemResponseDto> Items { get; set; } = [];

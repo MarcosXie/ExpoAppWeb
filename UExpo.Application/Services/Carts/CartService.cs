@@ -89,6 +89,9 @@ public class CartService : ICartService
 
 		cart.Status = status.Status;
 
+		if (status.Status == CartStatus.Active)
+			cart.CreatedAt = DateTime.Now;
+
 		await _repository.UpdateAsync(cart);
 
 		if (status.Status == CartStatus.Active)
@@ -111,8 +114,8 @@ public class CartService : ICartService
 				Id = cart.Id,
 				CartNo = cart.CartNo,
 				CreatedAt = cart.CreatedAt,
-				IsFavorite = cart.IsFavorite,
 				Status = cart.Status,
+				IsSupplier = userId == cart.SupplierUserId,
 				User = _mapper.Map<UserProfileResponseDto>(userId == cart.BuyerUserId ? cart.SupplierUser : cart.BuyerUser),
 				UserId = userId == cart.BuyerUserId ? cart.SupplierUserId : cart.BuyerUserId,
 				Items = _mapper.Map<List<CartItemResponseDto>>(cart.Items)
