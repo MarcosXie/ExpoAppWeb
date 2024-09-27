@@ -105,6 +105,11 @@ public class CartService : ICartService
 		return cart.CartNo;
 	}
 
+	public async Task<List<CartItemResponseDto>> GetItemsByCartIdAsync(Guid id)
+	{
+		return _mapper.Map<List<CartItemResponseDto>>(await _cartItemRepository.GetAsync(x => x.CartId == id));
+	}
+
 	private IEnumerable<CartResponseDto> MapCarts(List<Cart> carts, Guid userId)
 	{
 		foreach (var cart in carts)
@@ -132,6 +137,9 @@ public class CartService : ICartService
 
 		if (item.Price is not null)
 			dbItem.Price = (double)item.Price;
+
+		if (item.Annotation is not null)
+			dbItem.Annotation = item.Annotation;
 
 		await _cartItemRepository.UpdateAsync(dbItem);
 	}

@@ -10,4 +10,5 @@ public interface ICartService
 	Task<List<CartItemResponseDto>> GetItemsAsync(Guid supplierId);
 	Task<List<Cart>> GetByRelationshipBuyerIdsAsync(List<Guid> buyerIds);
 	Task UpdateItemAsync(Guid itemId, CartItemUpdateDto item);
+	Task<List<CartItemResponseDto>> GetItemsByCartIdAsync(Guid id);
 }

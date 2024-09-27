@@ -47,10 +47,18 @@ public class CartController(ICartService service) : ControllerBase
 		return Ok(carts);
 	}
 
-	[HttpGet("{supplierId}/Items")]
-	public async Task<ActionResult> GetItemCountAsync(Guid supplierId)
+	[HttpGet("Items/{supplierId}")]
+	public async Task<ActionResult> GetItemsAsync(Guid supplierId)
 	{
 		var items = await service.GetItemsAsync(supplierId);
+
+		return Ok(items);
+	}
+
+	[HttpGet("{id}/Items")]
+	public async Task<ActionResult> GetItemsByCartIdAsync(Guid id)
+	{
+		List<CartItemResponseDto> items = await service.GetItemsByCartIdAsync(id);
 
 		return Ok(items);
 	}
