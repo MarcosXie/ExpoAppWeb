@@ -12,4 +12,5 @@ public interface ICartService
 	Task UpdateItemAsync(Guid itemId, CartItemUpdateDto item);
 	Task<List<CartItemResponseDto>> GetItemsByCartIdAsync(Guid id);
 	Task<(byte[], string)> GetExportSheetAsync(Guid id);
+	Task<Cart> GetByIdAsync(Guid cartId);
 }

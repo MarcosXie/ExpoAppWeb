@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
-using UExpo.Domain.Entities.Cart;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Exceptions;

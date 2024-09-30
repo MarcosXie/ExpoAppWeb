@@ -18,4 +18,5 @@ public interface ICatalogService
     Task<string> GetTagsAsync(Guid id);
     Task UpdateTagsAsync(Guid id, CatalogTagDto tags);
     Task GenerateFairTagsAsync(Guid id, List<Guid> fairIds);
+	Task<CatalogResponseDto> GetByCartIdAsync(Guid cartId);
 }

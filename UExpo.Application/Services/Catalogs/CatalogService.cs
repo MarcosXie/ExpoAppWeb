@@ -55,7 +55,15 @@ public class CatalogService : ICatalogService
         return _mapper.Map<CatalogResponseDto>(catalog);
     }
 
-    public async Task<CatalogPdfResponseDto> AddPdfAsync(CatalogPdfDto pdf)
+	public async Task<CatalogResponseDto> GetByCartIdAsync(Guid cartId)
+	{
+		Catalog catalog = await _repository.GetByCartIdAsync(cartId);
+
+		catalog.ItemImages = await _itemImageRepository.GetMainImagesByCatalogAsync(catalog.Id);
+
+		return _mapper.Map<CatalogResponseDto>(catalog);
+	}
+	public async Task<CatalogPdfResponseDto> AddPdfAsync(CatalogPdfDto pdf)
     {
         Catalog catalog = await _repository.GetByIdAsync(pdf.CatalogId);
         string fileName = GetFileName(pdf.File.FileName, catalog.Id.ToString());

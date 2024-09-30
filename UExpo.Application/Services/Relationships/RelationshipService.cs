@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using UExpo.Application.Services.Carts;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Calendars;
 using UExpo.Domain.Entities.Cart;
@@ -53,6 +53,15 @@ public class RelationshipService : IRelationshipService
 		});
 
 		return relationshipId;
+	}
+
+	public async Task<RelationshipResponseDto> GetByCartIdAsync(Guid cartId)
+	{
+		List<Relationship> relationships = await _repository.GetByCartIdAsync(cartId);
+
+		var cart = await _cartService.GetByIdAsync(cartId);
+
+		return MapRelationships(relationships, _authUserHelper.GetUser().Id, [cart]).FirstOrDefault() ?? new();
 	}
 
 	public async Task<string> GetMemoAsync(Guid id)

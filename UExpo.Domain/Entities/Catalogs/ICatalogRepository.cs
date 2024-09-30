@@ -7,6 +7,7 @@ namespace UExpo.Domain.Entities.Catalogs;
 public interface ICatalogRepository : IBaseRepository<CatalogDao, Catalog>
 {
 	Task<List<string>> GetAllTagsAsync();
+	Task<Catalog> GetByCartIdAsync(Guid cartId);
 	Task<Catalog> GetByIdDetailedAsync(Guid id);
     Task<Catalog?> GetByUserIdOrDefaultAsync(Guid id);
     Task<List<CatalogItemImage>> GetImagesByProductIdAsync(Guid id, string productId);

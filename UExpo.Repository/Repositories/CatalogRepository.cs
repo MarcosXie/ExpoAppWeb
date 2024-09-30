@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
+using UExpo.Domain.Exceptions;
 using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;
@@ -19,7 +20,17 @@ public class CatalogRepository(UExpoDbContext context, IMapper mapper)
         return catalog is null ? null : Mapper.Map<Catalog>(catalog);
     }
 
-    public override async Task<Catalog> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+	public async Task<Catalog> GetByCartIdAsync(Guid cartId)
+	{
+		CatalogDao? catalog = await Database
+			.Include(x => x.Pdfs)
+			.FirstOrDefaultAsync(x => x.User.SupplierCarts.Any(x => x.Id == cartId))
+			?? throw new NotFoundException("Cart");
+
+		return catalog is null ? null : Mapper.Map<Catalog>(catalog);
+	}
+
+	public override async Task<Catalog> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         CatalogDao? entity = await Database
             .AsNoTracking()

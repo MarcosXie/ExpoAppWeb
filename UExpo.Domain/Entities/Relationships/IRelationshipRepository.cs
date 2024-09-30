@@ -6,6 +6,7 @@ namespace UExpo.Domain.Entities.Relationships;
 
 public interface IRelationshipRepository : IBaseChatRepository, IBaseRepository<RelationshipDao, Relationship>
 {
+	Task<List<Relationship>> GetByCartIdAsync(Guid cartId);
 	Task<List<Relationship>> GetByUserIdAsync(Guid id);
 	Task<List<BaseMessage>> GetNotReadedMessages(Guid currentUserId);
 }

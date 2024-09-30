@@ -20,7 +20,16 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
         return Ok(catalog);
     }
 
-    [HttpPost("{id}/Pdf")]
+	[HttpGet("CartId/{cartId}")]
+	public async Task<ActionResult<CatalogResponseDto>> GetByCartIdAsync(string cartId)
+	{
+		CatalogResponseDto catalog = await service.GetByCartIdAsync(cartId);
+
+		return Ok(catalog);
+	}
+
+
+	[HttpPost("{id}/Pdf")]
     public async Task<ActionResult<CatalogPdfResponseDto>> CreatePdfAsync(IFormFile file, Guid id)
     {
         if (file is null || file.Length == 0)
