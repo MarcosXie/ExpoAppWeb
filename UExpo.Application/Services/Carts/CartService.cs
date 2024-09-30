@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Packaging;
 using Newtonsoft.Json;
+using System.Globalization;
+using System.Text.Json;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Cart;
 using UExpo.Domain.Entities.Users;
@@ -36,6 +40,24 @@ public class CartService : ICartService
 		dbCart.CartNo = $"{nextCartNo}{_cartNoSeparator}{DateTime.Now.Year % 100}";
 
 		await _repository.CreateAsync(dbCart);
+	}
+
+	public async Task<(byte[], string)> GetExportSheetAsync(Guid id)
+	{
+		var cart = await _repository.GetByIdDetailedAsync(id);
+
+		var buyerName = string.IsNullOrEmpty(cart.BuyerUser.Enterprise)
+			? cart.BuyerUser.Name
+			: cart.BuyerUser.Enterprise;
+
+		var fileName = $"CartNo-{cart.CartNo}-{cart.SupplierUser.Enterprise}-{buyerName}";
+
+		using XLWorkbook workbook = BuildWorkbook(cart, fileName);
+
+		using var stream = new MemoryStream();
+		workbook.SaveAs(stream);
+
+		return (stream.ToArray(), fileName);
 	}
 
 	public async Task<List<CartItemResponseDto>> AddItemAsync(Guid id, CartItemDto item)
@@ -142,5 +164,59 @@ public class CartService : ICartService
 			dbItem.Annotation = item.Annotation;
 
 		await _cartItemRepository.UpdateAsync(dbItem);
+	}
+
+	private XLWorkbook BuildWorkbook(Cart cart, string fileName)
+	{
+		var workbook = new XLWorkbook();
+
+		var worksheet = workbook.Worksheets.Add(fileName);
+
+		var items = _mapper.Map<List<CartItemResponseDto>>(cart.Items);
+
+		worksheet.Cell(1, 1).Value = "Item Id";
+		worksheet.Cell(1, 2).Value = "Quantity";
+		worksheet.Cell(1, 3).Value = "Price";
+		worksheet.Cell(1, 4).Value = "Total";
+		worksheet.Cell(1, 5).Value = "Annotation";
+
+		var row = 2;
+		var maxColumnIndex = 5;
+		foreach (var item in items)
+		{
+			worksheet.Cell(row, 1).Value = item.ItemId;
+			worksheet.Cell(row, 2).Value = item.Quantity;
+			worksheet.Cell(row, 3).Value = item.Price.ToString("C", CultureInfo.CreateSpecificCulture("en-US"));
+			worksheet.Cell(row, 4).Value = (item.Quantity * item.Price).ToString("C", CultureInfo.CreateSpecificCulture("en-US"));
+			worksheet.Cell(row, 5).Value = item.Annotation;
+
+			using var jsonDoc = JsonDocument.Parse(item.JsonData);
+			
+			var jsonElement = jsonDoc.RootElement;
+			int columnIndex = 6;
+
+			foreach (var prop in jsonElement.EnumerateObject())
+			{
+				if (row == 2)
+				{
+					worksheet.Cell(1, columnIndex).Value = prop.Name;
+				}
+
+				worksheet.Cell(row, columnIndex).Value = prop.Value.ToString();
+				columnIndex++;
+			}
+
+			if (columnIndex > maxColumnIndex)
+			{
+				maxColumnIndex = columnIndex - 1;
+			}
+
+
+			row++;
+		}
+
+		worksheet.Columns(1, maxColumnIndex).AdjustToContents();
+
+		return workbook;
 	}
 }

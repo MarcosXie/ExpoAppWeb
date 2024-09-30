@@ -37,6 +37,7 @@ services.AddCors(options =>
         policy.WithOrigins("http://localhost:5174", config["FrontEndUrl"]!, "http://10.0.0.34:5173")
               .AllowAnyHeader()
               .AllowAnyMethod()
+			  .WithExposedHeaders("Content-Disposition")
               .AllowCredentials();
     });
 });

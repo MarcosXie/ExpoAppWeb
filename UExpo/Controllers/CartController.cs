@@ -23,6 +23,16 @@ public class CartController(ICartService service) : ControllerBase
 		return Ok(cartNo);
 	}
 
+	[HttpGet("{id}/Export")]
+	public async Task<ActionResult> ExportItem(Guid id)
+	{
+		var (sheet, fileName)= await service.GetExportSheetAsync(id);
+
+		return File(sheet,
+			"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			$"{fileName}.xlsx");
+	}
+
 	[HttpDelete("{id}/Item/{itemId}")]
 	public async Task<ActionResult> RemoveAsync(Guid id, Guid itemId)
 	{

@@ -12,6 +12,8 @@ public class CartRepository(UExpoDbContext context, IMapper mapper)
 	public async Task<Cart> GetByIdDetailedAsync(Guid id)
 	{
 		var entity = await Database
+			.Include(x => x.SupplierUser)
+			.Include(x => x.BuyerUser)
 			.Include(x => x.Items)
 			.AsNoTracking()
 			.FirstOrDefaultAsync(x => x.Id!.Equals(id));
