@@ -1,4 +1,4 @@
-﻿namespace UExpo.Domain.Entities.Cart;
+﻿namespace UExpo.Domain.Entities.Carts;
 
 public class CartItemUpdateDto
 {

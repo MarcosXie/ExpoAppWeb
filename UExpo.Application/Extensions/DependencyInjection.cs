@@ -16,7 +16,7 @@ using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Agendas;
 using UExpo.Domain.Entities.Calendars;
 using UExpo.Domain.Entities.Calendars.Fairs;
-using UExpo.Domain.Entities.Cart;
+using UExpo.Domain.Entities.Carts;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Chats.CallCenterChat;
 using UExpo.Domain.Entities.Chats.RelationshipChat;

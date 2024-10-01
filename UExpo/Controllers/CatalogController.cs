@@ -21,7 +21,7 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
     }
 
 	[HttpGet("CartId/{cartId}")]
-	public async Task<ActionResult<CatalogResponseDto>> GetByCartIdAsync(string cartId)
+	public async Task<ActionResult<CatalogResponseDto>> GetByCartIdAsync(Guid cartId)
 	{
 		CatalogResponseDto catalog = await service.GetByCartIdAsync(cartId);
 

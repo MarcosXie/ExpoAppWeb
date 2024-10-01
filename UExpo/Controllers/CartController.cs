@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Cart;
+using UExpo.Domain.Entities.Carts;
 
 namespace UExpo.Api.Controllers;
 

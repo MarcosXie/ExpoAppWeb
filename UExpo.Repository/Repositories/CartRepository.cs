@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
-using UExpo.Domain.Entities.Cart;
+using UExpo.Domain.Entities.Carts;
 using UExpo.Repository.Context;
 
 namespace UExpo.Repository.Repositories;

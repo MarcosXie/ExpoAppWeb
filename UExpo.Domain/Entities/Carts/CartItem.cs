@@ -1,6 +1,6 @@
 ﻿using UExpo.Domain.Shared;
 
-namespace UExpo.Domain.Entities.Cart;
+namespace UExpo.Domain.Entities.Carts;
 
 public class CartItem : BaseModel
 {
@@ -11,5 +11,5 @@ public class CartItem : BaseModel
 	public double Quantity { get; set; }
 	public double Price { get; set; }
 	public string? Annotation { get; set; }
-	public string? ImgUrl { get; set; } 
+	public string? ImgUrl { get; set; }
 }

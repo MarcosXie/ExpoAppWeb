@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Packaging;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Text.Json;
 using UExpo.Application.Utils;
-using UExpo.Domain.Entities.Cart;
+using UExpo.Domain.Entities.Carts;
 using UExpo.Domain.Entities.Users;
 
 namespace UExpo.Application.Services.Carts;
@@ -90,7 +89,7 @@ public class CartService : ICartService
 
 		List<Cart> carts = await _repository.GetDetailedAsync(userId);
 
-		return MapCarts(carts, userId).ToList();
+		return MapCarts(carts, userId).OrderBy(x => x.Status).ToList();
 	}
 
 	public async Task<List<CartItemResponseDto>> GetItemsAsync(Guid supplierId)
@@ -218,5 +217,10 @@ public class CartService : ICartService
 		worksheet.Columns(1, maxColumnIndex).AdjustToContents();
 
 		return workbook;
+	}
+
+	public async Task<Cart> GetByIdAsync(Guid cartId)
+	{
+		return await _repository.GetByIdAsync(cartId);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using UExpo.Domain.Dao;
+using UExpo.Domain.Entities.Carts;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Exceptions;
@@ -36,6 +37,20 @@ public class RelationshipRepository(UExpoDbContext context, IMapper mapper)
 		}
 
 		return messageDao.Id;
+	}
+
+	public async Task<List<Relationship>> GetByCartIdAsync(Cart cart)
+	{
+		var users = await Database
+			.Include(x => x.BuyerUser)
+				.ThenInclude(x => x.Images)
+			.Include(x => x.SupplierUser)
+				.ThenInclude(x => x.Images)
+			.Include(x => x.Calendar)
+			.Where(x => x.BuyerUserId == cart.BuyerUserId || x.SupplierUserId == cart.SupplierUserId)
+			.ToListAsync();
+
+		return Mapper.Map<List<Relationship>>(users);
 	}
 
 	public async Task<List<Relationship>> GetByUserIdAsync(Guid id)

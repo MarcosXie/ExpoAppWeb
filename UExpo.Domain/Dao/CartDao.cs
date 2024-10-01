@@ -1,5 +1,5 @@
 ﻿using UExpo.Domain.Dao.Shared;
-using UExpo.Domain.Entities.Cart;
+using UExpo.Domain.Entities.Carts;
 
 namespace UExpo.Domain.Dao;
 

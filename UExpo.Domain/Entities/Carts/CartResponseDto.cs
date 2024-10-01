@@ -1,5 +1,5 @@
 ﻿using UExpo.Domain.Entities.Users;
-namespace UExpo.Domain.Entities.Cart;
+namespace UExpo.Domain.Entities.Carts;
 
 public class CartResponseDto
 {

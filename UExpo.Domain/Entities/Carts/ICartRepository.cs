@@ -1,7 +1,7 @@
 ﻿using UExpo.Domain.Dao;
 using UExpo.Domain.Shared;
 
-namespace UExpo.Domain.Entities.Cart;
+namespace UExpo.Domain.Entities.Carts;
 
 public interface ICartRepository : IBaseRepository<CartDao, Cart>
 {

@@ -1,7 +1,7 @@
 ﻿using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Shared;
 
-namespace UExpo.Domain.Entities.Cart;
+namespace UExpo.Domain.Entities.Carts;
 
 public class Cart : BaseModel
 {
