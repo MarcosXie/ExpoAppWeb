@@ -15,5 +15,6 @@ public class CartDao : BaseDao
 	public CartStatus Status { get; set; } = CartStatus.Building;
 
 	public List<CartItemDao> Items { get; set; } = [];
+	public List<CartMessageDao> Messages { get; set; } = [];
 }
 

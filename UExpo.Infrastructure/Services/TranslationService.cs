@@ -24,8 +24,8 @@ public class TranslationService : ITranslationService
 
         TranslateTextRequest translateRequest = new TranslateTextRequest
         {
-            SourceLanguageCode = srcLang,
-            TargetLanguageCode = trgLang,
+            SourceLanguageCode = string.IsNullOrEmpty(srcLang) ? "en" : srcLang,
+            TargetLanguageCode = string.IsNullOrEmpty(trgLang) ? "en" : trgLang,
             Text = text
         };
 

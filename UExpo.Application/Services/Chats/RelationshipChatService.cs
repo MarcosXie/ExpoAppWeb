@@ -6,7 +6,7 @@ using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Translation;
 
-namespace UExpo.Application.Services.Relationships;
+namespace UExpo.Application.Services.Chats;
 
 public class RelationshipChatService : IRelationshipChatService
 {
@@ -85,15 +85,15 @@ public class RelationshipChatService : IRelationshipChatService
 		}).ToList();
 	}
 
-	public async Task<List<RelationshipNotReadedMessagesDto>> GetNotReadedMessagesAsync(Guid userId)
+	public async Task<List<NotReadedMessagesDto>> GetNotReadedMessagesAsync(Guid userId)
 	{
 		List<BaseMessage> notReadedMessages = await _relationshipRepository.GetNotReadedMessages(userId);
 
 		return notReadedMessages
 			.GroupBy(x => x.ChatId)
-			.Select(x => new RelationshipNotReadedMessagesDto
+			.Select(x => new NotReadedMessagesDto
 			{
-				RelationshipId = x.Key,
+				ChatId = x.Key,
 				NotReadedMessages = x.Count()
 			}).ToList();
 	}

@@ -27,6 +27,7 @@ public class UExpoDbContext() : DbContext
     public virtual DbSet<RelationshipMessageDao> RelationshipsMessages { get; set; }
 	public virtual DbSet<CartDao> Carts { get; set; }
 	public virtual DbSet<CartItemDao> CartItems { get; set; }
+	public virtual DbSet<CartMessageDao> CartMessages { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
