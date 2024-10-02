@@ -128,7 +128,11 @@ public class CartService : ICartService
 
 	public async Task<List<CartItemResponseDto>> GetItemsByCartIdAsync(Guid id)
 	{
-		return _mapper.Map<List<CartItemResponseDto>>(await _cartItemRepository.GetAsync(x => x.CartId == id));
+		return _mapper.Map<List<CartItemResponseDto>>(
+				await _cartItemRepository.GetAsync(x => x.CartId == id)
+			)
+			.OrderBy(x => x.CreatedAt)
+			.ToList();
 	}
 
 	private IEnumerable<CartResponseDto> MapCarts(List<Cart> carts, Guid userId)
@@ -181,7 +185,7 @@ public class CartService : ICartService
 
 		var row = 2;
 		var maxColumnIndex = 5;
-		foreach (var item in items)
+		foreach (var item in items.OrderBy(x => x.CreatedAt))
 		{
 			worksheet.Cell(row, 1).Value = item.ItemId;
 			worksheet.Cell(row, 2).Value = item.Quantity;

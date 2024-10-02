@@ -5,7 +5,9 @@
 namespace UExpo.Repository.Migrations
 {
     /// <inheritdoc />
+#pragma warning disable IDE1006 // Estilos de Nomenclatura
     public partial class add_memo_and_status_columnsinrelationship : Migration
+#pragma warning restore IDE1006 // Estilos de Nomenclatura
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

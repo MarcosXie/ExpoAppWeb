@@ -9,4 +9,5 @@ public class CartItemResponseDto
 	public double Price { get; set; }
 	public string? ImgUrl { get; set; }
 	public string? Annotation { get; set; }
+	public DateTime CreatedAt { get; set; }
 }

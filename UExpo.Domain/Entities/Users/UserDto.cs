@@ -16,4 +16,6 @@ public class UserDto
     public string ConfirmPassword { get; set; } = null!;
     [Required, MaxLength(30)]
     public string Country { get; set; } = null!;
+	public DateTime BirthDate { get; set; }
+	public UserType Type { get; set; }
 }

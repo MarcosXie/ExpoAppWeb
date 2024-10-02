@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using UExpo.Domain.Dao.Shared;
+﻿using UExpo.Domain.Dao.Shared;
 using UExpo.Domain.Entities.Users;
 
 namespace UExpo.Domain.Dao;
@@ -17,9 +16,8 @@ public class UserDao : BaseDao
 	public string Lang { get; set; } = "en";
 	public string? ProfileImageName { get; set; }
 	public string? ProfileImageUri { get; set; }
-
-	[NotMapped]
-    public TypeEnum Type { get; set; }
+	public DateTime BirthDate { get; set; }
+	public UserType Type { get; set; }
 
     public CallCenterChatDao? CallCenterChat { get; set; }
     public CatalogDao? Catalog { get; set; }

@@ -10,7 +10,7 @@ namespace UExpo.Repository.Repositories;
 public class TutorialRepository(UExpoDbContext context, IMapper mapper)
     : BaseRepository<TutorialDao, Tutorial>(context, mapper), ITutorialRepository
 {
-    public async Task<List<Tutorial>> GetAsync(TypeEnum? type)
+    public async Task<List<Tutorial>> GetAsync(UserType? type)
     {
         var tutorials = await Database.Where(t => type == null || t.Type == type).ToListAsync();
 

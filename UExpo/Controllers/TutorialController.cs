@@ -34,7 +34,7 @@ public class TutorialController(ITutorialService service) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TutorialResponseDto>>> GetAsync([FromQuery] TypeEnum? type)
+    public async Task<ActionResult<List<TutorialResponseDto>>> GetAsync([FromQuery] UserType? type)
     {
         var tutorials = await service.GetAsync(type);
 

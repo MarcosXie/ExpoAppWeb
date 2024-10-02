@@ -6,5 +6,5 @@ namespace UExpo.Domain.Entities.Tutorial;
 
 public interface ITutorialRepository : IBaseRepository<TutorialDao, Tutorial>
 {
-    Task<List<Tutorial>> GetAsync(TypeEnum? type);
+    Task<List<Tutorial>> GetAsync(UserType? type);
 }

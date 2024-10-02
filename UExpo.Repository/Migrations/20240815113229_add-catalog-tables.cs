@@ -5,7 +5,11 @@
 namespace UExpo.Repository.Migrations;
 
 /// <inheritdoc />
+#pragma warning disable CS8981 // O nome do tipo contém apenas caracteres ascii em caixa baixa. Esses nomes podem ficar reservados para o idioma.
+#pragma warning disable IDE1006 // Estilos de Nomenclatura
 public partial class addcatalogtables : Migration
+#pragma warning restore IDE1006 // Estilos de Nomenclatura
+#pragma warning restore CS8981 // O nome do tipo contém apenas caracteres ascii em caixa baixa. Esses nomes podem ficar reservados para o idioma.
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)

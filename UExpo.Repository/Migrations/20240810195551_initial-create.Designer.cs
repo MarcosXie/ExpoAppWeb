@@ -13,10 +13,12 @@ namespace UExpo.Repository.Migrations;
 
 [DbContext(typeof(UExpoDbContext))]
 [Migration("20240810195551_initial-create")]
+#pragma warning disable CS8981
 partial class initialcreate
+#pragma warning restore CS8981
 {
-    /// <inheritdoc />
-    protected override void BuildTargetModel(ModelBuilder modelBuilder)
+	/// <inheritdoc />
+	protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
 #pragma warning disable 612, 618
         modelBuilder

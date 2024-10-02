@@ -67,8 +67,6 @@ public class UserService : IUserService
         if (!HashHelper.Verify(loginDto.Password, user.Password))
             throw new InvalidCredentialsException();
 
-        user.Type = loginDto.UserType;
-
         return JwtHelper.GenerateJwtToken(user, _config);
     }
 

@@ -25,7 +25,7 @@ public class TutorialService : ITutorialService
         await _repository.DeleteAsync(id);
     }
 
-    public async Task<List<TutorialResponseDto>> GetAsync(TypeEnum? type = null)
+    public async Task<List<TutorialResponseDto>> GetAsync(UserType? type = null)
     {
         List<Tutorial> tutorials = await _repository.GetAsync(type);
 

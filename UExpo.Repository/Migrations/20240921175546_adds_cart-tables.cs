@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UExpo.Repository.Migrations
 {
     /// <inheritdoc />
+#pragma warning disable IDE1006 // Estilos de Nomenclatura
     public partial class adds_carttables : Migration
+#pragma warning restore IDE1006 // Estilos de Nomenclatura
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

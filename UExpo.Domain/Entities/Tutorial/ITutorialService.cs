@@ -7,5 +7,5 @@ public interface ITutorialService
     Task<Guid> CreateAsync(TutorialDto tutorial);
     Task UpdateAsync(Guid id, TutorialDto tutorial);
     Task DeleteAsync(Guid id);
-    Task<List<TutorialResponseDto>> GetAsync(TypeEnum? type = null);
+    Task<List<TutorialResponseDto>> GetAsync(UserType? type = null);
 }

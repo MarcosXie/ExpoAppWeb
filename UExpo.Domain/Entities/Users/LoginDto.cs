@@ -8,6 +8,4 @@ public class LoginDto
     public string Email { get; set; } = null!;
     [Required]
     public string Password { get; set; } = null!;
-    [Required]
-    public TypeEnum UserType { get; set; } = TypeEnum.Visitor;
 }
