@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Threading;
 using UExpo.Domain.Dao.Shared;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.Shared;
@@ -9,47 +10,47 @@ using UExpo.Repository.Context;
 namespace UExpo.Repository.Repositories;
 
 public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
-    where TDao : BaseDao
-    where TEntity : BaseModel
+	where TDao : BaseDao
+	where TEntity : BaseModel
 {
-    protected readonly UExpoDbContext Context;
-    protected readonly DbSet<TDao> Database;
-    protected readonly IMapper Mapper;
+	protected readonly UExpoDbContext Context;
+	protected readonly DbSet<TDao> Database;
+	protected readonly IMapper Mapper;
 
-    protected BaseRepository(UExpoDbContext context, IMapper mapper)
-    {
-        Context = context;
-        Database = context.Set<TDao>();
-        Mapper = mapper;
-    }
+	protected BaseRepository(UExpoDbContext context, IMapper mapper)
+	{
+		Context = context;
+		Database = context.Set<TDao>();
+		Mapper = mapper;
+	}
 
-    public virtual async Task<Guid> CreateAsync(TEntity item, CancellationToken cancellationToken = default)
-    {
-        TDao entityDao = Mapper.Map<TDao>(item);
+	public virtual async Task<Guid> CreateAsync(TEntity item, CancellationToken cancellationToken = default)
+	{
+		TDao entityDao = Mapper.Map<TDao>(item);
 
-        entityDao.CreatedAt = DateTime.Now;
+		entityDao.CreatedAt = DateTime.Now;
 
-        Database.Add(entityDao);
+		Database.Add(entityDao);
 
-        await Context.SaveChangesAsync(cancellationToken);
+		await Context.SaveChangesAsync(cancellationToken);
 
-        return entityDao.Id;
-    }
+		return entityDao.Id;
+	}
 
-    public async Task CreateAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
-    {
-        List<TDao> entityDao = Mapper.Map<List<TDao>>(items);
+	public async Task CreateAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
+	{
+		List<TDao> entityDao = Mapper.Map<List<TDao>>(items);
 
-        foreach (TDao e in entityDao)
-            e.CreatedAt = DateTime.Now;
+		foreach (TDao e in entityDao)
+			e.CreatedAt = DateTime.Now;
 
-        Database.AddRange(entityDao);
+		Database.AddRange(entityDao);
 
-        await Context.SaveChangesAsync(cancellationToken);
-    }
+		await Context.SaveChangesAsync(cancellationToken);
+	}
 
-    public virtual async Task<List<TEntity>> GetAsync(CancellationToken cancellationToken = default) =>
-        Mapper.Map<List<TEntity>>(await Database.AsNoTracking().ToListAsync(cancellationToken));
+	public virtual async Task<List<TEntity>> GetAsync(CancellationToken cancellationToken = default) =>
+		Mapper.Map<List<TEntity>>(await Database.AsNoTracking().ToListAsync(cancellationToken));
 
 	public async Task<List<TEntity>> GetAsync(Expression<Func<TDao, bool>> expression)
 	{
@@ -62,20 +63,20 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
 	}
 
 	public virtual async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        TDao? entity = await Database
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
+	{
+		TDao? entity = await Database
+			.AsNoTracking()
+			.FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
 
-        return entity is null
-            ? throw new Exception($"{nameof(TDao)} com id = {id}")
-        : Mapper.Map<TEntity>(entity);
-    }
+		return entity is null
+			? throw new Exception($"{nameof(TDao)} com id = {id}")
+		: Mapper.Map<TEntity>(entity);
+	}
 
-    public async Task<bool> AnyAsync(Guid id, CancellationToken cancellationToken = default) =>
-       await Database
-            .AsNoTracking()
-            .AnyAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
+	public async Task<bool> AnyAsync(Guid id, CancellationToken cancellationToken = default) =>
+	   await Database
+			.AsNoTracking()
+			.AnyAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
 
 
 	public async Task<bool> AnyAsync(Expression<Func<TDao, bool>> expression) =>
@@ -83,51 +84,62 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
 			.AsNoTracking()
 			.AnyAsync(expression);
 
+	public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TDao, bool>> expression)
+	{
+		TDao? entity = await Database
+			.AsNoTracking()
+			.FirstOrDefaultAsync(expression);
+
+		return entity is null
+			? throw new Exception($"{nameof(TDao)}")
+		: Mapper.Map<TEntity>(entity);
+	}
+
 	public virtual async Task<TEntity?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        TDao? entity = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
+	{
+		TDao? entity = await Database.AsNoTracking().FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
 
-        return entity is null ? default : Mapper.Map<TEntity>(entity);
-    }
+		return entity is null ? default : Mapper.Map<TEntity>(entity);
+	}
 
-    public async Task UpdateAsync(TEntity item, CancellationToken cancellationToken = default)
-    {
-        TDao existingEntity = await Database.FirstOrDefaultAsync(x => x.Id!.Equals(item.Id), cancellationToken: cancellationToken)
-           ?? throw new NotFoundException($"{nameof(TDao)} com id = {item.Id}");
-        existingEntity.UpdatedAt = DateTime.Now;
+	public async Task UpdateAsync(TEntity item, CancellationToken cancellationToken = default)
+	{
+		TDao existingEntity = await Database.FirstOrDefaultAsync(x => x.Id!.Equals(item.Id), cancellationToken: cancellationToken)
+		   ?? throw new NotFoundException($"{nameof(TDao)} com id = {item.Id}");
+		existingEntity.UpdatedAt = DateTime.Now;
 
-        Mapper.Map(item, existingEntity);
+		Mapper.Map(item, existingEntity);
 
-        await Context.SaveChangesAsync(cancellationToken);
-    }
+		await Context.SaveChangesAsync(cancellationToken);
+	}
 
-    public async Task UpdateAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
-    {
-        List<TEntity> itemsList = items.ToList();
+	public async Task UpdateAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default)
+	{
+		List<TEntity> itemsList = items.ToList();
 
-        List<Guid> itemsIds = itemsList.Select(x => x.Id).ToList();
+		List<Guid> itemsIds = itemsList.Select(x => x.Id).ToList();
 
-        List<TDao> entityDaos = Database.Where(x => itemsIds.Contains(x.Id)).ToList();
+		List<TDao> entityDaos = Database.Where(x => itemsIds.Contains(x.Id)).ToList();
 
-        foreach (TEntity? item in itemsList)
-        {
-            item.UpdatedAt = DateTime.Now;
-            Mapper.Map(item, entityDaos.FirstOrDefault(x => x.Id!.Equals(item.Id)));
-        }
-        await Context.SaveChangesAsync(cancellationToken);
-    }
+		foreach (TEntity? item in itemsList)
+		{
+			item.UpdatedAt = DateTime.Now;
+			Mapper.Map(item, entityDaos.FirstOrDefault(x => x.Id!.Equals(item.Id)));
+		}
+		await Context.SaveChangesAsync(cancellationToken);
+	}
 
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        TDao? item = await Database.FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
+	public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		TDao? item = await Database.FirstOrDefaultAsync(x => x.Id!.Equals(id), cancellationToken: cancellationToken);
 
-        if (item is null) return;
+		if (item is null) return;
 
-        Database.Remove(item);
+		Database.Remove(item);
 
-        await Context.SaveChangesAsync(cancellationToken);
-    }
+		await Context.SaveChangesAsync(cancellationToken);
+	}
 
-    public async Task<List<TEntity>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken = default) =>
-        Mapper.Map<List<TEntity>>(await Database.AsNoTracking().Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken));
+	public async Task<List<TEntity>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken = default) =>
+		Mapper.Map<List<TEntity>>(await Database.AsNoTracking().Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken));
 }

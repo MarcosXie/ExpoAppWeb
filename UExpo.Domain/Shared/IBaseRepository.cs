@@ -19,6 +19,7 @@ public interface IBaseRepository<TDao, TEntity>
     Task<TEntity?> GetByIdOrDefaultAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> AnyAsync(Guid id, CancellationToken cancellationToken = default);
 	Task<bool> AnyAsync(Expression<Func<TDao, bool>> expression);
+	Task<TEntity> FirstOrDefaultAsync(Expression<Func<TDao, bool>> expression);
 
 	Task UpdateAsync(TEntity item, CancellationToken cancellationToken = default);
 
