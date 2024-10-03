@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using UExpo.Api.Hubs.Interfaces;
 using UExpo.Domain.Entities.Chats.CallCenterChat;
 using UExpo.Domain.Entities.Chats.Shared;
 
 namespace UExpo.Api.Hubs;
 
-public class CallCenterChatHub(ICallCenterChatService service, IHubContext<NotificationsHub> notificationHub) : Hub
+public class CallCenterChatHub(ICallCenterChatService service, IHubContext<NotificationsHub> notificationHub) : Hub, IChatHub
 {
 	private readonly string _adminNotificationRoom = "AdminRoom";
 
@@ -73,5 +74,10 @@ public class CallCenterChatHub(ICallCenterChatService service, IHubContext<Notif
 				CallCenterNotReadedMessages = 0,
 			}
 		);
+	}
+
+	public async Task DeleteMessage(Guid messageId)
+	{
+		await service.DeleteMessageAsync(messageId);
 	}
 }

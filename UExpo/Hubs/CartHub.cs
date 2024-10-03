@@ -52,4 +52,9 @@ public class CartChatHub(ICartChatService service, IHubContext<NotificationsHub>
 				CartNotifications = await service.GetNotReadedMessagesAsync(chat.UserId),
 			});
 	}
+
+	public async Task DeleteMessage(Guid messageId)
+	{
+		await service.DeleteMessageAsync(messageId);
+	}
 }

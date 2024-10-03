@@ -52,4 +52,10 @@ public class RelationshipChatHub(IRelationshipChatService service, IHubContext<N
 				RelationshipNotifications = await service.GetNotReadedMessagesAsync(chat.UserId),
 			});
 	}
+
+	public async Task DeleteMessage(Guid messageId)
+	{
+		await service.DeleteMessageAsync(messageId);
+
+	}
 }
