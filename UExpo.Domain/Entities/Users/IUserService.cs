@@ -17,4 +17,5 @@ public interface IUserService
 	Task<string> GetLanguageAsync(Guid id);
 	Task<string> AddProfileImageAsync(Guid id, IFormFile image);
 	Task RemoveProfileImageAsync(Guid id);
+	Task RedefinePasswordAsync(Guid id, RedefinePasswordDto redefinePassword);
 }

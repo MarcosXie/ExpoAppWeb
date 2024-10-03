@@ -51,7 +51,15 @@ public class UserController(IUserService service) : ControllerBase
         return Ok();
     }
 
-    [HttpPut("Profile/{id}")]
+	[HttpPost("RedefinePassword/{id}")]
+	[AllowAnonymous]
+	public async Task<ActionResult> RedefinePasswordAsync(Guid id, RedefinePasswordDto redefinePassword)
+	{
+		await service.RedefinePasswordAsync(id, redefinePassword);
+		return Ok();
+	}
+
+	[HttpPut("Profile/{id}")]
     public async Task<ActionResult> UpdateProfileAsync(Guid id, UserProfileDto profile)
     {
         await service.UpdateProfileAsync(id, profile);

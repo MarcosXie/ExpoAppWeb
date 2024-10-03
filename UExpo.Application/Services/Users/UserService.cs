@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using UExpo.Application.Services.Relationships;
 using UExpo.Application.Utils;
+using UExpo.Domain.Dao;
 using UExpo.Domain.Email;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Relationships;
@@ -89,6 +90,23 @@ public class UserService : IUserService
 
 		await CreateSelfRelationshipAsync(user);
     }
+
+	public async Task RedefinePasswordAsync(Guid id, RedefinePasswordDto redefinePassword)
+	{
+		User user = await _repository.GetByIdAsync(id);
+		string baseCode = GenerateBaseValidationCode(user);
+		bool isValid = HashHelper.Verify(baseCode, redefinePassword.Code);
+
+		if (!isValid)
+			throw new Exception("Error validating user email!");
+
+		if (!redefinePassword.Password.Equals(redefinePassword.ConfirmPassword))
+			throw new BadRequestException("The passwords don`t match! Please try again!");
+
+		user.Password = HashHelper.Hash(redefinePassword.Password);
+
+		await _repository.UpdateAsync(user);
+	}
 
 	public async Task ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
     {
@@ -254,15 +272,17 @@ public class UserService : IUserService
 
     private async Task SendEmailForgotPasswordAsync(User user)
     {
-        //TODO: Modificar para retornar a senha verdadeira
-        EmailSendDto emailSendDto = new()
+		string code = HashHelper.Hash(GenerateBaseValidationCode(user));
+
+		EmailSendDto emailSendDto = new()
         {
             ToAddresses = [user.Email],
             Subject = $"UExpo - Forgot password",
-            Body = @$"<p>You requested your password from UExpo, if are not you please ignore this email.
-                        <br>
-                        Password:<strong>{user.Password}</strong>
-                      </p>"
+            Body = @$"<p>Click in the link bellow to redefine your password in UExpo: 
+                    <br>
+                    <a href=""{_config["FrontEndUrl"]}/026_redefine_password/{user.Id}/{code}"">Redefine Password</a>
+                    <br>
+                    Thank you!</p>"
         };
 
         await _emailService.SendEmailAsync(emailSendDto);
