@@ -46,6 +46,7 @@ public class RelationshipChatService : IRelationshipChatService
 		RelationshipMessage relationshipMessage = new()
 		{
 			ChatId = message.RoomId,
+			ResponsedMessageId = message.ResponsedMessageId,
 			SenderId = message.SenderId,
 			SenderName = message.SenderName,
 			SendedMessage = message.SendedMessage,
@@ -60,6 +61,7 @@ public class RelationshipChatService : IRelationshipChatService
 		ReceiveMessageDto msgDto = new()
 		{
 			Id = relationshipMessage.Id,
+			ResponsedMessageId = relationshipMessage.ResponsedMessageId,
 			RoomId = chat.Id.ToString(),
 			SenderId = relationshipMessage.SenderId,
 			SendedMessage = relationshipMessage.SendedMessage,

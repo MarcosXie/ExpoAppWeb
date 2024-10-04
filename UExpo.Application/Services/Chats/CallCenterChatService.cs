@@ -77,6 +77,7 @@ public class CallCenterChatService : ICallCenterChatService
 		CallCenterMessage callCenterMessage = new()
 		{
 			ChatId = message.RoomId,
+			ResponsedMessageId = message.ResponsedMessageId,
 			SenderId = message.SenderId,
 			SenderName = message.SenderName,
 			SendedMessage = message.SendedMessage,
@@ -91,6 +92,7 @@ public class CallCenterChatService : ICallCenterChatService
 		ReceiveMessageDto msgDto = new()
 		{
 			Id = callCenterMessage.Id,
+			ResponsedMessageId = message.ResponsedMessageId,
 			RoomId = chat.Id.ToString(),
 			SenderId = callCenterMessage.SenderId,
 			SendedMessage = callCenterMessage.SendedMessage,

@@ -47,6 +47,7 @@ public class CartChatService : ICartChatService
 		CartMessage relationshipMessage = new()
 		{
 			ChatId = message.RoomId,
+			ResponsedMessageId = message.ResponsedMessageId,
 			SenderId = message.SenderId,
 			SenderName = message.SenderName,
 			SendedMessage = message.SendedMessage,
@@ -61,6 +62,7 @@ public class CartChatService : ICartChatService
 		ReceiveMessageDto msgDto = new()
 		{
 			Id = relationshipMessage.Id,
+			ResponsedMessageId = message.ResponsedMessageId,
 			RoomId = chat.Id.ToString(),
 			SenderId = relationshipMessage.SenderId,
 			SendedMessage = relationshipMessage.SendedMessage,
