@@ -14,4 +14,5 @@ public class BaseMessage : BaseModel
 	public string RoomId { get; set; } = null!;
 	public DateTime SendedTime { get; set; }
 	public bool Readed { get; set; }
+	public bool Deleted { get; set; } = false;
 }

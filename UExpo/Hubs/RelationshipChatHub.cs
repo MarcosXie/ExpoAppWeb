@@ -53,9 +53,10 @@ public class RelationshipChatHub(IRelationshipChatService service, IHubContext<N
 			});
 	}
 
-	public async Task DeleteMessage(Guid messageId)
+	public async Task DeleteMessage(DeleteMsgDto deleteMsgDto)
 	{
-		await service.DeleteMessageAsync(messageId);
+		await service.DeleteMessageAsync(deleteMsgDto);
 
+		await Clients.Group(deleteMsgDto.RoomId.ToString()).SendAsync("DeleteMessage", deleteMsgDto);
 	}
 }

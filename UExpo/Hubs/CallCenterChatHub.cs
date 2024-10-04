@@ -76,8 +76,10 @@ public class CallCenterChatHub(ICallCenterChatService service, IHubContext<Notif
 		);
 	}
 
-	public async Task DeleteMessage(Guid messageId)
+	public async Task DeleteMessage(DeleteMsgDto message)
 	{
-		await service.DeleteMessageAsync(messageId);
+		await service.DeleteMessageAsync(message);
+
+		await Clients.Group(message.RoomId.ToString()).SendAsync("DeleteMessage", message);
 	}
 }

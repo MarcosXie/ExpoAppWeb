@@ -7,6 +7,6 @@ public interface IChatHub
 	Task ChangeUserLang(ChatDto callCenterChat);
 	Task<JoinChatResponseDto> JoinChatRoom(ChatDto joinChatDto);
 	Task SendMessage(SendMessageDto message);
-	Task DeleteMessage(Guid messageId);
+	Task DeleteMessage(DeleteMsgDto msgDto);
 	Task VisualizeMessages(ChatDto chat);
 }

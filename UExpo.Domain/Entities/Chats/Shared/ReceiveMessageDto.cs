@@ -2,6 +2,7 @@
 
 public class ReceiveMessageDto
 {
+	public Guid Id { get; set; }
 	public string RoomId { get; set; } = null!;
 	public Guid SenderId { get; set; }
 	public string SenderName { get; set; } = null!;

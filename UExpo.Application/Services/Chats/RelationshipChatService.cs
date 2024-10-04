@@ -11,6 +11,7 @@ namespace UExpo.Application.Services.Chats;
 public class RelationshipChatService : IRelationshipChatService
 {
 	private IRelationshipRepository _relationshipRepository;
+	private IRelationshipMessageRepository _relationshipMessageRepository;
 	private IUserRepository _userRepository;
 	private ITranslationService _translationService;
 	private IMapper _mapper;
@@ -18,6 +19,7 @@ public class RelationshipChatService : IRelationshipChatService
 
 	public RelationshipChatService(
 		IRelationshipRepository relationshipRepository,
+		IRelationshipMessageRepository relationshipMessage,
 		IUserRepository userRepository,
 		ITranslationService translationService,
 		IMapper mapper,
@@ -25,6 +27,7 @@ public class RelationshipChatService : IRelationshipChatService
 		)
 	{
 		_relationshipRepository = relationshipRepository;
+		_relationshipMessageRepository = relationshipMessage;
 		_userRepository = userRepository;
 		_translationService = translationService;
 		_mapper = mapper;
@@ -56,6 +59,7 @@ public class RelationshipChatService : IRelationshipChatService
 
 		ReceiveMessageDto msgDto = new()
 		{
+			Id = relationshipMessage.Id,
 			RoomId = chat.Id.ToString(),
 			SenderId = relationshipMessage.SenderId,
 			SendedMessage = relationshipMessage.SendedMessage,
@@ -63,10 +67,19 @@ public class RelationshipChatService : IRelationshipChatService
 			SenderName = message.SenderName,
 			SendedTime = relationshipMessage.CreatedAt,
 			ReceiverId = isSupplier ? chat.BuyerUserId : chat.SupplierUserId,
-			Readed = relationshipMessage.Readed
+			Readed = relationshipMessage.Readed,
 		};
 
 		return msgDto;
+	}
+
+	public async Task DeleteMessageAsync(DeleteMsgDto deleteMessage)
+	{
+		var message = await _relationshipMessageRepository.GetByIdAsync(deleteMessage.MsgId);
+
+		message.Deleted = true;
+
+		await _relationshipMessageRepository.UpdateAsync(message);
 	}
 
 	public async Task<List<BaseMessage>> GetMessagesByChatAsync(ChatDto joinChatDto)
@@ -75,13 +88,15 @@ public class RelationshipChatService : IRelationshipChatService
 
 		return messages.Select(x => new BaseMessage
 		{
+			Id = x.Id,
 			RoomId = x.ChatId.ToString(),
 			SenderId = x.SenderId,
 			SendedMessage = x.SendedMessage,
 			SenderName = x.SenderName,
 			TranslatedMessage = x.TranslatedMessage,
 			SendedTime = x.CreatedAt,
-			Readed = x.Readed
+			Readed = x.Readed,
+			Deleted = x.Deleted
 		}).ToList();
 	}
 

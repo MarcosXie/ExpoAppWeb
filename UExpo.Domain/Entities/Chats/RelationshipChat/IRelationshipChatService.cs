@@ -5,7 +5,7 @@ namespace UExpo.Domain.Entities.Chats.RelationshipChat;
 public interface IRelationshipChatService
 {
 	Task<ReceiveMessageDto> AddMessageAsync(SendMessageDto message);
-	Task DeleteMessageAsync(Guid messageId);
+	Task DeleteMessageAsync(DeleteMsgDto messageId);
 	Task<List<BaseMessage>> GetMessagesByChatAsync(ChatDto joinChatDto);
 	Task<List<NotReadedMessagesDto>> GetNotReadedMessagesAsync(Guid userId);
 	Task UpdateLangAsync(ChatDto callCenterChat);

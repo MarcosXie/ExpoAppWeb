@@ -39,8 +39,9 @@ public static class DependencyInjection
         services.AddScoped<IAdminRepository, AdminRepository>();
 
         services.AddScoped<ICallCenterChatRepository, CallCenterChatRepository>();
+        services.AddScoped<ICallCenterMessageRepository, CallCenterMessageRepository>();
 
-        services.AddScoped<ICatalogRepository, CatalogRepository>();
+		services.AddScoped<ICatalogRepository, CatalogRepository>();
         services.AddScoped<ICatalogPdfRepository, CatalogPdfRepository>();
         services.AddScoped<ICatalogItemImageRepository, CatalogItemImageRepository>();
 
@@ -56,8 +57,10 @@ public static class DependencyInjection
 
 		services.AddScoped<ITutorialRepository, TutorialRepository>();
 		services.AddScoped<IRelationshipRepository, RelationshipRepository>();
+		services.AddScoped<IRelationshipMessageRepository, RelationshipMessageRepository>();
 
 		services.AddScoped<ICartRepository, CartRepository>();
 		services.AddScoped<ICartItemRepository, CartItemRepository>();
+		services.AddScoped<ICartMessageRepository, CartMessageRepository>();
 	}
 }

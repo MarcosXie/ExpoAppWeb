@@ -5,11 +5,13 @@ using UExpo.Domain.Entities.Chats.CartChat;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Translation;
+using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.Chats;
 
 public class CartChatService : ICartChatService
 {
+	private ICartMessageRepository _cartMessageRepository;
 	private ICartRepository _cartRepository;
 	private IUserRepository _userRepository;
 	private ITranslationService _translationService;
@@ -18,12 +20,14 @@ public class CartChatService : ICartChatService
 
 	public CartChatService(
 		ICartRepository cartRepository,
+		ICartMessageRepository cartMessageRepository,
 		IUserRepository userRepository,
 		ITranslationService translationService,
 		IMapper mapper,
 		AuthUserHelper authUserHelper
 		)
 	{
+		_cartMessageRepository = cartMessageRepository;
 		_cartRepository = cartRepository;
 		_userRepository = userRepository;
 		_translationService = translationService;
@@ -56,6 +60,7 @@ public class CartChatService : ICartChatService
 
 		ReceiveMessageDto msgDto = new()
 		{
+			Id = relationshipMessage.Id,
 			RoomId = chat.Id.ToString(),
 			SenderId = relationshipMessage.SenderId,
 			SendedMessage = relationshipMessage.SendedMessage,
@@ -69,19 +74,30 @@ public class CartChatService : ICartChatService
 		return msgDto;
 	}
 
+	public async Task DeleteMessageAsync(DeleteMsgDto deleteMessage)
+	{
+		var message = await _cartMessageRepository.GetByIdAsync(deleteMessage.MsgId);
+
+		message.Deleted = true;
+
+		await _cartMessageRepository.UpdateAsync(message);
+	}
+
 	public async Task<List<BaseMessage>> GetMessagesByChatAsync(ChatDto joinChatDto)
 	{
 		var messages = await _cartRepository.GetLastMessagesByChat(joinChatDto.Id);
 
 		return messages.Select(x => new BaseMessage
 		{
+			Id = x.Id,
 			RoomId = x.ChatId.ToString(),
 			SenderId = x.SenderId,
 			SendedMessage = x.SendedMessage,
 			SenderName = x.SenderName,
 			TranslatedMessage = x.TranslatedMessage,
 			SendedTime = x.CreatedAt,
-			Readed = x.Readed
+			Readed = x.Readed,
+			Deleted = x.Deleted
 		}).ToList();
 	}
 

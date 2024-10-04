@@ -12,5 +12,5 @@ public interface ICallCenterChatService
 	Task VisualizeMessagesAsync(ChatDto callCenterChat);
 	Task<CallCenterChatResponseDto> GetChatByUserIdAsync();
 	Task<int> GetNotReadedMessagesByUserId(Guid userId);
-	Task DeleteMessageAsync(Guid messageId);
+	Task DeleteMessageAsync(DeleteMsgDto message);
 }

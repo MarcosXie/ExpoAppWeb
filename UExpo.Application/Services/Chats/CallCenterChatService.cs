@@ -2,6 +2,7 @@
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Chats.CallCenterChat;
+using UExpo.Domain.Entities.Chats.RelationshipChat;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
@@ -12,14 +13,16 @@ namespace UExpo.Application.Services.Chats;
 public class CallCenterChatService : ICallCenterChatService
 {
 	private readonly ICallCenterChatRepository _repository;
+	private readonly ICallCenterMessageRepository _callCenterMessageRepository;
 	private readonly IUserRepository _userRepository;
 	private readonly IAdminRepository _adminRepository;
 	private readonly ITranslationService _translationService;
-	private readonly AuthUserHelper _authUserHelper;
 	private readonly IMapper _mapper;
+	private readonly AuthUserHelper _authUserHelper;
 
 	public CallCenterChatService(
 		ICallCenterChatRepository repository,
+		ICallCenterMessageRepository messageRepository,
 		IUserRepository userRepository,
 		IAdminRepository adminRepository,
 		ITranslationService translationService,
@@ -27,6 +30,7 @@ public class CallCenterChatService : ICallCenterChatService
 		IMapper mapper)
 	{
 		_repository = repository;
+		_callCenterMessageRepository = messageRepository;
 		_userRepository = userRepository;
 		_adminRepository = adminRepository;
 		_translationService = translationService;
@@ -86,6 +90,7 @@ public class CallCenterChatService : ICallCenterChatService
 
 		ReceiveMessageDto msgDto = new()
 		{
+			Id = callCenterMessage.Id,
 			RoomId = chat.Id.ToString(),
 			SenderId = callCenterMessage.SenderId,
 			SendedMessage = callCenterMessage.SendedMessage,
@@ -119,13 +124,15 @@ public class CallCenterChatService : ICallCenterChatService
 
 		return messages.Select(x => new BaseMessage
 		{
+			Id = x.Id,
 			RoomId = x.ChatId.ToString(),
 			SenderId = x.SenderId,
 			SendedMessage = x.SendedMessage,
 			SenderName = x.SenderName,
 			TranslatedMessage = x.TranslatedMessage,
 			SendedTime = x.CreatedAt,
-			Readed = x.Readed
+			Readed = x.Readed,
+			Deleted = x.Deleted
 		}).ToList();
 	}
 
@@ -187,5 +194,14 @@ public class CallCenterChatService : ICallCenterChatService
 	public async Task<int> GetNotReadedMessagesByUserId(Guid userId)
 	{
 		return await _repository.GetNotReadedMessagesByUserId(userId);
+	}
+
+	public async Task DeleteMessageAsync(DeleteMsgDto deleteMessage)
+	{
+		var message = await _callCenterMessageRepository.GetByIdAsync(deleteMessage.MsgId);
+
+		message.Deleted = true;
+
+		await _callCenterMessageRepository.UpdateAsync(message);
 	}
 }
