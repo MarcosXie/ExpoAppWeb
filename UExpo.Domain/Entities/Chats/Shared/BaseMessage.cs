@@ -13,6 +13,8 @@ public class BaseMessage : BaseModel
 	public string SendedMessage { get; set; } = null!;
 	public string ReceiverLang { get; set; } = null!;
 	public string TranslatedMessage { get; set; } = null!;
+	public string File { get; set; } = null!;
+	public string FileName { get; set; } = null!;
 	public string RoomId { get; set; } = null!;
 	public DateTime SendedTime { get; set; }
 	public bool Readed { get; set; }

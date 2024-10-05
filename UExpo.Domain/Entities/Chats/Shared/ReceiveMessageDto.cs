@@ -10,6 +10,8 @@ public class ReceiveMessageDto
 	public string SenderName { get; set; } = null!;
 	public string SendedMessage { get; set; } = null!;
 	public string? TranslatedMessage { get; set; } = null!;
+	public string? File { get; set; }
+	public string? FileName { get; set; }
 	public DateTime SendedTime { get; set; }
 	public bool Readed { get; set; }
 	public Guid ReceiverId { get; set; }

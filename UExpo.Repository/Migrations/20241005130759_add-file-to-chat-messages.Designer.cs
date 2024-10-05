@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UExpo.Repository.Context;
 
@@ -11,9 +12,11 @@ using UExpo.Repository.Context;
 namespace UExpo.Repository.Migrations
 {
     [DbContext(typeof(UExpoDbContext))]
-    partial class UExpoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241005130759_add-file-to-chat-messages")]
+    partial class addfiletochatmessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,10 +235,6 @@ namespace UExpo.Repository.Migrations
                     b.Property<string>("File")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<bool>("Readed")
                         .HasColumnType("tinyint(1)");
 
@@ -378,10 +377,6 @@ namespace UExpo.Repository.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("File")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("Readed")
@@ -689,10 +684,6 @@ namespace UExpo.Repository.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("File")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("Readed")

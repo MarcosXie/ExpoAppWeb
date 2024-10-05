@@ -1,37 +1,43 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Http;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Chats.RelationshipChat;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Translation;
+using UExpo.Domain.FileStorage;
 
 namespace UExpo.Application.Services.Chats;
 
 public class RelationshipChatService : IRelationshipChatService
 {
-	private IRelationshipRepository _relationshipRepository;
-	private IRelationshipMessageRepository _relationshipMessageRepository;
-	private IUserRepository _userRepository;
-	private ITranslationService _translationService;
-	private IMapper _mapper;
-	private AuthUserHelper _authUserHelper;
+	private readonly IRelationshipRepository _relationshipRepository;
+	private readonly IRelationshipMessageRepository _relationshipMessageRepository;
+	private readonly IUserRepository _userRepository;
+	private readonly ITranslationService _translationService;
+	private readonly IFileStorageService _fileStorageService;
+	private readonly IMapper _mapper;
+	private readonly AuthUserHelper _authUserHelper;
 
 	public RelationshipChatService(
 		IRelationshipRepository relationshipRepository,
 		IRelationshipMessageRepository relationshipMessage,
 		IUserRepository userRepository,
 		ITranslationService translationService,
+		IFileStorageService fileStorageService,
 		IMapper mapper,
 		AuthUserHelper authUserHelper
 		)
 	{
-		_relationshipRepository = relationshipRepository;
 		_relationshipMessageRepository = relationshipMessage;
-		_userRepository = userRepository;
+		_relationshipRepository = relationshipRepository;
 		_translationService = translationService;
-		_mapper = mapper;
+		_fileStorageService = fileStorageService;
 		_authUserHelper = authUserHelper;
+		_userRepository = userRepository;
+		_mapper = mapper;
 	}
 
 	public async Task<ReceiveMessageDto> AddMessageAsync(SendMessageDto message)
@@ -56,6 +62,22 @@ public class RelationshipChatService : IRelationshipChatService
 			Readed = false,
 		};
 
+		if (!string.IsNullOrEmpty(message.FileName) && message.File != null)
+		{
+			string fileName = GetFileName(message.FileName, chat.Id.ToString());
+
+			using var stream = new MemoryStream(message.File);
+
+			IFormFile formFile = new FormFile(stream, 0, message.File.Length, "file", message.FileName)
+			{
+				Headers = new HeaderDictionary(),
+				ContentType = "application/octet-stream"
+			};
+
+			relationshipMessage.FileName = Path.GetFileName(formFile.FileName);
+			relationshipMessage.File = await _fileStorageService.UploadFileAsync(formFile, fileName, FileStorageKeys.ChatFiles);
+		}
+
 		await _relationshipRepository.AddMessageAsync(relationshipMessage);
 
 		ReceiveMessageDto msgDto = new()
@@ -67,6 +89,8 @@ public class RelationshipChatService : IRelationshipChatService
 					await _relationshipMessageRepository.GetByIdAsync((Guid)relationshipMessage.ResponsedMessageId)
 				) : null,
 			RoomId = chat.Id.ToString(),
+			File = relationshipMessage.File,
+			FileName = relationshipMessage.FileName,
 			SenderId = relationshipMessage.SenderId,
 			SendedMessage = relationshipMessage.SendedMessage,
 			TranslatedMessage = relationshipMessage.TranslatedMessage,
@@ -102,6 +126,8 @@ public class RelationshipChatService : IRelationshipChatService
 			SendedMessage = x.SendedMessage,
 			SenderName = x.SenderName,
 			TranslatedMessage = x.TranslatedMessage,
+			File = x.File,
+			FileName = x.FileName,
 			SendedTime = x.CreatedAt,
 			Readed = x.Readed,
 			Deleted = x.Deleted
@@ -138,6 +164,13 @@ public class RelationshipChatService : IRelationshipChatService
 	public async Task VisualizeMessagesAsync(ChatDto chat)
 	{
 		await _relationshipRepository.VisualizeMessagesAsync(chat);
+	}
+
+	private static string GetFileName(string name, params string[] ids)
+	{
+		string prefix = string.Join('-', ids);
+
+		return $"{prefix}-{Path.GetFileName(name)}";
 	}
 }
 
