@@ -49,7 +49,27 @@ public class CartRepository(UExpoDbContext context, IMapper mapper)
 			.Take(30)
 			.ToListAsync();
 
-		return [.. messages.Select(Mapper.Map<BaseMessage>).OrderBy(x => x.CreatedAt)];
+		List<BaseMessage> mappedMessages = [.. messages.Select(Mapper.Map<BaseMessage>).OrderBy(x => x.CreatedAt)];
+		var responsedMessagesIds = messages
+			.Where(x => x.ResponsedMessageId != null)
+			.Select(x => x.ResponsedMessageId)
+			.ToList();
+
+		var responsedMessages = await Context.RelationshipsMessages
+			.Where(x => responsedMessagesIds.Contains(x.Id))
+			.ToListAsync();
+
+		foreach (var msg in mappedMessages.Where(x => x.ResponsedMessageId != null))
+		{
+			var responsedMessage = responsedMessages.FirstOrDefault(x => x.Id == msg.ResponsedMessageId);
+
+			if (responsedMessage != null)
+			{
+				msg.ResponsedMessage = Mapper.Map<BaseMessage>(responsedMessage);
+			}
+		}
+
+		return mappedMessages;
 	}
 
 	public async Task<List<BaseMessage>> GetNotReadedMessages(Guid currentUserId)

@@ -7,6 +7,7 @@ public class BaseMessage : BaseModel
 	public Guid ChatId { get; set; }
 	public Guid SenderId { get; set; }
 	public Guid? ResponsedMessageId { get; set; } = null!;
+	public BaseMessage? ResponsedMessage { get; set; } = null!;
 	public string SenderName { get; set; } = null!;
 	public string SenderLang { get; set; } = null!;
 	public string SendedMessage { get; set; } = null!;

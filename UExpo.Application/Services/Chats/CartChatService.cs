@@ -5,7 +5,6 @@ using UExpo.Domain.Entities.Chats.CartChat;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Translation;
-using UExpo.Repository.Repositories;
 
 namespace UExpo.Application.Services.Chats;
 
@@ -44,7 +43,7 @@ public class CartChatService : ICartChatService
 		var senderLang = isSupplier ? chat.SupplierLang : chat.BuyerLang;
 		var receiverLang = isSupplier ? chat.BuyerLang : chat.SupplierLang;
 
-		CartMessage relationshipMessage = new()
+		CartMessage cartMessage = new()
 		{
 			ChatId = message.RoomId,
 			ResponsedMessageId = message.ResponsedMessageId,
@@ -57,20 +56,24 @@ public class CartChatService : ICartChatService
 			Readed = false,
 		};
 
-		await _cartRepository.AddMessageAsync(relationshipMessage);
+		await _cartRepository.AddMessageAsync(cartMessage);
 
 		ReceiveMessageDto msgDto = new()
 		{
-			Id = relationshipMessage.Id,
+			Id = cartMessage.Id,
 			ResponsedMessageId = message.ResponsedMessageId,
+			ResponsedMessage = cartMessage.ResponsedMessageId is not null ?
+			_mapper.Map<ReceiveMessageDto>(
+					await _cartMessageRepository.GetByIdAsync((Guid)cartMessage.ResponsedMessageId)
+				) : null,
 			RoomId = chat.Id.ToString(),
-			SenderId = relationshipMessage.SenderId,
-			SendedMessage = relationshipMessage.SendedMessage,
-			TranslatedMessage = relationshipMessage.TranslatedMessage,
+			SenderId = cartMessage.SenderId,
+			SendedMessage = cartMessage.SendedMessage,
+			TranslatedMessage = cartMessage.TranslatedMessage,
 			SenderName = message.SenderName,
-			SendedTime = relationshipMessage.CreatedAt,
+			SendedTime = cartMessage.CreatedAt,
 			ReceiverId = isSupplier ? chat.BuyerUserId : chat.SupplierUserId,
-			Readed = relationshipMessage.Readed
+			Readed = cartMessage.Readed
 		};
 
 		return msgDto;
@@ -92,6 +95,8 @@ public class CartChatService : ICartChatService
 		return messages.Select(x => new BaseMessage
 		{
 			Id = x.Id,
+			ResponsedMessageId = x.ResponsedMessageId,
+			ResponsedMessage = x.ResponsedMessage,
 			RoomId = x.ChatId.ToString(),
 			SenderId = x.SenderId,
 			SendedMessage = x.SendedMessage,

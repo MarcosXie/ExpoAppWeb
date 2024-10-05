@@ -12,5 +12,5 @@ public abstract class BaseMessageDao : BaseDao
 	public bool Deleted { get; set; } = false;
 	public bool Readed { get; set; }
 
-	public Guid? ResponsedMessageId { get; set; } = null;	
+	public Guid? ResponsedMessageId { get; set; } = null;
 }

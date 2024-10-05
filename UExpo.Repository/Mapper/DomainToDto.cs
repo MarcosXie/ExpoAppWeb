@@ -8,6 +8,10 @@ using UExpo.Domain.Entities.Carts;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
+using UExpo.Domain.Entities.Chats.CallCenterChat;
+using UExpo.Domain.Entities.Chats.CartChat;
+using UExpo.Domain.Entities.Chats.RelationshipChat;
+using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
@@ -40,6 +44,9 @@ public class DomainToDto : Profile
         CreateMap<CalendarSegment, CalendarSegmentOptionResponseDto>();
 		CreateMap<LastSearchedTags, LastSearchedTagsResponseDto>();
 		CreateMap<Relationship, RelationshipResponseDto>();
+		CreateMap<RelationshipMessage, ReceiveMessageDto>();
+		CreateMap<CartMessage, ReceiveMessageDto>();
+		CreateMap<CallCenterMessage, ReceiveMessageDto>();
 		CreateMap<Cart, CartResponseDto>();
 		CreateMap<CartItem, CartItemResponseDto>();
 	}

@@ -93,6 +93,10 @@ public class CallCenterChatService : ICallCenterChatService
 		{
 			Id = callCenterMessage.Id,
 			ResponsedMessageId = message.ResponsedMessageId,
+			ResponsedMessage = callCenterMessage.ResponsedMessageId is not null ?
+				_mapper.Map<ReceiveMessageDto>(
+					await _callCenterMessageRepository.GetByIdAsync((Guid)callCenterMessage.ResponsedMessageId)
+				) : null,
 			RoomId = chat.Id.ToString(),
 			SenderId = callCenterMessage.SenderId,
 			SendedMessage = callCenterMessage.SendedMessage,
@@ -127,6 +131,8 @@ public class CallCenterChatService : ICallCenterChatService
 		return messages.Select(x => new BaseMessage
 		{
 			Id = x.Id,
+			ResponsedMessageId = x.ResponsedMessageId,
+			ResponsedMessage = x.ResponsedMessage,
 			RoomId = x.ChatId.ToString(),
 			SenderId = x.SenderId,
 			SendedMessage = x.SendedMessage,

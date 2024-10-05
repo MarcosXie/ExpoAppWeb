@@ -62,6 +62,10 @@ public class RelationshipChatService : IRelationshipChatService
 		{
 			Id = relationshipMessage.Id,
 			ResponsedMessageId = relationshipMessage.ResponsedMessageId,
+			ResponsedMessage = relationshipMessage.ResponsedMessageId is not null ? 
+				_mapper.Map<ReceiveMessageDto>(
+					await _relationshipMessageRepository.GetByIdAsync((Guid)relationshipMessage.ResponsedMessageId)
+				) : null,
 			RoomId = chat.Id.ToString(),
 			SenderId = relationshipMessage.SenderId,
 			SendedMessage = relationshipMessage.SendedMessage,
@@ -92,6 +96,8 @@ public class RelationshipChatService : IRelationshipChatService
 		{
 			Id = x.Id,
 			RoomId = x.ChatId.ToString(),
+			ResponsedMessageId = x.ResponsedMessageId,
+			ResponsedMessage = x.ResponsedMessage,
 			SenderId = x.SenderId,
 			SendedMessage = x.SendedMessage,
 			SenderName = x.SenderName,
