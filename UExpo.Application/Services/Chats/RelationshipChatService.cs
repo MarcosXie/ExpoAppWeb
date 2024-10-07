@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.AspNetCore.Http;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Chats.RelationshipChat;
 using UExpo.Domain.Entities.Chats.Shared;
@@ -8,6 +6,7 @@ using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Translation;
 using UExpo.Domain.FileStorage;
+using UExpo.Domain.Entities.Chats.CartChat;
 
 namespace UExpo.Application.Services.Chats;
 
@@ -64,18 +63,10 @@ public class RelationshipChatService : IRelationshipChatService
 
 		if (!string.IsNullOrEmpty(message.FileName) && message.File != null)
 		{
-			string fileName = GetFileName(message.FileName, chat.Id.ToString());
+			string fileName = GetFileName(message.FileName, relationshipMessage.Id.ToString());
 
-			using var stream = new MemoryStream(message.File);
-
-			IFormFile formFile = new FormFile(stream, 0, message.File.Length, "file", message.FileName)
-			{
-				Headers = new HeaderDictionary(),
-				ContentType = "application/octet-stream"
-			};
-
-			relationshipMessage.FileName = Path.GetFileName(formFile.FileName);
-			relationshipMessage.File = await _fileStorageService.UploadFileAsync(formFile, fileName, FileStorageKeys.ChatFiles);
+			relationshipMessage.FileName = message.FileName;
+			relationshipMessage.File = await _fileStorageService.UploadFileAsync(message.File, fileName, FileStorageKeys.ChatFiles);
 		}
 
 		await _relationshipRepository.AddMessageAsync(relationshipMessage);

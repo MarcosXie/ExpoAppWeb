@@ -10,7 +10,7 @@ public abstract class BaseMessageDao : BaseDao
 	public string ReceiverLang { get; set; } = null!;
 	public string TranslatedMessage { get; set; } = null!;
 	public string? File { get; set; }
-	public string FileName { get; set; } = null!;
+	public string? FileName { get; set; }
 	public bool Deleted { get; set; } = false;
 	public bool Readed { get; set; }
 

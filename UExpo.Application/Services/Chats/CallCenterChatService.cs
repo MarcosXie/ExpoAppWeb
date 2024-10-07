@@ -2,16 +2,19 @@
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Chats.CallCenterChat;
+using UExpo.Domain.Entities.Chats.CartChat;
 using UExpo.Domain.Entities.Chats.RelationshipChat;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
+using UExpo.Domain.FileStorage;
 using UExpo.Domain.Translation;
 
 namespace UExpo.Application.Services.Chats;
 
 public class CallCenterChatService : ICallCenterChatService
 {
+	private readonly IFileStorageService _fileStorageService;
 	private readonly ICallCenterChatRepository _repository;
 	private readonly ICallCenterMessageRepository _callCenterMessageRepository;
 	private readonly IUserRepository _userRepository;
@@ -26,9 +29,11 @@ public class CallCenterChatService : ICallCenterChatService
 		IUserRepository userRepository,
 		IAdminRepository adminRepository,
 		ITranslationService translationService,
+		IFileStorageService fileStorageService,
 		AuthUserHelper authUserHelper,
 		IMapper mapper)
 	{
+		_fileStorageService = fileStorageService;
 		_repository = repository;
 		_callCenterMessageRepository = messageRepository;
 		_userRepository = userRepository;
@@ -87,6 +92,14 @@ public class CallCenterChatService : ICallCenterChatService
 			Readed = false
 		};
 
+
+		if (!string.IsNullOrEmpty(message.FileName) && message.File != null)
+		{
+			string fileName = GetFileName(message.FileName, callCenterMessage.Id.ToString());
+			callCenterMessage.FileName = message.FileName;
+			callCenterMessage.File = await _fileStorageService.UploadFileAsync(message.File, fileName, FileStorageKeys.ChatFiles);
+		}
+
 		await _repository.AddMessageAsync(callCenterMessage);
 
 		ReceiveMessageDto msgDto = new()
@@ -101,6 +114,8 @@ public class CallCenterChatService : ICallCenterChatService
 			SenderId = callCenterMessage.SenderId,
 			SendedMessage = callCenterMessage.SendedMessage,
 			TranslatedMessage = callCenterMessage.TranslatedMessage,
+			File = callCenterMessage.File,
+			FileName = callCenterMessage.FileName,
 			SenderName = message.SenderName,
 			SendedTime = callCenterMessage.CreatedAt,
 			Readed = callCenterMessage.Readed,
@@ -138,6 +153,8 @@ public class CallCenterChatService : ICallCenterChatService
 			SendedMessage = x.SendedMessage,
 			SenderName = x.SenderName,
 			TranslatedMessage = x.TranslatedMessage,
+			File = x.File,
+			FileName = x.FileName,
 			SendedTime = x.CreatedAt,
 			Readed = x.Readed,
 			Deleted = x.Deleted
@@ -211,5 +228,12 @@ public class CallCenterChatService : ICallCenterChatService
 		message.Deleted = true;
 
 		await _callCenterMessageRepository.UpdateAsync(message);
+	}
+
+	private static string GetFileName(string name, params string[] ids)
+	{
+		string prefix = string.Join('-', ids);
+
+		return $"{prefix}-{Path.GetFileName(name)}";
 	}
 }

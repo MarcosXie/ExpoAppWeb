@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Carts;
+using UExpo.Domain.Entities.Chats.CallCenterChat;
 using UExpo.Domain.Entities.Chats.CartChat;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Users;
+using UExpo.Domain.FileStorage;
 using UExpo.Domain.Translation;
 
 namespace UExpo.Application.Services.Chats;
@@ -14,6 +16,7 @@ public class CartChatService : ICartChatService
 	private ICartRepository _cartRepository;
 	private IUserRepository _userRepository;
 	private ITranslationService _translationService;
+	private IFileStorageService _fileStorageService;
 	private IMapper _mapper;
 	private AuthUserHelper _authUserHelper;
 
@@ -22,14 +25,16 @@ public class CartChatService : ICartChatService
 		ICartMessageRepository cartMessageRepository,
 		IUserRepository userRepository,
 		ITranslationService translationService,
+		IFileStorageService fileStorageService,
 		IMapper mapper,
 		AuthUserHelper authUserHelper
-		)
+	)
 	{
 		_cartMessageRepository = cartMessageRepository;
 		_cartRepository = cartRepository;
 		_userRepository = userRepository;
 		_translationService = translationService;
+		_fileStorageService = fileStorageService;
 		_mapper = mapper;
 		_authUserHelper = authUserHelper;
 	}
@@ -56,6 +61,13 @@ public class CartChatService : ICartChatService
 			Readed = false,
 		};
 
+		if (!string.IsNullOrEmpty(message.FileName) && message.File != null)
+		{
+			string fileName = GetFileName(message.FileName, cartMessage.Id.ToString());
+			cartMessage.FileName = message.FileName;
+			cartMessage.File = await _fileStorageService.UploadFileAsync(message.File, fileName, FileStorageKeys.ChatFiles);
+		}
+
 		await _cartRepository.AddMessageAsync(cartMessage);
 
 		ReceiveMessageDto msgDto = new()
@@ -70,6 +82,8 @@ public class CartChatService : ICartChatService
 			SenderId = cartMessage.SenderId,
 			SendedMessage = cartMessage.SendedMessage,
 			TranslatedMessage = cartMessage.TranslatedMessage,
+			File = cartMessage.File,
+			FileName = cartMessage.FileName,
 			SenderName = message.SenderName,
 			SendedTime = cartMessage.CreatedAt,
 			ReceiverId = isSupplier ? chat.BuyerUserId : chat.SupplierUserId,
@@ -102,6 +116,8 @@ public class CartChatService : ICartChatService
 			SendedMessage = x.SendedMessage,
 			SenderName = x.SenderName,
 			TranslatedMessage = x.TranslatedMessage,
+			File = x.File,
+			FileName = x.FileName,
 			SendedTime = x.CreatedAt,
 			Readed = x.Readed,
 			Deleted = x.Deleted
@@ -138,5 +154,12 @@ public class CartChatService : ICartChatService
 	public async Task VisualizeMessagesAsync(ChatDto chat)
 	{
 		await _cartRepository.VisualizeMessagesAsync(chat);
+	}
+
+	private static string GetFileName(string name, params string[] ids)
+	{
+		string prefix = string.Join('-', ids);
+
+		return $"{prefix}-{Path.GetFileName(name)}";
 	}
 }

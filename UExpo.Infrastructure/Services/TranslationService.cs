@@ -20,7 +20,7 @@ public class TranslationService : ITranslationService
 
     public async Task<string> TranslateText(string text, string srcLang, string trgLang)
     {
-        if (srcLang.Equals(trgLang)) return text;
+        if (srcLang.Equals(trgLang) || string.IsNullOrEmpty(text)) return text;
 
         TranslateTextRequest translateRequest = new TranslateTextRequest
         {
