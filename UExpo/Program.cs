@@ -76,7 +76,11 @@ services.AddSwaggerGen(c =>
 });
 
 services.AddHttpContextAccessor();
-services.AddSignalR();
+services.AddSignalR(o =>
+{
+	o.EnableDetailedErrors = true;
+	o.MaximumReceiveMessageSize = 10000000; // bytes
+});
 services.AddRepository(config);
 services.AddInfrastructure();
 services.AddApplication();

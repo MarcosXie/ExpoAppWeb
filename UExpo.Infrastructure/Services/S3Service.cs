@@ -4,8 +4,11 @@ using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
+using System.Diagnostics;
 using System.Net;
-using System.Net.Mime;
 using UExpo.Domain.Exceptions;
 using UExpo.Domain.FileStorage;
 using UExpo.Infrastructure.Utils;
@@ -16,8 +19,11 @@ public class S3Service : IFileStorageService
 {
     private readonly IConfiguration _config;
     private readonly IAmazonS3 _s3Client;
+	private readonly List<string> _imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
+	private readonly List<string> _videoExtensions = ["mp4", "mov", "avi", "mkv", "webm"];
 
-    public S3Service(IConfiguration config)
+
+	public S3Service(IConfiguration config)
     {
         _config = config;
 
@@ -58,7 +64,7 @@ public class S3Service : IFileStorageService
 		var base64Data = base64File.Contains(",") ? base64File.Split(',')[1] : base64File;
 		var fileBytes = Convert.FromBase64String(base64Data);
 
-		using MemoryStream memoryStream = new MemoryStream(fileBytes);
+		using MemoryStream memoryStream = await GetMemoryStream(fileBytes, fileName);
 
 		TransferUtilityUploadRequest uploadRequest = new TransferUtilityUploadRequest
 		{
@@ -72,6 +78,71 @@ public class S3Service : IFileStorageService
 		await fileTransferUtility.UploadAsync(uploadRequest);
 
 		return $"https://{bucketName}.s3.amazonaws.com/{fileName}";
+	}
+
+	private async Task<MemoryStream> GetMemoryStream(byte[] fileBytes, string fileName)
+	{
+		if (_imageExtensions.Any(fileName.EndsWith))
+		{
+			return await GetCompressedImageAsync(fileBytes);
+		}
+		// TODO: REVIEW VIDEO COMPRESSION
+		//else if (_videoExtensions.Any(fileName.EndsWith))
+		//{
+		//	return await GetCompressedVideoAsync(fileBytes, fileName);
+		//}
+
+		return new MemoryStream(fileBytes);
+	}
+
+	private static async Task<MemoryStream> GetCompressedImageAsync(byte[] fileBytes)
+	{
+		MemoryStream inputStream = new MemoryStream(fileBytes);
+		MemoryStream outputStream = new MemoryStream();
+
+		using (Image image = Image.Load(inputStream))
+		{
+			var encoder = new JpegEncoder { Quality = 40 };
+
+			image.Mutate(x => x.Resize(new ResizeOptions
+			{
+				Mode = ResizeMode.Max,
+				Size = new Size(image.Width, image.Height),
+			}));
+
+			await image.SaveAsync(outputStream, encoder);
+		}
+
+		outputStream.Seek(0, SeekOrigin.Begin);
+
+		return outputStream;
+	}
+
+	private async Task<MemoryStream> GetCompressedVideoAsync(byte[] fileBytes, string fileName)
+	{
+		string tempFilePath = Path.Combine(Path.GetTempPath(), fileName);
+		await File.WriteAllBytesAsync(tempFilePath, fileBytes);
+
+		string compressedFilePath = Path.Combine(Path.GetTempPath(), fileName);
+
+		Process ffmpeg = new Process();
+		ffmpeg.StartInfo.FileName = "ffmpeg";
+		ffmpeg.StartInfo.Arguments = $"-i {tempFilePath} -b:v 1000k -vf scale=1280:-1 {compressedFilePath}";
+		ffmpeg.StartInfo.RedirectStandardOutput = true;
+		ffmpeg.StartInfo.RedirectStandardError = true;
+		ffmpeg.StartInfo.UseShellExecute = false;
+		ffmpeg.StartInfo.CreateNoWindow = true;
+		ffmpeg.Start();
+
+		await ffmpeg.WaitForExitAsync();
+
+		var compressedFileBytes = await File.ReadAllBytesAsync(compressedFilePath);
+		MemoryStream memoryStream = new(compressedFileBytes);
+
+		File.Delete(tempFilePath);
+		File.Delete(compressedFilePath);
+
+		return memoryStream;
 	}
 
 	public async Task DeleteFileAsync(string bucket, string fileName)
