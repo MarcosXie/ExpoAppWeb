@@ -17,18 +17,13 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 IServiceCollection services = builder.Services;
 ConfigurationManager config = builder.Configuration;
-
-if (!config.GetValue<bool>("IsDev"))
-{
-    string port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-
-    if (!string.IsNullOrEmpty(port))
-    {
-        builder.WebHost.UseKestrel().UseUrls($"http://*:{port}");
-    }
-}
-
 config.AddEnvironmentVariables();
+
+
+builder.Services.AddLogging(loggingBuilder =>
+{
+	loggingBuilder.AddConsole(); // Configura o logger para saída no console
+});
 
 services.AddCors(options =>
 {
@@ -90,21 +85,21 @@ byte[] key = Encoding.ASCII.GetBytes(config["Jwt:Key"]!);
 
 services.AddAuthentication(x =>
 {
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(x =>
 {
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-    x.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = true,
-        ValidateActor = true,
-        ValidIssuer = config["Jwt:Issuer"],
-        ValidAudience = config["Jwt:Audience"]
-    };
+	x.RequireHttpsMetadata = false;
+	x.SaveToken = true;
+	x.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuerSigningKey = true,
+		IssuerSigningKey = new SymmetricSecurityKey(key),
+		ValidateIssuer = true,
+		ValidateActor = true,
+		ValidIssuer = config["Jwt:Issuer"],
+		ValidAudience = config["Jwt:Audience"]
+	};
 });
 
 services.AddIdentityCore<UserDao>()
@@ -116,7 +111,35 @@ services.AddAuthorizationBuilder()
         .RequireAuthenticatedUser()
         .Build());
 
+
+//builder.WebHost.ConfigureKestrel(serverOptions =>
+//{
+//	//	// Define as opções do Kestrel, como configurar o número máximo de conexões simultâneas.
+//	//	serverOptions.Limits.MaxConcurrentConnections = 100; // Número máximo de conexões simultâneas
+//	//	serverOptions.Limits.MaxConcurrentUpgradedConnections = 100; // Para conexões WebSockets
+
+//	//	// Configure para escutar em uma porta específica
+//	//	//serverOptions.ListenAnyIP(int.Parse(config["Kestrel:Endpoints:Http:Url"] ?? "5003")); // Exemplo: HTTP na porta 5003
+//	serverOptions.ListenAnyIP(443, listenOptions =>
+//	{
+//		listenOptions.UseHttps();
+//	});
+//});
+
 WebApplication app = builder.Build();
+
+// Obter o logger
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+logger.LogInformation("ENVIRONMENT VARIABLES:");
+
+// Registrar todas as variáveis de ambiente
+foreach (var variable in Environment.GetEnvironmentVariables().Keys)
+{
+	var k = variable.ToString();
+	var value = Environment.GetEnvironmentVariable(k);
+	logger.LogInformation($"Environment Variable - {k}: {value}");
+}
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
@@ -150,6 +173,8 @@ app.MapHub<CartChatHub>("/cart-chathub")
 
 app.MapHub<NotificationsHub>("/notifications-hub")
 	.RequireAuthorization();
+
+//app.UseHttpsRedirection();
 
 SeedDataHelper.BootstrapAdmin(app.Services);
 
