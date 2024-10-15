@@ -45,4 +45,12 @@ public class AdminController(IAdminService service) : ControllerBase
 
         return Ok();
     }
+
+	[HttpGet("Test")]
+	[AllowAnonymous]
+	public async Task<ActionResult<string>> Test(AdminLoginDto admin)
+	{
+		string token = await service.LoginAsync(admin);
+		return Ok(token);
+	}
 }
