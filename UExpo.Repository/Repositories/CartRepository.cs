@@ -128,7 +128,7 @@ public class CartRepository(UExpoDbContext context, IMapper mapper)
 			.Where(x => x.SupplierUserId == userId || x.BuyerUserId == userId && x.Status != CartStatus.Building)
 			.ToListAsync();
 
-		return Mapper.Map<List<Cart>>(carts);
+		return Mapper.Map<List<Cart>>(carts).Where(x => x.Status != CartStatus.Building).ToList();
 	}
 
 	public async Task<List<CartItem>> GetItemsAsync(Guid buyerId, Guid supplierId)

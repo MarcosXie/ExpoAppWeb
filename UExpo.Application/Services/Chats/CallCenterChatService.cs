@@ -92,7 +92,6 @@ public class CallCenterChatService : ICallCenterChatService
 			Readed = false
 		};
 
-
 		if (!string.IsNullOrEmpty(message.FileName) && message.File != null)
 		{
 			string fileName = GetFileName(message.FileName, callCenterMessage.Id.ToString());
