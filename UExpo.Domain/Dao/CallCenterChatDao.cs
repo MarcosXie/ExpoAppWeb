@@ -9,8 +9,8 @@ public class CallCenterChatDao : BaseDao
 
     public Guid? AdminId { get; set; }
     public AdminDao? Admin { get; set; }
-    public string UserLang { get; set; } = "en-US";
-    public string AdminLang { get; set; } = "pt-BR";
+    public string UserLang { get; set; } = "en";
+    public string AdminLang { get; set; } = "pt";
 
     public ICollection<CallCenterMessageDao> Messages { get; set; } = [];
 }

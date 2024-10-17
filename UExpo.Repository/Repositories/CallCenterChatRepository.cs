@@ -119,7 +119,8 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 			CallCenterChat callCenterChat = new()
             {
                 UserId = userId,
-                UserLang = user!.Lang,
+                UserLang = user!.Lang ?? "en",
+                AdminLang = "en",
             };
 
             await CreateAsync(callCenterChat);

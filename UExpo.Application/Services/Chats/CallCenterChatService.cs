@@ -2,8 +2,6 @@
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Chats.CallCenterChat;
-using UExpo.Domain.Entities.Chats.CartChat;
-using UExpo.Domain.Entities.Chats.RelationshipChat;
 using UExpo.Domain.Entities.Chats.Shared;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Exceptions;
@@ -118,7 +116,7 @@ public class CallCenterChatService : ICallCenterChatService
 			SenderName = message.SenderName,
 			SendedTime = callCenterMessage.CreatedAt,
 			Readed = callCenterMessage.Readed,
-			ReceiverId = (Guid)(message.SenderId == chat.UserId ? chat.AdminId! : chat.UserId)
+			ReceiverId = (message.SenderId == chat.UserId ? chat.AdminId ?? Guid.NewGuid() : chat.UserId)
 		};
 
 		return (msgDto, senderUser is User);
