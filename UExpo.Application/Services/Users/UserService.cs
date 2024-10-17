@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
-using UExpo.Application.Services.Relationships;
 using UExpo.Application.Utils;
-using UExpo.Domain.Dao;
 using UExpo.Domain.Email;
 using UExpo.Domain.Entities.Admins;
 using UExpo.Domain.Entities.Relationships;
@@ -138,7 +136,6 @@ public class UserService : IUserService
 
         var user = await _repository.GetByIdDetailedAsync(id);
         _mapper.Map(profile, user);
-        user.Password = user.Password.Equals(profile.Password) ? profile.Password : HashHelper.Hash(profile.Password);
 
         await _repository.UpdateAsync(user);
     }

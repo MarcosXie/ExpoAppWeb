@@ -9,7 +9,6 @@ public class UserProfileResponseDto
     public string? Address { get; set; }
     public string Country { get; set; } = null!;
     public string? Description { get; set; }
-    public string Password { get; set; } = null!;
 
 	public string? ProfileImageUri { get; set; }
 	public List<string> Images { get; set; } = [];
