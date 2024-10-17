@@ -216,7 +216,7 @@ public class UserService : IUserService
 	public async Task<string> AddProfileImageAsync(Guid id, IFormFile image)
 	{
 		var user = await _repository.GetByIdAsync(id);
-		var fileName = GetFileName(image.Name, id.ToString());
+		var fileName = GetFileName(image.Name, id.ToString()) + DateTime.Now.ToString("HHmmss");
 
 		user.ProfileImageName = fileName;
 		user.ProfileImageUri = await _fileStorageService.UploadFileAsync(image, fileName, FileStorageKeys.UserImages);
