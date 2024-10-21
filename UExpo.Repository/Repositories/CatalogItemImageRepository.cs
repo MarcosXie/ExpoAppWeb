@@ -23,7 +23,7 @@ public class CatalogItemImageRepository(UExpoDbContext context, IMapper mapper)
     public async Task<int> GetMaxOrderByProductAsync(string id)
     {
         var products = await Database.Where(x => x.ItemId == id).ToListAsync();
-    
+
         return products.Count > 0 ? products.Max(x => x.Order) : 1;
     }
 }

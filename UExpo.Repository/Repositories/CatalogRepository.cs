@@ -53,6 +53,7 @@ public class CatalogRepository(UExpoDbContext context, IMapper mapper)
     public async Task<Catalog> GetByIdDetailedAsync(Guid id)
     {
         CatalogDao? entity = await Database
+			.Include(x => x.ItemImages)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id!.Equals(id));
 
