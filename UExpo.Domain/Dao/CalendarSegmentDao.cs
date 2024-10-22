@@ -8,5 +8,6 @@ public class CalendarSegmentDao : BaseDao
 
     public Guid FairId { get; set; }
     public CalendarFairDao Fair { get; set; } = null!;
+	public ICollection<CatalogSegmentDao> Catalogs { get; set; } = [];
 }
 

@@ -14,7 +14,8 @@ public class UExpoDbContext() : DbContext
     public virtual DbSet<CatalogDao> Catalogs { get; set; }
     public virtual DbSet<CatalogPdfDao> CatalogPdfs { get; set; }
     public virtual DbSet<CatalogItemImageDao> CatalogImages { get; set; }
-    public virtual DbSet<AgendaDao> Agendas { get; set; }
+    public virtual DbSet<CatalogSegmentDao> CatalogSegments { get; set; }
+	public virtual DbSet<AgendaDao> Agendas { get; set; }
     public virtual DbSet<FairDao> Fairs { get; set; }
     public virtual DbSet<SegmentDao> Segments { get; set; }
     public virtual DbSet<CalendarDao> Calendars { get; set; }

@@ -26,7 +26,7 @@ public class CatalogConfiguration : IEntityTypeConfiguration<CatalogDao>
             .HasForeignKey(n => n.CatalogId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        entity
+		entity
             .HasOne(n => n.User)
             .WithOne(n => n.Catalog)
             .OnDelete(DeleteBehavior.Cascade);

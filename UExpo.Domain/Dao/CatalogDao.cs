@@ -11,4 +11,5 @@ public class CatalogDao : BaseDao
 
     public ICollection<CatalogItemImageDao> ItemImages { get; set; } = [];
     public ICollection<CatalogPdfDao> Pdfs { get; set; } = [];
+    public ICollection<CatalogSegmentDao> Segments { get; set; } = [];
 }

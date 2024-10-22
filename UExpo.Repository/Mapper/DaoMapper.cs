@@ -7,6 +7,7 @@ using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.Calendars.Segments;
 using UExpo.Domain.Entities.Carts;
 using UExpo.Domain.Entities.Catalogs;
+using UExpo.Domain.Entities.Catalogs.CatalogSegments;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Entities.Chats.CallCenterChat;
@@ -47,9 +48,10 @@ public class DaoMapper : Profile
 
         CreateMap<CatalogItemImageDao, CatalogItemImage>().ReverseMap();
         CreateMap<CatalogPdfDao, CatalogPdf>().ReverseMap();
+        CreateMap<CatalogSegmentDao, CatalogSegment>().ReverseMap();
 
-        // Fair Module
-        CreateMap<AgendaDao, Agenda>().ReverseMap();
+		// Fair Module
+		CreateMap<AgendaDao, Agenda>().ReverseMap();
         CreateMap<FairDao, Fair>().ReverseMap();
         CreateMap<SegmentDao, Segment>().ReverseMap();
 
