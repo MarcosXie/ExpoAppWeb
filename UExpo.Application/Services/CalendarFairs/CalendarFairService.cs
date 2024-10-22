@@ -87,20 +87,27 @@ public class CalendarFairService : ICalendarFairService
 
         return await _fairRegisterRepository.CreateAsync(fairRegister);
     }
-    public async Task<bool> PayAsync(List<Guid> fairRegisterIds)
+    public async Task<bool> PayAsync(List<Guid> fairIds)
     {
-        var fairs = await _fairRegisterRepository.GetByIdsAsync(fairRegisterIds);
+		var fairs = await _calendarFairRepository.GetByIdsAsync(fairIds);
+		var exhibitorId = _authUserHelper.GetUser().Id;
 
-        foreach (var fair in fairs)
-        {
-            fair.IsPaid = true;
-        }
+		List<ExhibitorFairRegister> fairRegisters = [];
+		var descount = double.Parse(_config.GetSection("PaymentInfo:FairDescount").Value!, CultureInfo.InvariantCulture);
+		var value = double.Parse(_config.GetSection("PaymentInfo:FairPrice").Value!, CultureInfo.InvariantCulture);
 
-		await _fairRegisterRepository.UpdateAsync(fairs);
-		await _catalogService.GenerateFairTagsAsync(
-			_authUserHelper.GetUser().Id, 
-			fairs.Select(x => x.CalendarFairId).ToList()
-		);
+		foreach (var fair in fairs)
+		{
+			fairRegisters.Add(new()
+			{
+				CalendarFairId = fair.Id,
+				ExhibitorId = exhibitorId,
+				Value = Math.Round(value * (1 - descount / 100), 2),
+				IsPaid = true,
+			});
+		}
+
+		await _fairRegisterRepository.CreateAsync(fairRegisters);
 
         return true;
     }
@@ -128,11 +135,12 @@ public class CalendarFairService : ICalendarFairService
 
     private IEnumerable<ExhibitorFairRegisterResponseDto> MapExhibitorFairRegisterResponse(List<ExhibitorFairRegister> registers)
     {
-        foreach (var register in registers.OrderByDescending(x => x.CalendarFair.Calendar.BeginDate))
+        foreach (var register in registers)
         {
             var descount = double.Parse(_config.GetSection("PaymentInfo:FairDescount").Value!, CultureInfo.InvariantCulture);
+			var value = double.Parse(_config.GetSection("PaymentInfo:FairPrice").Value!, CultureInfo.InvariantCulture);
 
-            if (descount > 100) descount = 100;
+			if (descount > 100) descount = 100;
             if (descount < 0) descount = 0;
 
             var calendar = register.CalendarFair.Calendar;
@@ -142,10 +150,10 @@ public class CalendarFairService : ICalendarFairService
                 Id = register.Id,
                 FairName = register.CalendarFair.Name,
                 IsPaid = register.IsPaid,
-                Value = register.Value,
+                Value = value,
                 Descount = descount,
                 Calendar = BuildCalendarName(calendar),
-                FinalValue = Math.Round(register.Value * (1 - descount / 100), 2),
+                FinalValue = Math.Round(value * (1 - descount / 100), 2),
             };
         }
     }
