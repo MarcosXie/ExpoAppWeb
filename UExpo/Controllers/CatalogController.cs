@@ -145,11 +145,11 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
     }
 
     [HttpGet("{id}/Tag")]
-    public async Task<ActionResult<string>> GetTagsAsync(Guid id)
+    public async Task<ActionResult<CatalogTagSegmentsResponseDto>> GetTagsAsync(Guid id)
     {
-        var tags = await service.GetTagsAsync(id);
+        var response = await service.GetTagsAsync(id);
 
-        return Ok(tags);
+        return Ok(response);
     }
 
     [HttpPut("{id}/Tag")]

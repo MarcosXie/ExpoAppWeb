@@ -11,4 +11,5 @@ public class CalendarDao : BaseDao
     public List<CalendarFairDao> Fairs { get; set; } = [];
     public bool IsLocked { get; set; } = false;
 	public List<RelationshipDao> Relationships { get; set; } = [];
+	public List<CatalogSegmentDao> CatalogSegments { get; set; } = [];
 }

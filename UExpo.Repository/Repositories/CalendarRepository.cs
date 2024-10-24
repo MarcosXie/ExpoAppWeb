@@ -48,7 +48,7 @@ public class CalendarRepository(UExpoDbContext context, IMapper mapper)
 		return Mapper.Map<Calendar>(calendar);
 	}
 
-	public async Task<Calendar> GetNextDetailedAsync()
+	public async Task<Calendar> GetNextDetailedAsync(bool returnFullResultEver = false)
 	{
 		var query = Database
 			.Where(x => x.EndDate > DateTime.Now)
@@ -56,7 +56,7 @@ public class CalendarRepository(UExpoDbContext context, IMapper mapper)
 
 		var tempCalendar = await query.FirstOrDefaultAsync();
 
-		if (DateTime.Now >= tempCalendar?.BeginDate && DateTime.Now <= tempCalendar.EndDate)
+		if (returnFullResultEver || (DateTime.Now >= tempCalendar?.BeginDate && DateTime.Now <= tempCalendar.EndDate))
 		{
 			var startedCalendar = await query
 									.Include(x => x.Fairs)

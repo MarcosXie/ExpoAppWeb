@@ -23,5 +23,11 @@ public class CatalogSegmentConfiguration : IEntityTypeConfiguration<CatalogSegme
 			.WithMany(n => n.Segments)
 			.HasForeignKey(n => n.CatalogId)
 			.OnDelete(DeleteBehavior.Cascade);
+
+		entity
+			.HasOne(n => n.Calendar)
+			.WithMany(n => n.CatalogSegments)
+			.HasForeignKey(n => n.CalendarId)
+			.OnDelete(DeleteBehavior.Cascade);
 	}
 }

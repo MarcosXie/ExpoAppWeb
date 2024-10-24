@@ -1,4 +1,5 @@
-﻿using UExpo.Domain.Entities.Catalogs.ItemImages;
+﻿using UExpo.Domain.Entities.Catalogs.CatalogSegments;
+using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Entities.Users;
 using UExpo.Domain.Shared;
@@ -14,4 +15,5 @@ public class Catalog : BaseModel
 
     public ICollection<CatalogItemImage> ItemImages { get; set; } = [];
     public ICollection<CatalogPdf> Pdfs { get; set; } = [];
+	public ICollection<CatalogSegment> Segments { get; set; } = [];
 }

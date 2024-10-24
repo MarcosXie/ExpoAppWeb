@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using UExpo.Application.Utils;
+using UExpo.Domain.Entities.Calendars;
 using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
@@ -17,6 +18,7 @@ public class CatalogService : ICatalogService
     private readonly ICatalogPdfRepository _pdfRepository;
     private readonly ICatalogItemImageRepository _itemImageRepository;
     private readonly IFileStorageService _fileStorageService;
+	private readonly ICalendarRepository _calendarRepository;
 	private readonly ICalendarFairRepository _calendarFairRepository;
 	private readonly IMapper _mapper;
 
@@ -26,12 +28,14 @@ public class CatalogService : ICatalogService
         ICatalogItemImageRepository itemImageRepository,
         IFileStorageService fileStorageService,
 		ICalendarFairRepository calendarFairRepository,
-        IMapper mapper)
+		ICalendarRepository calendarRepository,
+		IMapper mapper)
     {
         _repository = repository;
         _pdfRepository = pdfRepository;
         _itemImageRepository = itemImageRepository;
         _fileStorageService = fileStorageService;
+		_calendarRepository = calendarRepository;
 		_calendarFairRepository = calendarFairRepository;
 		_mapper = mapper;
     }
@@ -180,11 +184,32 @@ public class CatalogService : ICatalogService
         );
     }
 
-    public async Task<string> GetTagsAsync(Guid id)
+    public async Task<CatalogTagSegmentsResponseDto> GetTagsAsync(Guid id)
     {
-        var catalog = await _repository.GetByIdAsync(id);
+        var catalog = await _repository.GetByIdDetailedAsync(id);
+		var calendar = await _calendarRepository.GetNextDetailedAsync(true);
 
-        return catalog.Tags;
+		CatalogTagSegmentsResponseDto response = new()
+		{
+			Tags = catalog.Tags,
+			Fairs = _mapper.Map<List<CalendarFairOptionResponseDto>>(calendar.Fairs.Where(x => 
+				x.FairRegisters.Any(fr => fr.User.Id == catalog.UserId)
+			))
+		};
+
+		response.Segments = response.Fairs.SelectMany(f => f.Segments).ToList();
+
+		foreach (var segment in catalog.Segments.Where(x => x.CalendarId == calendar.Id))
+		{
+			var resSegment = response.Segments.FirstOrDefault(s => s.Id == segment.Id);
+
+			if (resSegment is not null)
+			{
+				resSegment.IsSelected = true;
+			}
+		}
+
+		return response;
     }
 
     public async Task UpdateTagsAsync(Guid id, CatalogTagDto tags)

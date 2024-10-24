@@ -9,5 +9,8 @@ public class CatalogSegmentDao : BaseDao
 
 	public Guid CalendarSegmentId { get; set; }
 	public CalendarSegmentDao CalendarSegment { get; set; } = null!;
+
+	public Guid CalendarId { get; set; }
+	public CalendarDao Calendar { get; set; } = null!;
 }
 
