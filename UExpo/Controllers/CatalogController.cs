@@ -143,20 +143,4 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
 
         return Ok();
     }
-
-    [HttpGet("{id}/Tag")]
-    public async Task<ActionResult<CatalogTagSegmentsResponseDto>> GetTagsAsync(Guid id)
-    {
-        var response = await service.GetTagsAsync(id);
-
-        return Ok(response);
-    }
-
-    [HttpPut("{id}/Tag")]
-    public async Task<ActionResult<string>> UpdateTagsAsync(Guid id, CatalogTagDto tags)
-    {
-        await service.UpdateTagsAsync(id, tags);
-
-        return Ok();
-    }
 }

@@ -26,4 +26,5 @@ public interface IBaseRepository<TDao, TEntity>
     Task UpdateAsync(IEnumerable<TEntity> items, CancellationToken cancellationToken = default);
 
     Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+    Task DeleteAsync(List<Guid> id, CancellationToken cancellationToken = default);
 }

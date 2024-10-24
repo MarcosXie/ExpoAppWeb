@@ -141,4 +141,13 @@ public class BaseRepository<TDao, TEntity> : IBaseRepository<TDao, TEntity>
 
 	public async Task<List<TEntity>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken = default) =>
 		Mapper.Map<List<TEntity>>(await Database.AsNoTracking().Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken));
+
+	public async Task DeleteAsync(List<Guid> ids, CancellationToken cancellationToken = default)
+	{
+		var entities = await Database.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+
+		Database.RemoveRange(entities);
+
+		await Context.SaveChangesAsync(cancellationToken);
+	}
 }

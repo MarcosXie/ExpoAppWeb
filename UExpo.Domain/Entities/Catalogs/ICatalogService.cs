@@ -15,8 +15,5 @@ public interface ICatalogService
     Task<List<CatalogItemImageResponseDto>> AddImagesAsync(Guid id, string productId, List<IFormFile> images);
     Task<List<CatalogItemImageResponseDto>> GetImagesByProductAsync(Guid id, string productId);
     Task DeleteImageAsync(Guid id, string productId, Guid imageId);
-    Task<CatalogTagSegmentsResponseDto> GetTagsAsync(Guid id);
-    Task UpdateTagsAsync(Guid id, CatalogTagDto tags);
-    Task GenerateFairTagsAsync(Guid id, List<Guid> fairIds);
 	Task<CatalogResponseDto> GetByCartIdAsync(Guid cartId);
 }

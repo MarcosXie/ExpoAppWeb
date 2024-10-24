@@ -78,6 +78,22 @@ public class CatalogRepository(UExpoDbContext context, IMapper mapper)
             .ExecuteUpdateAsync(setter => setter.SetProperty(x => x.Tags, catalog.Tags));
     }
 
+	public async Task UpdateSegmentsAsync(Catalog catalog)
+	{
+		var existingCatalog = await Context.Catalogs
+			.Include(c => c.Segments)
+			.FirstOrDefaultAsync(x => x.Id == catalog.Id);
+
+		if (existingCatalog != null)
+		{
+			existingCatalog.Segments.Clear();
+
+			existingCatalog.Segments = Mapper.Map<List<CatalogSegmentDao>>(catalog.Segments);
+
+			await Context.SaveChangesAsync();
+		}
+	}
+
 	public async Task<List<string>> GetAllTagsAsync()
 	{
 		var tempTags = await Database

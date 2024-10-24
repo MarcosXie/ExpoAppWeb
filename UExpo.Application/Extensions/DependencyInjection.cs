@@ -9,6 +9,7 @@ using UExpo.Application.Services.Chats;
 using UExpo.Application.Services.Expos;
 using UExpo.Application.Services.Fairs;
 using UExpo.Application.Services.Relationships;
+using UExpo.Application.Services.Tags;
 using UExpo.Application.Services.Tutorials;
 using UExpo.Application.Services.Users;
 using UExpo.Application.Utils;
@@ -25,6 +26,7 @@ using UExpo.Domain.Entities.Expo;
 using UExpo.Domain.Entities.Fairs;
 using UExpo.Domain.Entities.Fairs.Segments;
 using UExpo.Domain.Entities.Relationships;
+using UExpo.Domain.Entities.Tags;
 using UExpo.Domain.Entities.Tutorial;
 using UExpo.Domain.Entities.Users;
 
@@ -51,6 +53,7 @@ public static class DependencyInjection
         services.AddScoped<IRelationshipChatService, RelationshipChatService>();
         services.AddScoped<ICartService, CartService>();
 		services.AddScoped<ICartChatService, CartChatService>();
+		services.AddScoped<ITagService, TagService>();
 
 		//services.AddHostedService<YearlyTaskService>();
 	}

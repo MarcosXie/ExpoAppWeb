@@ -7,6 +7,7 @@ using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.Calendars.Segments;
 using UExpo.Domain.Entities.Carts;
 using UExpo.Domain.Entities.Catalogs;
+using UExpo.Domain.Entities.Catalogs.CatalogSegments;
 using UExpo.Domain.Entities.Catalogs.ItemImages;
 using UExpo.Domain.Entities.Catalogs.Pdfs;
 using UExpo.Domain.Entities.Chats.CallCenterChat;
@@ -44,6 +45,7 @@ public static class DependencyInjection
 		services.AddScoped<ICatalogRepository, CatalogRepository>();
         services.AddScoped<ICatalogPdfRepository, CatalogPdfRepository>();
         services.AddScoped<ICatalogItemImageRepository, CatalogItemImageRepository>();
+        services.AddScoped<ICatalogSegmentRepository, CatalogSegmentRepository>();
 
         services.AddScoped<IAgendaRepository, AgendaRepository>();
         services.AddScoped<IFairRepository, FairRepository>();

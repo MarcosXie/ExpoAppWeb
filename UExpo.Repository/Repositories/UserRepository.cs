@@ -24,6 +24,7 @@ public class UserRepository(UExpoDbContext context, IMapper mapper)
 	{
 		var entity = await Database
 			.Include(x => x.Images)
+			.Include(x => x.Catalog)
 			.AsNoTracking()
 			.FirstOrDefaultAsync(x => x.Id!.Equals(id));
 

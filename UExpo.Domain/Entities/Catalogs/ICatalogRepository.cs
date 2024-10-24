@@ -12,4 +12,5 @@ public interface ICatalogRepository : IBaseRepository<CatalogDao, Catalog>
     Task<Catalog?> GetByUserIdOrDefaultAsync(Guid id);
     Task<List<CatalogItemImage>> GetImagesByProductIdAsync(Guid id, string productId);
     Task UpdateTagsAsync(Catalog catalog);
+    Task UpdateSegmentsAsync(Catalog catalog);
 }
