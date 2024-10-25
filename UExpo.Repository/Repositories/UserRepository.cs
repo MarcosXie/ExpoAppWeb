@@ -71,6 +71,7 @@ public class UserRepository(UExpoDbContext context, IMapper mapper)
 	{
 		var preQuery = await Database
 					.Include(x => x.Catalog)
+						.ThenInclude(x => x!.Segments)
 					.Where(x => x.FairRegisters.Any(f => f.CalendarFair.CalendarId == search.CalendarId && f.IsPaid)).ToListAsync();
 
 		var users = preQuery

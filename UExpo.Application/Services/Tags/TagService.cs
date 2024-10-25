@@ -6,8 +6,6 @@ using UExpo.Domain.Entities.Calendars.Segments;
 using UExpo.Domain.Entities.Calendars;
 using UExpo.Domain.Entities.Tags;
 using UExpo.Domain.Entities.Users;
-using UExpo.Application.Services.Users;
-using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace UExpo.Application.Services.Tags;
 
@@ -69,21 +67,23 @@ public class TagService : ITagService
 		return response;
 	}
 
-	public async Task UpdateTagsAsync(Guid id, CatalogTagDto tags)
+	public async Task UpdateTagsAsync(Guid id, string tags)
 	{
-		tags.Tags = tags.Tags.ToLower();
+		tags = tags.ToLower();
 		var user = await _userRepository.GetByIdDetailedAsync(id);
 
-		var catalog = await _repository.GetByIdDetailedAsync(user.Catalog!.Id);
+		var catalog = await _repository.GetByIdAsync(user.Catalog!.Id);
 
-		catalog.Tags = tags.Tags;
+		catalog.Tags = tags;
 
 		await _repository.UpdateTagsAsync(catalog);
 	}
 
-	public async Task UpdateSegmentsAsync(Guid id, List<Guid> segmentIds)
+	public async Task UpdateSegmentsAsync(Guid id, List<Guid> segmentIds, string tags)
 	{
-		var user = await _userRepository.GetByIdAsync(id);
+		await UpdateTagsAsync(id, tags);
+
+		var user = await _userRepository.GetByIdDetailedAsync(id);
 
 		var catalog = await _repository.GetByIdDetailedAsync(user.Catalog!.Id);
 		var calendar = await _calendarRepository.GetNextDetailedAsync(true);

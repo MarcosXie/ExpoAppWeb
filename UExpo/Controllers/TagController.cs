@@ -16,18 +16,11 @@ public class TagController(ITagService service) : ControllerBase
 		return Ok(response);
 	}
 
-	[HttpPut("{id}")]
-	public async Task<ActionResult<string>> UpdateTagsAsync(Guid id, CatalogTagDto tags)
-	{
-		await service.UpdateTagsAsync(id, tags);
-
-		return Ok();
-	}
 
 	[HttpPut("{id}/Segment")]
-	public async Task<ActionResult<string>> UpdateSegmentsAsync(Guid id, List<Guid> segmentIds)
+	public async Task<ActionResult<string>> UpdateSegmentsAsync(Guid id, SegmentTagUpdateDto updateDto)
 	{
-		await service.UpdateSegmentsAsync(id, segmentIds);
+		await service.UpdateSegmentsAsync(id, updateDto.SegmentIds, updateDto.Tags);
 
 		return Ok();
 	}
