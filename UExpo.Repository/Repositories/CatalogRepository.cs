@@ -55,7 +55,10 @@ public class CatalogRepository(UExpoDbContext context, IMapper mapper)
         CatalogDao? entity = await Database
 			.Include(x => x.ItemImages)
 			.Include(x => x.Segments)
-            .AsNoTracking()
+				.ThenInclude(x => x.Calendar)
+			.Include(x => x.Segments)
+				.ThenInclude(x => x.CalendarSegment)
+			.AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id!.Equals(id));
 
         return entity is null

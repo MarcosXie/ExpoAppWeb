@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
+using UExpo.Application.Services.Tags;
 using UExpo.Application.Utils;
 using UExpo.Domain.Entities.Calendars;
 using UExpo.Domain.Entities.Calendars.Fairs;
 using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Exhibitors;
+using UExpo.Domain.Entities.Tags;
 using UExpo.Domain.Exceptions;
 
 namespace UExpo.Application.Services.CalendarFairs;
@@ -17,7 +19,8 @@ public class CalendarFairService : ICalendarFairService
 	private readonly AuthUserHelper _authUserHelper;
     private readonly IExhibitorFairRegisterRepository _fairRegisterRepository;
     private readonly ICatalogService _catalogService;
-    private readonly IConfiguration _config;
+	private readonly ITagService _tagService;
+	private readonly IConfiguration _config;
     private readonly IMapper _mapper;
 
     public CalendarFairService(
@@ -27,6 +30,7 @@ public class CalendarFairService : ICalendarFairService
         ICatalogService catalogService,
         IMapper mapper,
         IConfiguration config,
+		ITagService tagService,
         AuthUserHelper authUserHelper)
     {
         _calendarFairRepository = calendarFairRepository;
@@ -34,7 +38,8 @@ public class CalendarFairService : ICalendarFairService
 		_authUserHelper = authUserHelper;
         _fairRegisterRepository = exhibitorFairRegisterRepository;
         _catalogService = catalogService;
-        _config = config;
+		_tagService = tagService;
+		_config = config;
         _mapper = mapper;
     }
 
@@ -108,8 +113,9 @@ public class CalendarFairService : ICalendarFairService
 		}
 
 		await _fairRegisterRepository.CreateAsync(fairRegisters);
+		await _tagService.AddSegmentsForNewRegisterAsync(exhibitorId, fairIds);
 
-        return true;
+		return true;
     }
 
 	public async Task<string> GetNextExpoDateAsync()

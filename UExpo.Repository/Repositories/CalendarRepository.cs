@@ -41,7 +41,7 @@ public class CalendarRepository(UExpoDbContext context, IMapper mapper)
 	public async Task<Calendar> GetNextAsync()
 	{
 		var calendar = await Database
-			.Where(x => x.BeginDate > DateTime.Now)
+			.Where(x => x.EndDate > DateTime.Now)
 			.OrderBy(x => x.BeginDate)
 			.FirstOrDefaultAsync();
 

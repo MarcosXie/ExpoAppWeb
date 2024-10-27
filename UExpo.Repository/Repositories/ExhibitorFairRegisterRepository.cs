@@ -17,7 +17,7 @@ public class ExhibitorFairRegisterRepository(UExpoDbContext context, IMapper map
             .Include(x => x.CalendarFair)
             .ThenInclude(x => x.Calendar)
             .AsNoTracking()
-            .Where(x => x.ExhibitorId == exhibitorId && x.CalendarFair.Calendar.BeginDate >= DateTime.Now).ToListAsync();
+            .Where(x => x.ExhibitorId == exhibitorId && x.CalendarFair.Calendar.EndDate >= DateTime.Now).ToListAsync();
 
         var paidFairs = Mapper.Map<List<ExhibitorFairRegister>>(fairs);
 
@@ -25,7 +25,7 @@ public class ExhibitorFairRegisterRepository(UExpoDbContext context, IMapper map
 			.Include(x => x.Fairs)
 			.AsNoTracking()
 			.OrderBy(x => x.BeginDate)
-			.FirstOrDefaultAsync(x => x.BeginDate >= DateTime.Now))?.Fairs ?? [];
+			.FirstOrDefaultAsync(x => x.EndDate >= DateTime.Now))?.Fairs ?? [];
 			
 		var exhibitor = await Context.Users
 			.AsNoTracking()

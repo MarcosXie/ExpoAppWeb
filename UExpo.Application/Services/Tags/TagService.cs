@@ -6,6 +6,7 @@ using UExpo.Domain.Entities.Calendars.Segments;
 using UExpo.Domain.Entities.Calendars;
 using UExpo.Domain.Entities.Tags;
 using UExpo.Domain.Entities.Users;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace UExpo.Application.Services.Tags;
 
@@ -35,6 +36,30 @@ public class TagService : ITagService
 		_calendarSegmentRepository = calendarSegmentRepository;
 		_userRepository = userRepository;
 		_mapper = mapper;
+	}
+
+	public async Task AddSegmentsForNewRegisterAsync(Guid exhibitorId, List<Guid> fairIds)
+	{
+		var user = await _userRepository.GetByIdDetailedAsync(exhibitorId);
+
+		var catalog = await _repository.GetByIdDetailedAsync(user.Catalog!.Id);
+		var calendar = await _calendarRepository.GetNextDetailedAsync(true);
+
+		var registeredFairs = calendar.Fairs.Where(x => fairIds.Contains(x.Id));
+
+		var lastExpoSegments = catalog.Segments.Where(x => x.CalendarId != calendar.Id).OrderByDescending(x => x.Calendar.BeginDate);
+
+		List<Guid> segmentToAdd = [];
+
+		foreach (var fair in registeredFairs)
+		{ 
+			segmentToAdd.AddRange(fair.Segments.Where(fs => lastExpoSegments.Any(x => x.CalendarSegment.Name.Equals(fs.Name))).Select(x => x.Id));
+		}
+
+		if (segmentToAdd.Any())
+		{
+			await AddSegments(catalog, calendar, segmentToAdd);
+		}
 	}
 
 	public async Task<CatalogTagSegmentsResponseDto> GetTagsAsync(Guid id)
@@ -79,9 +104,12 @@ public class TagService : ITagService
 		await _repository.UpdateTagsAsync(catalog);
 	}
 
-	public async Task UpdateSegmentsAsync(Guid id, List<Guid> segmentIds, string tags)
+	public async Task UpdateSegmentsAsync(Guid id, List<Guid> segmentIds, string? tags = null)
 	{
-		await UpdateTagsAsync(id, tags);
+		if (tags is not null)
+		{
+			await UpdateTagsAsync(id, tags);
+		}
 
 		var user = await _userRepository.GetByIdDetailedAsync(id);
 
@@ -96,6 +124,11 @@ public class TagService : ITagService
 
 		await _catalogSegmentRepository.DeleteAsync(segmentsToDelete.Select(x => x.Id).ToList());
 
+		await AddSegments(catalog, calendar, segmentIdsToAdd);
+	}
+
+	private async Task AddSegments(Catalog catalog, Calendar calendar, List<Guid> segmentIdsToAdd)
+	{
 		var segmentsToAdd = await _calendarSegmentRepository.GetByIdsAsync(segmentIdsToAdd);
 
 		List<CatalogSegment> catalogSegmentToAdd = [];
