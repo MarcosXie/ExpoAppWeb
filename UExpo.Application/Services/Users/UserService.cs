@@ -237,6 +237,23 @@ public class UserService : IUserService
 		await _repository.UpdateAsync(user);
 	}
 
+	public async Task<MenuUnlockDto> GetMenuUnlockAsync()
+	{
+		var userId = _authUserHelper.GetUser().Id;
+
+		var user = await _repository.GetByIdDetailedAsync(userId);
+
+		var profile = await GetProfileAsync(userId);
+
+		MenuUnlockDto menu = new();
+
+		menu.CatalogEnable = !profile.HasNullOrEmptyFields();
+		menu.FairRegisterEnable = menu.CatalogEnable && user.Catalog?.JsonTable is not null && user.Catalog.JsonTable.Count != 0;
+		menu.TagsAndSegmentsEnable = menu.FairRegisterEnable && user.FairRegisters.Count != 0;
+		
+		return menu;
+	}
+
 	#region Utils
 	private async Task ValidateCreateAsync(UserDto userDto)
     {

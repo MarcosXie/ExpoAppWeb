@@ -18,4 +18,5 @@ public interface IUserService
 	Task<string> AddProfileImageAsync(Guid id, IFormFile image);
 	Task RemoveProfileImageAsync(Guid id);
 	Task RedefinePasswordAsync(Guid id, RedefinePasswordDto redefinePassword);
+	Task<MenuUnlockDto> GetMenuUnlockAsync();
 }

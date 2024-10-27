@@ -1,5 +1,6 @@
 ﻿using UExpo.Domain.Entities.Catalogs;
 using UExpo.Domain.Entities.Chats.Shared;
+using UExpo.Domain.Entities.Exhibitors;
 using UExpo.Domain.Entities.Relationships;
 using UExpo.Domain.Shared;
 
@@ -25,5 +26,6 @@ public class User : BaseModel, IChatUser
 	public Catalog? Catalog { get; set; }
 	public List<Relationship> BuyerRelationships { get; set; } = [];
 	public List<Relationship> SupplierRelationships { get; set; } = [];
+	public List<ExhibitorFairRegister> FairRegisters { get; set; } = [];
 }
 

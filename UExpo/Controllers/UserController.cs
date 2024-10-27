@@ -94,6 +94,14 @@ public class UserController(IUserService service) : ControllerBase
 		return Ok();
 	}
 
+	[HttpGet("MenuUnlock")]
+	public async Task<ActionResult<MenuUnlockDto>> GetMenuUnlockAsync()
+	{
+		MenuUnlockDto menu = await service.GetMenuUnlockAsync();
+		return Ok(menu);
+	}
+
+
 	[HttpGet("Profile/{id}")]
     public async Task<ActionResult<UserProfileResponseDto>> GetProfileAsync(Guid id)
     {
