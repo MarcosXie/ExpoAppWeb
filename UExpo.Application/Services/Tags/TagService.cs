@@ -6,7 +6,6 @@ using UExpo.Domain.Entities.Calendars.Segments;
 using UExpo.Domain.Entities.Calendars;
 using UExpo.Domain.Entities.Tags;
 using UExpo.Domain.Entities.Users;
-using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace UExpo.Application.Services.Tags;
 

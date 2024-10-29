@@ -9,9 +9,8 @@ public class UserDto
     public string Name { get; set; } = null!;
     [Required, MaxLength(120)]
     public string Email { get; set; } = null!;
-    [Required, MaxLength(150)]
+    [MaxLength(150)]
     public string? Enterprise { get; set; }
-    //[Required, Length(8, 8)]
     public string Password { get; set; } = null!;
     public string ConfirmPassword { get; set; } = null!;
     [Required, MaxLength(30)]
