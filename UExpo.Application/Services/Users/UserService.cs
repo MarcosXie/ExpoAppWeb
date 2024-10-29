@@ -314,11 +314,29 @@ public class UserService : IUserService
 		{
 			ToAddresses = [user.Email],
 			Subject = $"UExpo - Forgot password",
-			Body = @$"<p>Click in the link bellow to redefine your password in UExpo: 
-                    <br>
-                    <a href=""{_config["FrontEndUrl"]}/026_redefine_password/{user.Id}/{code}"">Redefine Password</a>
-                    <br>
-                    Thank you!</p>"
+			Body = @$"<p>Hello,</p>
+
+					<p>We received a request to reset your password for your UExpo account. To proceed, please click the link below:</p>
+
+					<br>
+					<br>
+
+					<p style=""margin-top: 16px;"">
+					  <a href=""{_config["FrontEndUrl"]}/026_redefine_password/{user.Id}/{code}"" 
+						 style=""background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;"">
+						Reset Password
+					  </a>
+					</p>
+
+					<br>
+					<br>
+
+					<p>This link is valid for a limited time. If you did not request a password reset, please disregard this email, and your password will remain unchanged.</p>
+
+					<p>Thank you for using UExpo!</p>
+
+					<p>Best regards,<br>
+					The Support Team</p>"
 		};
 
 		await _emailService.SendEmailAsync(emailSendDto);
