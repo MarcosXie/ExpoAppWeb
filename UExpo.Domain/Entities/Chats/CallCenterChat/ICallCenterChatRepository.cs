@@ -8,7 +8,7 @@ namespace UExpo.Domain.Entities.Chats.CallCenterChat;
 public interface ICallCenterChatRepository : IBaseChatRepository, IBaseRepository<CallCenterChatDao, CallCenterChat>
 {
 	Task<List<CallCenterChat>> GetWithUsersAsync();
-	Task<CallCenterChat> GetOrCreateUserChatAsync(AuthenticatedUser authenticatedUser);
+	Task<CallCenterChat> GetOrCreateUserChatAsync(AuthenticatedUser authenticatedUser, string? language);
 	Task<CallCenterChat?> GetByUserIdAsync(Guid id);
 	Task<int> GetNotReadedMessagesByUserId(Guid userId);
 }

@@ -8,9 +8,9 @@ namespace UExpo.Api.Controllers;
 public class CallCenterController(ICallCenterChatService service) : ControllerBase
 {
     [HttpGet("Request")]
-    public async Task<ActionResult<CallCenterChatResponseDto>> RequestCallCenterAsync()
+    public async Task<ActionResult<CallCenterChatResponseDto>> RequestCallCenterAsync(string? language)
     {
-        CallCenterChatResponseDto callCenter = await service.GetChatByUserIdAsync();
+        CallCenterChatResponseDto callCenter = await service.GetChatByUserIdAsync(language);
 
         return Ok(callCenter);
     }

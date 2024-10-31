@@ -103,7 +103,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
         return chats;
     }
 
-    public async Task<CallCenterChat> GetOrCreateUserChatAsync(AuthenticatedUser authenticatedUser)
+    public async Task<CallCenterChat> GetOrCreateUserChatAsync(AuthenticatedUser authenticatedUser, string? language)
     {
         Guid userId = authenticatedUser.Id;
 
@@ -119,7 +119,7 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
 			CallCenterChat callCenterChat = new()
             {
                 UserId = userId,
-                UserLang = user!.Lang ?? "en",
+                UserLang = language ?? user!.Lang ?? "en",
                 AdminLang = "en",
             };
 
@@ -129,6 +129,11 @@ public class CallCenterChatRepository(UExpoDbContext context, IMapper mapper)
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.UserId == authenticatedUser.Id);
         }
+		else if(language is not null && chat.UserLang != language)
+		{
+			chat.UserLang = language;
+			await Context.SaveChangesAsync();
+		}
 
         return new CallCenterChat
         {

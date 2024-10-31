@@ -145,8 +145,8 @@ public class CatalogService : ICatalogService
 
 		int order = await _itemImageRepository.GetMaxOrderByProductAsync(productId) + 1;
 
-		if (catalog.ItemImages.Where(x => x.ItemId == productId).Count() + images.Count > 15)
-			throw new BadRequestException("The maximum number of images for a product is 15");
+		if (catalog.ItemImages.Where(x => x.ItemId == productId).Count() + images.Count > 6)
+			throw new BadRequestException("The maximum number of images for a product is 6");
 
 		List<CatalogItemImage> imagesToCreate = [];
 

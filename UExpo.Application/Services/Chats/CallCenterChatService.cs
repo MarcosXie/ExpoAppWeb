@@ -202,9 +202,9 @@ public class CallCenterChatService : ICallCenterChatService
 		}
 	}
 
-	public async Task<CallCenterChatResponseDto> GetChatByUserIdAsync()
+	public async Task<CallCenterChatResponseDto> GetChatByUserIdAsync(string? language)
 	{
-		CallCenterChat chat = await _repository.GetOrCreateUserChatAsync(_authUserHelper.GetUser());
+		CallCenterChat chat = await _repository.GetOrCreateUserChatAsync(_authUserHelper.GetUser(), language);
 
 		CallCenterChatResponseDto responseDto = BuildCallCenterChatResponse(chat, true);
 
