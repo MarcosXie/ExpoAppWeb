@@ -92,6 +92,7 @@ public class ExpoService : IExpoService
 							Enterprise = register.User.Enterprise ?? string.Empty,
 							Tags = register.User.Catalog?.Tags,
 							HasRelationship = relationships.Any(r => r.SupplierUserId == register.User.Id),
+							ProfileImage = register.User.ProfileImageUri,
 							Fairs = calendar.Fairs.Where(x => x.CalendarId == calendar.Id && x.FairRegisters.Any(fr => fr.ExhibitorId == register.ExhibitorId)).Select(x => x.Name.ToLower()).ToList(),
 							Segments = register.User.Catalog!.Segments.Where(x => x.CalendarId == calendar.Id).Select(x => x.CalendarSegment.Name.ToLower()).ToList(),
 						});
