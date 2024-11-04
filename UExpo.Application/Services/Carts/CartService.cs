@@ -49,7 +49,26 @@ public class CartService : ICartService
 			? cart.BuyerUser.Name
 			: cart.BuyerUser.Enterprise;
 
-		var fileName = $"CartNo-{cart.CartNo}-{cart.SupplierUser.Enterprise}-{buyerName}";
+		var user = _authUserHelper.GetUser();
+
+
+		string fileName;
+		
+		if (user.Id == cart.SupplierUser.Id)
+		{
+			fileName = $"CartNo-{cart.CartNo}-{buyerName}";
+		}
+		else
+		{
+			fileName = $"CartNo-{cart.CartNo}-{cart.SupplierUser.Enterprise}";
+		}
+
+		if (fileName.Length > 31)
+		{
+			fileName = fileName.Substring(0, 31);
+		}
+
+		fileName = fileName.Replace(' ', '_');
 
 		using XLWorkbook workbook = BuildWorkbook(cart, fileName);
 
@@ -191,7 +210,8 @@ public class CartService : ICartService
 			worksheet.Cell(row, 2).Value = item.Quantity;
 			worksheet.Cell(row, 3).Value = item.Price.ToString("C", CultureInfo.CreateSpecificCulture("en-US"));
 			worksheet.Cell(row, 4).Value = (item.Quantity * item.Price).ToString("C", CultureInfo.CreateSpecificCulture("en-US"));
-			worksheet.Cell(row, 5).Value = item.Annotation;
+			worksheet.Cell(row, 5).Value = item.Annotation?.Replace("\n", Environment.NewLine);
+			worksheet.Cell(row, 5).Style.Alignment.WrapText = true;
 
 			using var jsonDoc = JsonDocument.Parse(item.JsonData);
 			
