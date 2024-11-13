@@ -29,7 +29,7 @@ services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:5174", config["FrontEndUrl"]!, "http://10.0.0.34:5173")
+        policy.WithOrigins("http://localhost:5174", config["FrontEndUrl"]!, "http://10.0.0.34:5173", "https://uexpo.com.br")
               .AllowAnyHeader()
               .AllowAnyMethod()
 			  .WithExposedHeaders("Content-Disposition")
