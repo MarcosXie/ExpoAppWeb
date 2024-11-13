@@ -24,7 +24,7 @@ builder.Services.AddLogging(loggingBuilder =>
 {
 	loggingBuilder.AddConsole(); // Configura o logger para saída no console
 });
-
+//CORS
 services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
