@@ -365,7 +365,7 @@ public class UserService : IUserService
 
 		foreach (var image in profileImages)
 		{
-			var fileName = GetFileName(image.Name, user.Id.ToString(), order++.ToString());
+			var fileName = GetFileName(image.Name, user.Id.ToString(), order++.ToString(), DateTime.Now.ToString("HHmmss"));
 
 			UserImage userImage = new()
 			{
