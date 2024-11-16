@@ -248,6 +248,7 @@ public class UserService : IUserService
 		MenuUnlockDto menu = new();
 
 		menu.CatalogEnable = !profile.HasNullOrEmptyFields();
+		menu.ExpoEnable = !profile.HasNullOrEmptyFields();
 		menu.FairRegisterEnable = menu.CatalogEnable && user.Catalog?.JsonTable is not null && user.Catalog.JsonTable.Count != 0;
 		menu.TagsAndSegmentsEnable = menu.FairRegisterEnable && user.FairRegisters.Count != 0;
 

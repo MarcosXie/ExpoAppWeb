@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Collections;
 using System.Reflection;
 
 namespace UExpo.Application.Utils;
@@ -19,7 +20,7 @@ public static class ReflectionHelper
 			var value = property.GetValue(obj);
 
 			// Verificar se o campo é nulo
-			if (value == null)
+			if (value == null || (value is string vStr && string.IsNullOrEmpty(vStr)))
 			{
 				return true;
 			}

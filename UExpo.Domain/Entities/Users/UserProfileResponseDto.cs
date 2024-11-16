@@ -4,12 +4,12 @@ public class UserProfileResponseDto
 {
     public Guid Id { get; set; }
     public string Email { get; set; } = null!;
-    public string? Enterprise { get; set; }
+    public required string Enterprise { get; set; }
     public string Name { get; set; } = null!;
-    public string? Address { get; set; }
-    public string Country { get; set; } = null!;
-    public string? Description { get; set; }
+    public required string Address { get; set; }
+    public required string Country { get; set; }
+    public required string Description { get; set; }
 
-	public string? ProfileImageUri { get; set; }
+	public required string ProfileImageUri { get; set; }
 	public List<string> Images { get; set; } = [];
 }
