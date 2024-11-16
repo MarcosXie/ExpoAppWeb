@@ -42,9 +42,9 @@ public class TutorialController(ITutorialService service) : ControllerBase
     }
 
 	[HttpGet("{page}")]
-	public async Task<ActionResult<TutorialResponseDto>> GetByPageAsync(string page, [FromQuery] UserType? type)
+	public async Task<ActionResult<List<TutorialResponseDto>>> GetByPageAsync(string page, [FromQuery] UserType? type)
 	{
-		TutorialResponseDto tutorial = await service.GetByPageAsync(page, type);
+		var tutorial = await service.GetByPageAsync(page, type);
 
 		return Ok(tutorial);
 	}

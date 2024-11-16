@@ -34,14 +34,14 @@ public class TutorialService : ITutorialService
 			.ThenBy(x => x.Order)];
 	}
 
-	public async Task<TutorialResponseDto> GetByPageAsync(string page, UserType? type)
+	public async Task<List<TutorialResponseDto>> GetByPageAsync(string page, UserType? type)
 	{
-		var tutorial = await _repository.FirstOrDefaultAsync(x =>
+		var tutorial = await _repository.GetAsync(x =>
 			x.Page.Equals(page) &&
 			(type == null || x.Type == type)
 		);
 
-		return _mapper.Map<TutorialResponseDto>(tutorial);
+		return _mapper.Map<List<TutorialResponseDto>>(tutorial).OrderBy(x => x.Order).ToList();
 	}
 
 	public async Task UpdateAsync(Guid id, TutorialDto tutorial)

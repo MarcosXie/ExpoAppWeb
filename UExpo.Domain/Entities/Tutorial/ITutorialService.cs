@@ -8,5 +8,5 @@ public interface ITutorialService
     Task UpdateAsync(Guid id, TutorialDto tutorial);
     Task DeleteAsync(Guid id);
     Task<List<TutorialResponseDto>> GetAsync(UserType? type = null);
-	Task<TutorialResponseDto> GetByPageAsync(string page, UserType? type);
+	Task<List<TutorialResponseDto>> GetByPageAsync(string page, UserType? type);
 }
