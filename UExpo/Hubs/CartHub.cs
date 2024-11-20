@@ -31,6 +31,8 @@ public class CartChatHub(ICartChatService service, IHubContext<NotificationsHub>
 	{
 		ReceiveMessageDto msgDto = await service.AddMessageAsync(message);
 
+		msgDto.SendedTime = msgDto.SendedTime.ToUniversalTime();
+
 		await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
 
 		await notificationHub.Clients.Groups(msgDto.ReceiverId.ToString()).SendAsync("Notification",

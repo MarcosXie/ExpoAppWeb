@@ -31,6 +31,8 @@ public class RelationshipChatHub(IRelationshipChatService service, IHubContext<N
 	{
 		ReceiveMessageDto msgDto = await service.AddMessageAsync(message);
 
+		msgDto.SendedTime = msgDto.SendedTime.ToUniversalTime();
+
 		await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
 
 		await notificationHub.Clients.Groups(msgDto.ReceiverId.ToString()).SendAsync("Notification",

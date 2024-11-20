@@ -45,6 +45,8 @@ public class CallCenterChatHub(ICallCenterChatService service, IHubContext<Notif
 	{
 		(ReceiveMessageDto msgDto, bool isSendedByUser) = await service.AddMessageAsync(message);
 
+		msgDto.SendedTime = msgDto.SendedTime.ToUniversalTime();
+
 		await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
 
 		if (isSendedByUser)
