@@ -196,30 +196,39 @@ public class CartService : ICartService
 
 		var items = _mapper.Map<List<CartItemResponseDto>>(cart.Items);
 
-		worksheet.Cell(1, 1).Value = "Item Id";
-		worksheet.Cell(1, 2).Value = "Quantity";
-		worksheet.Cell(1, 3).Value = "Price";
-		worksheet.Cell(1, 4).Value = "Total";
-		worksheet.Cell(1, 5).Value = "Annotation";
+		worksheet.Cell(1, 1).Value = "Item Id"; 
+		worksheet.Cell(1, 2).Value = "Name";
+		worksheet.Cell(1, 3).Value = "Quantity";
+		worksheet.Cell(1, 4).Value = "Price";
+		worksheet.Cell(1, 5).Value = "Total";
+		worksheet.Cell(1, 6).Value = "Annotation";
 
 		var row = 2;
-		var maxColumnIndex = 5;
+		var maxColumnIndex = 6;
 		foreach (var item in items.OrderBy(x => x.CreatedAt))
 		{
 			worksheet.Cell(row, 1).Value = item.ItemId;
-			worksheet.Cell(row, 2).Value = item.Quantity;
-			worksheet.Cell(row, 3).Value = item.Price.ToString("C", CultureInfo.CreateSpecificCulture("en-US"));
-			worksheet.Cell(row, 4).Value = (item.Quantity * item.Price).ToString("C", CultureInfo.CreateSpecificCulture("en-US"));
-			worksheet.Cell(row, 5).Value = item.Annotation?.Replace("\n", Environment.NewLine);
-			worksheet.Cell(row, 5).Style.Alignment.WrapText = true;
+			worksheet.Cell(row, 3).Value = item.Quantity;
+			worksheet.Cell(row, 4).Value = item.Price.ToString("C", CultureInfo.CreateSpecificCulture("en-US"));
+			worksheet.Cell(row, 5).Value = (item.Quantity * item.Price).ToString("C", CultureInfo.CreateSpecificCulture("en-US"));
+			worksheet.Cell(row, 6).Value = item.Annotation?.Replace("\n", Environment.NewLine);
+			worksheet.Cell(row, 6).Style.Alignment.WrapText = true;
 
 			using var jsonDoc = JsonDocument.Parse(item.JsonData);
 			
 			var jsonElement = jsonDoc.RootElement;
 			int columnIndex = 6;
+			var first = true;
 
-			foreach (var prop in jsonElement.EnumerateObject())
+			foreach (var prop in jsonElement.EnumerateObject().Where((_, i) => i > 0))
 			{
+				if (first)
+				{
+					worksheet.Cell(row, 2).Value = prop.Value.ToString();
+					first = false;
+					continue;
+				}
+
 				if (row == 2)
 				{
 					worksheet.Cell(1, columnIndex).Value = prop.Name;
