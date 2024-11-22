@@ -9,7 +9,7 @@ namespace ExpoApp.Api.Controllers;
 public class UserController(IUserService service) : ControllerBase
 {
     private readonly IUserService service = service;
-
+    
     [HttpPost]
     [AllowAnonymous]
     public async Task<ActionResult<string>> RegisterUserAsync(UserDto user)

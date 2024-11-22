@@ -7,6 +7,8 @@ using System.Text;
 using ExpoApp.Api.Hubs;
 using ExpoApp.Api.Middlewares;
 using ExpoApp.Application.Extensions;
+using ExpoShared.Application.Extensions;
+using ExpoShared.Application.Services.Users;
 using ExpoShared.Application.Utils;
 using ExpoShared.Domain.Dao;
 using ExpoShared.Infrastructure.Extensions;
@@ -24,6 +26,7 @@ builder.Services.AddLogging(loggingBuilder =>
 {
 	loggingBuilder.AddConsole(); // Configura o logger para sa�da no console
 });
+
 //CORS
 services.AddCors(options =>
 {
@@ -76,8 +79,13 @@ services.AddSignalR(o =>
 	o.EnableDetailedErrors = true;
 	o.MaximumReceiveMessageSize = 10000000; // bytes
 });
-services.AddRepository(config);
-services.AddInfrastructure();
+
+// Adding Shared 
+services.AddSharedApplication();
+services.AddSharedInfrastructure();
+services.AddSharedRepository(config);
+
+// Adding Expo App
 services.AddApplication();
 
 // Add authentication
@@ -102,9 +110,9 @@ services.AddAuthentication(x =>
 	};
 });
 
-// services.AddIdentityCore<UserDao>()
-//     .AddUserStore<UExpoUserStore>()
-//             .AddDefaultTokenProviders();
+services.AddIdentityCore<UserDao>()
+    .AddUserStore<UExpoUserStore>()
+            .AddDefaultTokenProviders();
 
 services.AddAuthorizationBuilder()
     .SetFallbackPolicy(new AuthorizationPolicyBuilder()
