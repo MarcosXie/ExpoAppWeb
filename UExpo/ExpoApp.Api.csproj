@@ -22,10 +22,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExpoApp.Application\ExpoApp.Application.csproj" />
-    <ProjectReference Include="..\ExpoShared\UExpo.Application\ExpoShared.Application.csproj" />
-    <ProjectReference Include="..\ExpoShared\UExpo.Domain\ExpoShared.Domain.csproj" />
-    <ProjectReference Include="..\ExpoShared\UExpo.Infrastructure\ExpoShared.Infrastructure.csproj" />
-    <ProjectReference Include="..\ExpoShared\UExpo.Repository\ExpoShared.Repository.csproj" />
+    <ProjectReference Include="..\ExpoApp.Repository\ExpoApp.Repository.csproj" />
+    <ProjectReference Include="..\ExpoShared\ExpoShared.Application\ExpoShared.Application.csproj" />
+    <ProjectReference Include="..\ExpoShared\ExpoShared.Domain\ExpoShared.Domain.csproj" />
+    <ProjectReference Include="..\ExpoShared\ExpoShared.Infrastructure\ExpoShared.Infrastructure.csproj" />
+    <ProjectReference Include="..\ExpoShared\ExpoShared.Repository\ExpoShared.Repository.csproj" />
   </ItemGroup>
 
   <ItemGroup>

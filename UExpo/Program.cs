@@ -7,6 +7,7 @@ using System.Text;
 using ExpoApp.Api.Hubs;
 using ExpoApp.Api.Middlewares;
 using ExpoApp.Application.Extensions;
+using ExpoApp.Repository.Extensions;
 using ExpoShared.Application.Extensions;
 using ExpoShared.Application.Services.Users;
 using ExpoShared.Application.Utils;
@@ -87,6 +88,7 @@ services.AddSharedRepository(config);
 
 // Adding Expo App
 services.AddApplication();
+services.AddRepository(config);
 
 // Add authentication
 byte[] key = Encoding.ASCII.GetBytes(config["Jwt:Key"]!);
