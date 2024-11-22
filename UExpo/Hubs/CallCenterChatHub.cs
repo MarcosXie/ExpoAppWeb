@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using UExpo.Api.Hubs.Interfaces;
-using UExpo.Domain.Entities.Chats.CallCenterChat;
-using UExpo.Domain.Entities.Chats.Shared;
+﻿using ExpoApp.Api.Hubs.Interfaces;
+using ExpoShared.Domain.Entities.Chats.CallCenterChat;
+using ExpoShared.Domain.Entities.Chats.Shared;
+using Microsoft.AspNetCore.SignalR;
 
-namespace UExpo.Api.Hubs;
+namespace ExpoApp.Api.Hubs;
 
 public class CallCenterChatHub(ICallCenterChatService service, IHubContext<NotificationsHub> notificationHub) : Hub, IChatHub
 {

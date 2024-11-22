@@ -1,9 +1,9 @@
+using ExpoApp.Api.Hubs.Interfaces;
+using ExpoShared.Domain.Entities.Chats.CartChat;
+using ExpoShared.Domain.Entities.Chats.Shared;
 using Microsoft.AspNetCore.SignalR;
-using UExpo.Api.Hubs.Interfaces;
-using UExpo.Domain.Entities.Chats.CartChat;
-using UExpo.Domain.Entities.Chats.Shared;
 
-namespace UExpo.Api.Hubs;
+namespace ExpoApp.Api.Hubs;
 
 public class CartChatHub(ICartChatService service, IHubContext<NotificationsHub> notificationHub) : Hub, IChatHub
 {

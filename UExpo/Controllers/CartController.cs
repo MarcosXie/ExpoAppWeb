@@ -1,7 +1,7 @@
+using ExpoShared.Domain.Entities.Carts;
 using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Carts;
 
-namespace UExpo.Api.Controllers;
+namespace ExpoApp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

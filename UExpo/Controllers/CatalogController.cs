@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Application.Utils;
-using UExpo.Domain.Entities.Catalogs;
-using UExpo.Domain.Entities.Catalogs.ItemImages;
-using UExpo.Domain.Entities.Catalogs.Pdfs;
-using UExpo.Domain.Shared;
+﻿using ExpoShared.Application.Utils;
+using ExpoShared.Domain.Entities.Catalogs;
+using ExpoShared.Domain.Entities.Catalogs.ItemImages;
+using ExpoShared.Domain.Entities.Catalogs.Pdfs;
+using ExpoShared.Domain.Shared;
+using Microsoft.AspNetCore.Mvc;
 
-namespace UExpo.Api.Controllers;
+namespace ExpoApp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

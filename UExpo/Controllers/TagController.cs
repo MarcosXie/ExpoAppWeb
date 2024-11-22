@@ -1,8 +1,8 @@
+using ExpoShared.Domain.Entities.Catalogs;
+using ExpoShared.Domain.Entities.Tags;
 using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Catalogs;
-using UExpo.Domain.Entities.Tags;
 
-namespace UExpo.Api.Controllers;
+namespace ExpoApp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

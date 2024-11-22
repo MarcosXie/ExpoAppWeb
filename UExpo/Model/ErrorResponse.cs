@@ -1,4 +1,4 @@
-﻿namespace UExpo.Api.Model;
+﻿namespace ExpoApp.Api.Model;
 
 public class ErrorResponse
 {

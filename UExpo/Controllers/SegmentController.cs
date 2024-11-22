@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Fairs.Segments;
+﻿using ExpoShared.Domain.Entities.Fairs.Segments;
+using Microsoft.AspNetCore.Mvc;
 
-namespace UExpo.Api.Controllers;
+namespace ExpoApp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

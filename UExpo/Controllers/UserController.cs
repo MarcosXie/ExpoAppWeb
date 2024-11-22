@@ -1,8 +1,8 @@
+using ExpoShared.Domain.Entities.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Users;
 
-namespace UExpo.Api.Controllers;
+namespace ExpoApp.Api.Controllers;
 
 [ApiController]
 [Route("Api/[controller]")]

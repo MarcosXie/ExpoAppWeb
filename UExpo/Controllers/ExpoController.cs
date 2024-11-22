@@ -1,8 +1,8 @@
+using ExpoShared.Domain.Entities.Exhibitors;
+using ExpoShared.Domain.Entities.Expo;
 using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Exhibitors;
-using UExpo.Domain.Entities.Expo;
 
-namespace UExpo.Api.Controllers;
+namespace ExpoApp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

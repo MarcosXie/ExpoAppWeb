@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Chats.CallCenterChat;
+﻿using ExpoShared.Domain.Entities.Chats.CallCenterChat;
+using Microsoft.AspNetCore.Mvc;
 
-namespace UExpo.Api.Controllers;
+namespace ExpoApp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

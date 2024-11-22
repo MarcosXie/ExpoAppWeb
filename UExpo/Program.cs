@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using UExpo.Api.Hubs;
-using UExpo.Api.Middlewares;
-using UExpo.Application.Extensions;
-using UExpo.Application.Utils;
-using UExpo.Domain.Dao;
-using UExpo.Infrastructure.Extensions;
-using UExpo.Repository.Extensions;
+using ExpoApp.Api.Hubs;
+using ExpoApp.Api.Middlewares;
+using ExpoApp.Application.Extensions;
+using ExpoShared.Application.Utils;
+using ExpoShared.Domain.Dao;
+using ExpoShared.Infrastructure.Extensions;
+using ExpoShared.Repository.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +22,7 @@ config.AddEnvironmentVariables();
 
 builder.Services.AddLogging(loggingBuilder =>
 {
-	loggingBuilder.AddConsole(); // Configura o logger para saída no console
+	loggingBuilder.AddConsole(); // Configura o logger para saï¿½da no console
 });
 //CORS
 services.AddCors(options =>
@@ -102,9 +102,9 @@ services.AddAuthentication(x =>
 	};
 });
 
-services.AddIdentityCore<UserDao>()
-    .AddUserStore<UExpoUserStore>()
-            .AddDefaultTokenProviders();
+// services.AddIdentityCore<UserDao>()
+//     .AddUserStore<UExpoUserStore>()
+//             .AddDefaultTokenProviders();
 
 services.AddAuthorizationBuilder()
     .SetFallbackPolicy(new AuthorizationPolicyBuilder()
@@ -114,11 +114,11 @@ services.AddAuthorizationBuilder()
 
 //builder.WebHost.ConfigureKestrel(serverOptions =>
 //{
-//	//	// Define as opções do Kestrel, como configurar o número máximo de conexões simultâneas.
-//	//	serverOptions.Limits.MaxConcurrentConnections = 100; // Número máximo de conexões simultâneas
-//	//	serverOptions.Limits.MaxConcurrentUpgradedConnections = 100; // Para conexões WebSockets
+//	//	// Define as opï¿½ï¿½es do Kestrel, como configurar o nï¿½mero mï¿½ximo de conexï¿½es simultï¿½neas.
+//	//	serverOptions.Limits.MaxConcurrentConnections = 100; // Nï¿½mero mï¿½ximo de conexï¿½es simultï¿½neas
+//	//	serverOptions.Limits.MaxConcurrentUpgradedConnections = 100; // Para conexï¿½es WebSockets
 
-//	//	// Configure para escutar em uma porta específica
+//	//	// Configure para escutar em uma porta especï¿½fica
 //	//	//serverOptions.ListenAnyIP(int.Parse(config["Kestrel:Endpoints:Http:Url"] ?? "5003")); // Exemplo: HTTP na porta 5003
 //	serverOptions.ListenAnyIP(443, listenOptions =>
 //	{
@@ -133,7 +133,7 @@ var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
 logger.LogInformation("ENVIRONMENT VARIABLES:");
 
-// Registrar todas as variáveis de ambiente
+// Registrar todas as variï¿½veis de ambiente
 foreach (var variable in Environment.GetEnvironmentVariables().Keys)
 {
 	var k = variable.ToString();

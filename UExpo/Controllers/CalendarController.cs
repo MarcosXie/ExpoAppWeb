@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Calendars;
-using UExpo.Domain.Entities.Calendars.Fairs;
+﻿using ExpoShared.Domain.Entities.Calendars;
+using ExpoShared.Domain.Entities.Calendars.Fairs;
+using Microsoft.AspNetCore.Mvc;
 
-namespace UExpo.Api.Controllers;
+namespace ExpoApp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

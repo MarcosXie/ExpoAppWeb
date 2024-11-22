@@ -1,6 +1,6 @@
-﻿using UExpo.Domain.Entities.Chats.Shared;
+﻿using ExpoShared.Domain.Entities.Chats.Shared;
 
-namespace UExpo.Api.Hubs.Interfaces;
+namespace ExpoApp.Api.Hubs.Interfaces;
 
 public interface IChatHub
 {

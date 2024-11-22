@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UExpo.Domain.Entities.Agendas;
+﻿using ExpoShared.Domain.Entities.Agendas;
+using Microsoft.AspNetCore.Mvc;
 
-namespace UExpo.Api.Controllers;
+namespace ExpoApp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

@@ -1,0 +1,3 @@
+[submodule "ExpoShared"]
+	path = ExpoShared
+	url = https://github.com/MarcosXie/ExpoSharedApi.git

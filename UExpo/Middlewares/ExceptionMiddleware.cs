@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
-using UExpo.Api.Model;
-using UExpo.Domain.Exceptions;
+using ExpoApp.Api.Model;
+using ExpoShared.Domain.Exceptions;
 
-namespace UExpo.Api.Middlewares;
+namespace ExpoApp.Api.Middlewares;
 
 public class ExceptionMiddleware(RequestDelegate next)
 {

@@ -1,9 +1,9 @@
+using ExpoApp.Api.Hubs.Interfaces;
+using ExpoShared.Domain.Entities.Chats.RelationshipChat;
+using ExpoShared.Domain.Entities.Chats.Shared;
 using Microsoft.AspNetCore.SignalR;
-using UExpo.Api.Hubs.Interfaces;
-using UExpo.Domain.Entities.Chats.RelationshipChat;
-using UExpo.Domain.Entities.Chats.Shared;
 
-namespace UExpo.Api.Hubs;
+namespace ExpoApp.Api.Hubs;
 
 public class RelationshipChatHub(IRelationshipChatService service, IHubContext<NotificationsHub> notificationHub) : Hub, IChatHub
 {
