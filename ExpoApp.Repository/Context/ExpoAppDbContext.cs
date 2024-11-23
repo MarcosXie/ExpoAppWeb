@@ -14,5 +14,6 @@ public class ExpoAppDbContext(IConfiguration configuration) : ExpoSharedContext(
 		modelBuilder.IgnoreUExpoTables();
 		
 		base.OnModelCreating(modelBuilder);
+		
 	}
 }
