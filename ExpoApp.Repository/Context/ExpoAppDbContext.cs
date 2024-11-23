@@ -2,10 +2,11 @@
 using ExpoShared.Repository.Context;
 using ExpoShared.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ExpoApp.Repository.Context;
 
-public class ExpoAppDbContext : ExpoSharedContext
+public class ExpoAppDbContext(IConfiguration configuration) : ExpoSharedContext(configuration)
 {
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -14,12 +15,5 @@ public class ExpoAppDbContext : ExpoSharedContext
 		modelBuilder.IgnoreUExpoTables();
 		
 		base.OnModelCreating(modelBuilder);
-	}
-
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-	{
-		optionsBuilder.UseMySql(
-			"server=uexpo-db.cbasq20g4rj4.us-east-1.rds.amazonaws.com;database=expoapp_db;user=root;password=RootAws123!",
-			new MySqlServerVersion(new Version(8, 0, 37)));
 	}
 }
