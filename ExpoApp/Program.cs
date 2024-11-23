@@ -7,6 +7,7 @@ using System.Text;
 using ExpoApp.Api.Hubs;
 using ExpoApp.Api.Middlewares;
 using ExpoApp.Application.Extensions;
+using ExpoApp.Domain.Extensions;
 using ExpoApp.Repository.Extensions;
 using ExpoShared.Application.Extensions;
 using ExpoShared.Application.Services.Users;
@@ -87,8 +88,9 @@ services.AddSharedInfrastructure();
 services.AddSharedRepository(config);
 
 // Adding Expo App
+services.AddDomain();
 services.AddApplication();
-services.AddRepository(config);
+services.AddRepository();
 
 // Add authentication
 byte[] key = Encoding.ASCII.GetBytes(config["Jwt:Key"]!);
@@ -120,21 +122,6 @@ services.AddAuthorizationBuilder()
     .SetFallbackPolicy(new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build());
-
-
-//builder.WebHost.ConfigureKestrel(serverOptions =>
-//{
-//	//	// Define as op��es do Kestrel, como configurar o n�mero m�ximo de conex�es simult�neas.
-//	//	serverOptions.Limits.MaxConcurrentConnections = 100; // N�mero m�ximo de conex�es simult�neas
-//	//	serverOptions.Limits.MaxConcurrentUpgradedConnections = 100; // Para conex�es WebSockets
-
-//	//	// Configure para escutar em uma porta espec�fica
-//	//	//serverOptions.ListenAnyIP(int.Parse(config["Kestrel:Endpoints:Http:Url"] ?? "5003")); // Exemplo: HTTP na porta 5003
-//	serverOptions.ListenAnyIP(443, listenOptions =>
-//	{
-//		listenOptions.UseHttps();
-//	});
-//});
 
 WebApplication app = builder.Build();
 

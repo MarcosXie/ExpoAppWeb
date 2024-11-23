@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpoShared.Infrastructure",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpoShared.Repository", "ExpoShared\ExpoShared.Repository\ExpoShared.Repository.csproj", "{B3E0A5FD-6597-4BDD-82E1-B275B91C2F28}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpoApp.Domain", "ExpoApp.Domain\ExpoApp.Domain.csproj", "{38B93B5C-AE5F-423B-8F44-97E5C6F9E7B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{B3E0A5FD-6597-4BDD-82E1-B275B91C2F28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3E0A5FD-6597-4BDD-82E1-B275B91C2F28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3E0A5FD-6597-4BDD-82E1-B275B91C2F28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38B93B5C-AE5F-423B-8F44-97E5C6F9E7B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38B93B5C-AE5F-423B-8F44-97E5C6F9E7B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38B93B5C-AE5F-423B-8F44-97E5C6F9E7B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38B93B5C-AE5F-423B-8F44-97E5C6F9E7B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

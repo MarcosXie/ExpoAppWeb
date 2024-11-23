@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExpoApp.Application\ExpoApp.Application.csproj" />
+    <ProjectReference Include="..\ExpoApp.Domain\ExpoApp.Domain.csproj" />
     <ProjectReference Include="..\ExpoApp.Repository\ExpoApp.Repository.csproj" />
     <ProjectReference Include="..\ExpoShared\ExpoShared.Application\ExpoShared.Application.csproj" />
     <ProjectReference Include="..\ExpoShared\ExpoShared.Domain\ExpoShared.Domain.csproj" />
