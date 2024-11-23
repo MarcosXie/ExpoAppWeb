@@ -1,5 +1,4 @@
-﻿using ExpoShared.Domain.Dao;
-using ExpoShared.Repository.Context;
+﻿using ExpoShared.Repository.Context;
 using ExpoShared.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
