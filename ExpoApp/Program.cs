@@ -85,7 +85,7 @@ services.AddSignalR(o =>
 // Adding Shared 
 services.AddSharedApplication();
 services.AddSharedInfrastructure();
-services.AddSharedRepository(config);
+services.AddSharedRepository();
 
 // Adding Expo App
 services.AddDomain();
