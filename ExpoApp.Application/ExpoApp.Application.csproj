@@ -7,11 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+      <ProjectReference Include="..\ExpoApp.Domain\ExpoApp.Domain.csproj" />
+      <ProjectReference Include="..\ExpoShared\ExpoShared.Application\ExpoShared.Application.csproj" />
     </ItemGroup>
 
 </Project>

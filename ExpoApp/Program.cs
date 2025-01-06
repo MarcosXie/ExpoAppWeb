@@ -130,13 +130,13 @@ var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
 logger.LogInformation("ENVIRONMENT VARIABLES:");
 
-// Registrar todas as vari�veis de ambiente
-foreach (var variable in Environment.GetEnvironmentVariables().Keys)
-{
-	var k = variable.ToString();
-	var value = Environment.GetEnvironmentVariable(k);
-	logger.LogInformation($"Environment Variable - {k}: {value}");
-}
+// // Registrar todas as vari�veis de ambiente
+// foreach (var variable in Environment.GetEnvironmentVariables().Keys)
+// {
+// 	var k = variable.ToString();
+// 	var value = Environment.GetEnvironmentVariable(k);
+// 	logger.LogInformation($"Environment Variable - {k}: {value}");
+// }
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
