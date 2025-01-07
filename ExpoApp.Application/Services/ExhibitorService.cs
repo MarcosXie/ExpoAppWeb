@@ -13,7 +13,8 @@ public class ExhibitorService(IUserRepository userRepository, IRelationshipRepos
 	{
 		var users = await userRepository.GetAsync(x => 
 			x.Type == UserType.Exhibitor &&
-			companyName == null || x.Enterprise.ToLower().Contains(companyName.ToLower())
+			x.Enterprise != null &&
+			(companyName == null || x.Enterprise.ToLower().Contains(companyName.ToLower())) 
 		);
 		var relationships = await GetUserRelationshipsAsync();
 		
