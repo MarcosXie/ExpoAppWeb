@@ -1,3 +1,4 @@
+using ExpoApp.Domain.Entities.UserQrCodes;
 using ExpoShared.Domain.Entities.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ namespace ExpoApp.Api.Controllers;
 
 [ApiController]
 [Route("Api/[controller]")]
-public class UserController(IUserService service) : ControllerBase
+public class UserController(IUserService service, IUserQrCodeService qrCodeService) : ControllerBase
 {
     private readonly IUserService service = service;
     
@@ -121,5 +122,14 @@ public class UserController(IUserService service) : ControllerBase
 	{
 		var lang = await service.GetLanguageAsync(id);
 		return Ok(lang);
+	}
+	
+	[HttpGet("{id}/QRCode")]
+	public async Task<ActionResult<UserProfileResponseDto>> GetQrCode(Guid id)
+	{
+		var qrCode = await qrCodeService.GenerateQrCodeAsync(id);
+		
+		var base64String = Convert.ToBase64String(qrCode);
+		return Ok($"data:image/png;base64,{base64String}");
 	}
 }
