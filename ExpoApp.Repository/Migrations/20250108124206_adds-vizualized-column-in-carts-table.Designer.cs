@@ -4,6 +4,7 @@ using ExpoApp.Repository.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpoApp.Repository.Migrations
 {
     [DbContext(typeof(ExpoAppDbContext))]
-    partial class ExpoAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250108124206_adds-vizualized-column-in-carts-table")]
+    partial class addsvizualizedcolumnincartstable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

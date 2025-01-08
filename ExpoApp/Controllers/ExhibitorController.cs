@@ -1,5 +1,4 @@
 ﻿using ExpoApp.Domain.Entities.Exhibitors;
-using ExpoShared.Domain.Entities.Exhibitors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpoApp.Api.Controllers;
