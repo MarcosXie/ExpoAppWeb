@@ -21,7 +21,7 @@ public class NotificationsHub(
 			CallCenterNotReadedMessages = await callCenterService.GetNotReadedMessagesByUserId(userId),
 			RelationshipNotifications = await relationshipChatService.GetNotReadedMessagesAsync(userId),
 			CartNotifications = await cartChatService.GetNotReadedMessagesAsync(userId),
-			NewCartIds = await cartChatService.GetNewCartsAsync(userId),
+			NewCarts = await cartChatService.GetNewCartsAsync(userId),
 		};
 
 		return notifications;
