@@ -34,7 +34,7 @@ services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:5174", "http://localhost:5173", "http://10.0.0.34:5173", "https://uexpo.com.br")
+        policy.WithOrigins("http://localhost:5174", "http://localhost:5173", "http://10.0.0.34:5173", "https://expoapp.com.br")
               .AllowAnyHeader()
               .AllowAnyMethod()
 			  .WithExposedHeaders("Content-Disposition")
@@ -47,7 +47,7 @@ services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "UExpo API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExpoApp API", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -144,7 +144,7 @@ logger.LogInformation("ENVIRONMENT VARIABLES:");
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "UExpo API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ExpoApp API v1");
 });
 //}
 

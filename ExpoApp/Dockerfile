@@ -9,17 +9,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["UExpo/UExpo.csproj", "UExpo/"]
+COPY ["ExpoApp/ExpoApp.csproj", "ExpoApp/"]
 RUN dotnet restore "./UExpo/UExpo.csproj"
 COPY . .
-WORKDIR "/src/UExpo"
-RUN dotnet build "./UExpo.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/ExpoApp"
+RUN dotnet build "./ExpoApp.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./UExpo.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./ExpoApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "UExpo.dll"]
+ENTRYPOINT ["dotnet", "ExpoApp.dll"]
