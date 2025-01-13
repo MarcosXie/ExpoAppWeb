@@ -17,25 +17,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore $PROJECT_LOCATION
-    - name: Build
-      run: dotnet build --no-restore $PROJECT_LOCATION
-    - name: Pack
-      run: |
-        dotnet publish $PROJECT_LOCATION -c Release --output "${{ github.workspace }}/${{github.run_id}}"
-        cd ${{github.run_id}}
-        zip -r ../${{github.run_id}}.zip .
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4.3.3
-      with: 
-        name: deploy-files
-        path: ${{github.run_id}}.zip
+      - uses: actions/checkout@v4
+        with:
+          submodules: true # Clonar os submódulos
+          fetch-depth: 0   # Certifica-se de buscar todo o histórico
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Update submodules
+        run: git submodule update --init --recursive
+        # Opcional para garantir que os submódulos sejam atualizados corretamente
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore $PROJECT_LOCATION
+      - name: Build
+        run: dotnet build --no-restore $PROJECT_LOCATION
+      - name: Pack
+        run: |
+          dotnet publish $PROJECT_LOCATION -c Release --output "${{ github.workspace }}/${{github.run_id}}"
+          cd ${{github.run_id}}
+          zip -r ../${{github.run_id}}.zip .
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4.3.3
+        with: 
+          name: deploy-files
+          path: ${{github.run_id}}.zip
   deploy:
 
     runs-on: ubuntu-latest
