@@ -35,12 +35,12 @@ services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy
-		        .AllowAnyOrigin()
-	          // .WithOrigins("http://localhost:5174", "http://localhost:5173", "http://10.0.0.34:5173", "https://expoapp.com.br")
+		        // .AllowAnyOrigin()
+	          .WithOrigins("http://localhost:5174", "http://localhost:5173", "http://10.0.0.34:5173", "https://expoapp.com.br")
               .AllowAnyHeader()
               .AllowAnyMethod()
-			  .WithExposedHeaders("Content-Disposition");
-              // .AllowCredentials();
+			  .WithExposedHeaders("Content-Disposition")
+              .AllowCredentials();
     });
 });
 
@@ -130,15 +130,22 @@ WebApplication app = builder.Build();
 // Obter o logger
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
-logger.LogInformation("ENVIRONMENT VARIABLES:");
+// logger.LogInformation("ENVIRONMENT VARIABLES:");
 
 // // Registrar todas as vari�veis de ambiente
-foreach (var variable in Environment.GetEnvironmentVariables().Keys)
+// foreach (var variable in Environment.GetEnvironmentVariables().Keys)
+// {
+// 	var k = variable.ToString();
+// 	var value = Environment.GetEnvironmentVariable(k);
+// 	logger.LogInformation($"Environment Variable - {k}: {value}");
+// }
+
+app.Use(async (context, next) =>
 {
-	var k = variable.ToString();
-	var value = Environment.GetEnvironmentVariable(k);
-	logger.LogInformation($"Environment Variable - {k}: {value}");
-}
+	var ip = context.Connection.RemoteIpAddress;
+	logger.LogInformation($"Requisição de: {ip}");
+	await next();
+});
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
