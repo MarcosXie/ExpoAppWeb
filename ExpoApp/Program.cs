@@ -39,8 +39,8 @@ services.AddCors(options =>
 	          // .WithOrigins("http://localhost:5174", "http://localhost:5173", "http://10.0.0.34:5173", "https://expoapp.com.br")
               .AllowAnyHeader()
               .AllowAnyMethod()
-			  .WithExposedHeaders("Content-Disposition")
-              .AllowCredentials();
+			  .WithExposedHeaders("Content-Disposition");
+              // .AllowCredentials();
     });
 });
 
