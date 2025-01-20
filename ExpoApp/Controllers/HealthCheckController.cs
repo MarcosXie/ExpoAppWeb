@@ -11,6 +11,6 @@ public class HealthCheckController() : ControllerBase
 	[AllowAnonymous]
 	public ActionResult HealthCheck()
 	{
-		return Ok();
+		return Ok("Working!");
 	}
 }
