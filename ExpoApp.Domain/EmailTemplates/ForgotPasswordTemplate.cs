@@ -19,7 +19,7 @@ public class ForgotPasswordTemplate : IForgotPasswordEmailTemplate
 					<br>
 
 					<p style=""margin-top: 16px;"">
-					  <a href=""{0}/026_redefine_password/{1}/{2}"" 
+					  <a href=""{0}/026_redefine_password/{1}/{2}/{3}"" 
 						 style=""background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;"">
 						Reset Password
 					  </a>
