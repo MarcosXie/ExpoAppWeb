@@ -7,9 +7,7 @@ public class UserQrCodeService : IUserQrCodeService
 {
 	public Task<byte[]> GenerateQrCodeAsync(Guid userId)
 	{
-		// TODO: TROCAR
-		// var qrCode = QRCodeHelper.GenerateQRCode(userId.ToString());
-		var qrCode = QRCodeHelper.GenerateQRCode("http://google.com");
+		var qrCode = QRCodeHelper.GenerateQRCode($"expoapp://add-relationship/{userId.ToString()}");
 		
 		return Task.FromResult(qrCode);
 	}
