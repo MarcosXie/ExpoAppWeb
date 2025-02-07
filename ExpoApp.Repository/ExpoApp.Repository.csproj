@@ -22,6 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ExpoApp.Domain\ExpoApp.Domain.csproj" />
       <ProjectReference Include="..\ExpoShared\ExpoShared.Domain\ExpoShared.Domain.csproj" />
       <ProjectReference Include="..\ExpoShared\ExpoShared.Repository\ExpoShared.Repository.csproj" />
     </ItemGroup>
