@@ -5,4 +5,5 @@ namespace ExpoApp.Domain.Entities.Momento;
 public interface IMomentoService
 {
 	Task<string> AddAudio(IFormFile file);
+	Task<List<MemoryStream>> GetAudios(Guid id);
 }

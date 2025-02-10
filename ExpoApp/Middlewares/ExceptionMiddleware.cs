@@ -28,7 +28,7 @@ public class ExceptionMiddleware(RequestDelegate next)
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = exception.StatusCode;
 
-        ErrorResponse response = new ErrorResponse
+        ErrorResponse response = new()
         {
             Message = exception.Message,
             StatusCode = exception.StatusCode

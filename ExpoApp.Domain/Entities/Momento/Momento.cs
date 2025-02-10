@@ -6,7 +6,7 @@ namespace ExpoApp.Domain.Entities.Momento;
 public class Momento : BaseModel
 {
 	public required Guid UserId { get; set; }
-	public required User User { get; set; }
+	public User? User { get; set; }
 	public required string Value { get; set; }
 	public required MomentoType Type { get; set; }
 }

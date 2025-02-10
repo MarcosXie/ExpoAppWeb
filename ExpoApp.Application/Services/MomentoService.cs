@@ -7,7 +7,8 @@ namespace ExpoApp.Application.Services;
 
 public class MomentoService(
 	IFileStorageService fileStorageService,
-	AuthUserHelper authUserHelper
+	AuthUserHelper authUserHelper,
+	IMomentoRepository momentoRepository
 ) : IMomentoService
 {
 	public async Task<string> AddAudio(IFormFile file)
@@ -15,7 +16,26 @@ public class MomentoService(
 		var fileName = GenerateMomentoFileName("audio");
 		var uri = await fileStorageService.UploadPrivateFileAsync(file, fileName, FileStorageKeys.MomentoFiles);
 
+		var momento = new Momento
+		{
+			UserId = authUserHelper.GetUser().Id,
+			Type = MomentoType.Audio,
+			Value = uri
+		};
+		
+		await momentoRepository.CreateAsync(momento);
+		
 		return uri;
+	}
+
+	public async Task<List<MemoryStream>> GetAudios(Guid id)
+	{
+		var audios = await momentoRepository.GetAsync(x => x.UserId == id);
+		
+		return await fileStorageService.GetFilesAsync(
+			audios.Select(x => x.Value).ToList(),
+			FileStorageKeys.MomentoFiles
+		);
 	}
 
 	private string GenerateMomentoFileName(string fileType)
