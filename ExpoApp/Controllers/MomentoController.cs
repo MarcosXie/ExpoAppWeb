@@ -19,10 +19,10 @@ public class MomentoController(IMomentoService momentoService) : ControllerBase
 		return Ok(uri);
 	}
 	
-	[HttpGet("Audio/{userId:guid}")]
-	public async Task<ActionResult> GetAudios(Guid userId)
+	[HttpGet("Audio/{userId:guid}/{targetUserId:guid}")]
+	public async Task<ActionResult> GetAudios(Guid userId, Guid targetUserId)
 	{
-		var audios = await momentoService.GetAudios(userId);
+		var audios = await momentoService.GetAudios(userId, targetUserId);
 		
 		return File(audios, "application/zip", "audios.zip");
 	}
