@@ -1,5 +1,4 @@
-﻿using System.IO.Compression;
-using ExpoApp.Domain.Entities.Momento;
+﻿using ExpoApp.Domain.Entities.Momento;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpoApp.Api.Controllers;
@@ -9,13 +8,13 @@ namespace ExpoApp.Api.Controllers;
 [ApiController]
 public class MomentoController(IMomentoService momentoService) : ControllerBase
 {
-	[HttpPost("Audio")]
-	public async Task<ActionResult> SaveAudio(IFormFile file)
+	[HttpPost("Audio/{targetUserId}")]
+	public async Task<ActionResult> SaveAudio(IFormFile file, Guid targetUserId)
 	{
 		if (file.Length == 0)
 			return BadRequest("No file selected");
 		
-		var uri = await momentoService.AddAudio(file);
+		var uri = await momentoService.AddAudio(file, targetUserId);
 		
 		return Ok(uri);
 	}
@@ -25,22 +24,6 @@ public class MomentoController(IMomentoService momentoService) : ControllerBase
 	{
 		var audios = await momentoService.GetAudios(userId);
 		
-		using MemoryStream zipStream = new();
-		var count = 1;
-		using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
-		{
-			foreach (var stream in audios)
-			{
-				var entry = archive.CreateEntry($"{count}", CompressionLevel.Optimal);
-				await using var entryStream = entry.Open();
-				stream.Position = 0;
-				await stream.CopyToAsync(entryStream);
-				count++;
-			}
-		}
-		
-		zipStream.Position = 0;
-		
-		return Ok(File(zipStream, "application/zip", "audios.zip"));
+		return File(audios, "application/zip", "audios.zip");
 	}
 }

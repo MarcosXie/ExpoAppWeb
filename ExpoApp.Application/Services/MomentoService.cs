@@ -11,7 +11,7 @@ public class MomentoService(
 	IMomentoRepository momentoRepository
 ) : IMomentoService
 {
-	public async Task<string> AddAudio(IFormFile file)
+	public async Task<string> AddAudio(IFormFile file, Guid targetUserId)
 	{
 		var fileName = GenerateMomentoFileName("audio");
 		var uri = await fileStorageService.UploadPrivateFileAsync(file, fileName, FileStorageKeys.MomentoFiles);
@@ -19,8 +19,9 @@ public class MomentoService(
 		var momento = new Momento
 		{
 			UserId = authUserHelper.GetUser().Id,
+			TargetUserId = targetUserId,
 			Type = MomentoType.Audio,
-			Value = uri
+			Value = fileName
 		};
 		
 		await momentoRepository.CreateAsync(momento);
@@ -28,7 +29,7 @@ public class MomentoService(
 		return uri;
 	}
 
-	public async Task<List<MemoryStream>> GetAudios(Guid id)
+	public async Task<MemoryStream> GetAudios(Guid id)
 	{
 		var audios = await momentoRepository.GetAsync(x => x.UserId == id);
 		
