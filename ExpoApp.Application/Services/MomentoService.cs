@@ -13,17 +13,18 @@ public class MomentoService(
 {
 	public async Task<Guid> AddAudio(IFormFile file, Guid targetUserId)
 	{
-		var fileName = GenerateMomentoFileName("audio.mp4");
-		var uri = await fileStorageService.UploadPrivateFileAsync(file, fileName, FileStorageKeys.MomentoFiles);
-
 		var momento = new Momento
 		{
 			UserId = authUserHelper.GetUser().Id,
 			TargetUserId = targetUserId,
 			Type = MomentoType.Audio,
-			Value = fileName
+			Value = ""
 		};
 		
+		var fileName = GetFileName("audio.mp4", momento.Id.ToString());
+		
+		momento.Value = await fileStorageService.UploadPrivateFileAsync(file, fileName, FileStorageKeys.MomentoFiles);
+
 		await momentoRepository.CreateAsync(momento);
 		
 		return momento.Id;
@@ -38,14 +39,7 @@ public class MomentoService(
 			FileStorageKeys.MomentoFiles
 		);
 	}
-
-	private string GenerateMomentoFileName(string fileType)
-	{
-		var userId = authUserHelper.GetUser().Id;
-		Random random = new();
-		return GetFileName(fileType, userId.ToString(), "-", random.Next(10000, 99999).ToString());
-	}
-
+	
 	private static string GetFileName(string name, params string[] ids)
 	{
 		string prefix = string.Join('-', ids);
