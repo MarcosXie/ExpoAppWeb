@@ -32,9 +32,13 @@ public class MomentoService(
 		return momento.Id;
 	}
 
-	public async Task<MemoryStream> GetAudios(Guid userId, Guid targetUserId)
+	public async Task<MemoryStream> GetAudios(Guid userId, Guid targetUserId, List<Guid> alreadyLoaded)
 	{
-		var audios = await momentoRepository.GetAsync(x => x.UserId == userId && x.TargetUserId == targetUserId);
+		var audios = await momentoRepository.GetAsync(x => 
+			x.UserId == userId 
+			&& x.TargetUserId == targetUserId
+			&& !alreadyLoaded.Contains(x.Id)
+		);
 		
 		return await fileStorageService.GetFilesAsync(
 			audios.Select(x => x.Value).ToList(),
