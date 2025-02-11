@@ -11,7 +11,7 @@ public class MomentoService(
 	IMomentoRepository momentoRepository
 ) : IMomentoService
 {
-	public async Task<string> AddAudio(IFormFile file, Guid targetUserId)
+	public async Task<Guid> AddAudio(IFormFile file, Guid targetUserId)
 	{
 		var fileName = GenerateMomentoFileName("audio.mp4");
 		var uri = await fileStorageService.UploadPrivateFileAsync(file, fileName, FileStorageKeys.MomentoFiles);
@@ -26,7 +26,7 @@ public class MomentoService(
 		
 		await momentoRepository.CreateAsync(momento);
 		
-		return uri;
+		return momento.Id;
 	}
 
 	public async Task<MemoryStream> GetAudios(Guid userId, Guid targetUserId)

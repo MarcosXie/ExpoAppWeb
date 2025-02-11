@@ -8,7 +8,7 @@ namespace ExpoApp.Api.Controllers;
 [ApiController]
 public class MomentoController(IMomentoService momentoService) : ControllerBase
 {
-	[HttpPost("Audio/{targetUserId}")]
+	[HttpPost("Audio/{targetUserId:guid}")]
 	public async Task<ActionResult> SaveAudio(IFormFile file, Guid targetUserId)
 	{
 		if (file.Length == 0)
