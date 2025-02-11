@@ -23,6 +23,8 @@ public class MomentoService(
 		
 		var fileName = GetFileName("audio.mp4", momento.Id.ToString());
 		
+		momento.Value = fileName;
+		
 		momento.Value = await fileStorageService.UploadPrivateFileAsync(file, fileName, FileStorageKeys.MomentoFiles);
 
 		await momentoRepository.CreateAsync(momento);
