@@ -25,7 +25,7 @@ public class MomentoService(
 		
 		momento.Value = fileName;
 		
-		momento.Value = await fileStorageService.UploadPrivateFileAsync(file, fileName, FileStorageKeys.MomentoFiles);
+		await fileStorageService.UploadPrivateFileAsync(file, fileName, FileStorageKeys.MomentoFiles);
 
 		await momentoRepository.CreateAsync(momento);
 		
