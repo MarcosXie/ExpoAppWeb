@@ -2,6 +2,7 @@
 using ExpoShared.Application.Utils;
 using ExpoShared.Domain.FileStorage;
 using Microsoft.AspNetCore.Http;
+using Task = System.Threading.Tasks.Task;
 
 namespace ExpoApp.Application.Services;
 
@@ -11,14 +12,22 @@ public class MomentoService(
 	IMomentoRepository momentoRepository
 ) : IMomentoService
 {
-	public async Task<Guid> AddAudio(IFormFile file, Guid targetUserId)
+	public async Task<string> AddAudio(IFormFile file, Guid targetUserId)
 	{
+		var userId = authUserHelper.GetUser().Id;
+		var momentosCount = await momentoRepository.CountAsync(x => 
+			x.UserId == userId 
+			&& x.TargetUserId == targetUserId
+			&& x.Type == MomentoType.Audio
+		);
+		
 		var momento = new Momento
 		{
-			UserId = authUserHelper.GetUser().Id,
+			UserId = userId,
 			TargetUserId = targetUserId,
 			Type = MomentoType.Audio,
-			Value = ""
+			Value = "",
+			Comment = $"Record {momentosCount + 1}"
 		};
 		
 		var fileName = GetFileName("audio.mp4", momento.Id.ToString());
@@ -29,21 +38,58 @@ public class MomentoService(
 
 		await momentoRepository.CreateAsync(momento);
 		
-		return momento.Id;
+		return $"{momento.Id}-comment-{momento.Comment}";
 	}
 
-	public async Task<MemoryStream> GetAudios(Guid userId, Guid targetUserId, List<Guid> alreadyLoaded)
+	public async Task<List<AudioResponseDto>> GetAudios(Guid userId, Guid targetUserId, List<Guid> alreadyLoaded)
+	{
+		List<Momento> audios = await GetAudioFromDatabase(userId, targetUserId, alreadyLoaded);
+
+		return audios.Select(x => new AudioResponseDto
+		{
+			FileName = x.Value,
+			Comment = x.Comment ?? "",
+			CreatedDate = x.CreatedAt,
+		}).ToList();
+	}
+
+	public async Task<MemoryStream> GetAudioFiles(Guid userId, Guid targetUserId, List<Guid> alreadyLoaded)
+	{
+		List<Momento> audios = await GetAudioFromDatabase(userId, targetUserId, alreadyLoaded);
+		
+		return await fileStorageService.GetFilesAsync(
+			audios.Select(x => x.Value).ToList(),
+			FileStorageKeys.MomentoFiles);
+	}
+	
+	public async Task Delete(Guid id)
+	{
+		var momento = await momentoRepository.GetByIdAsync(id);
+		
+		await Task.WhenAll(
+			momentoRepository.DeleteAsync(id),
+			fileStorageService.DeleteFileAsync(FileStorageKeys.MomentoFiles, momento.Value)
+		);
+	}
+
+	public async Task UpdateComment(Guid id, string comment)
+	{
+		var momento = await momentoRepository.GetByIdAsync(id);
+		
+		momento.Comment = comment;
+		
+		await momentoRepository.UpdateAsync(momento);
+	}
+	
+	private async Task<List<Momento>> GetAudioFromDatabase(Guid userId, Guid targetUserId, List<Guid> alreadyLoaded)
 	{
 		var audios = await momentoRepository.GetAsync(x => 
 			x.UserId == userId 
 			&& x.TargetUserId == targetUserId
 			&& !alreadyLoaded.Contains(x.Id)
+			&& x.Type == MomentoType.Audio
 		);
-		
-		return await fileStorageService.GetFilesAsync(
-			audios.Select(x => x.Value).ToList(),
-			FileStorageKeys.MomentoFiles
-		);
+		return audios;
 	}
 	
 	private static string GetFileName(string name, params string[] ids)

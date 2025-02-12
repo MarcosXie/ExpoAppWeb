@@ -19,13 +19,39 @@ public class MomentoController(IMomentoService momentoService) : ControllerBase
 		return Ok(uri);
 	}
 	
+	[HttpGet("Audio/Files/{userId:guid}/{targetUserId:guid}")]
+	public async Task<ActionResult> GetAudioFiles(Guid userId, Guid targetUserId, [FromQuery] List<Guid>? alreadyLoaded)
+	{
+		alreadyLoaded ??= [];
+		
+		var audios = await momentoService.GetAudioFiles(userId, targetUserId, alreadyLoaded);
+
+		return File(audios, "application/zip", "audios.zip");
+	}
+	
 	[HttpGet("Audio/{userId:guid}/{targetUserId:guid}")]
 	public async Task<ActionResult> GetAudios(Guid userId, Guid targetUserId, [FromQuery] List<Guid>? alreadyLoaded)
 	{
 		alreadyLoaded ??= [];
 		
 		var audios = await momentoService.GetAudios(userId, targetUserId, alreadyLoaded);
-		
-		return File(audios, "application/zip", "audios.zip");
+
+		return Ok(audios);
+	}
+	
+	[HttpDelete("Audio/{id:guid}")]
+	public async Task<ActionResult> DeleteAudio(Guid id)
+	{
+		await momentoService.Delete(id);
+
+		return Ok();
+	}
+	
+	[HttpPatch("Audio/{id:guid}")]
+	public async Task<ActionResult> DeleteAudio(Guid id, string comment)
+	{
+		await momentoService.UpdateComment(id, comment);
+
+		return Ok();
 	}
 }
