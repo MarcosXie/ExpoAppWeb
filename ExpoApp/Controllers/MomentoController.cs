@@ -48,7 +48,7 @@ public class MomentoController(IMomentoService momentoService) : ControllerBase
 	}
 	
 	[HttpPatch("Audio/{id:guid}")]
-	public async Task<ActionResult> DeleteAudio(Guid id, string comment)
+	public async Task<ActionResult> UpdateAudio(Guid id, [FromBody]string comment)
 	{
 		await momentoService.UpdateComment(id, comment);
 
