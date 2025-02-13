@@ -15,11 +15,13 @@ public class MomentoService(
 	public async Task<string> AddAudio(IFormFile file, Guid targetUserId)
 	{
 		var userId = authUserHelper.GetUser().Id;
-		var momentosCount = await momentoRepository.CountAsync(x => 
+		var momentos = await momentoRepository.GetAsync(x => 
 			x.UserId == userId 
 			&& x.TargetUserId == targetUserId
 			&& x.Type == MomentoType.Audio
 		);
+
+		var recordNumber = momentos.Any() ? momentos.Max(x => x.Order) + 1 : 1;
 		
 		var momento = new Momento
 		{
@@ -27,7 +29,8 @@ public class MomentoService(
 			TargetUserId = targetUserId,
 			Type = MomentoType.Audio,
 			Value = "",
-			Comment = $"Record {momentosCount + 1}"
+			Comment = $"Record {recordNumber}",
+			Order = recordNumber
 		};
 		
 		var fileName = GetFileName("audio.mp4", momento.Id.ToString());
