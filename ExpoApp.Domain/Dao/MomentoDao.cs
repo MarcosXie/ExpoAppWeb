@@ -11,5 +11,6 @@ public class MomentoDao : BaseDao
 	public required Guid TargetUserId { get; set; }
 	public UserDao? TargetUser { get; set; }
 	public required string Value { get; set; }
+	public string? Comment { get; set; }
 	public required MomentoType Type { get; set; }
 }
