@@ -8,49 +8,62 @@ namespace ExpoApp.Api.Controllers;
 [ApiController]
 public class MomentoController(IMomentoService momentoService) : ControllerBase
 {
-	[HttpPost("Audio/{targetUserId:guid}")]
-	public async Task<ActionResult> SaveAudio(IFormFile file, Guid targetUserId)
+	[HttpPost("{momentoType}/{targetUserId:guid}")]
+	public async Task<ActionResult> SaveAudio(IFormFile file, string momentoType, Guid targetUserId)
 	{
 		if (file.Length == 0)
 			return BadRequest("No file selected");
 		
-		var uri = await momentoService.AddAudio(file, targetUserId);
+		MomentoType type = (MomentoType)Enum.Parse(typeof(MomentoType), momentoType);
 		
-		return Ok(uri);
+		var response = await momentoService.AddMomentoFile(file, targetUserId, type);
+		
+		return Ok(response);
 	}
-	
-	[HttpGet("Audio/Files/{userId:guid}/{targetUserId:guid}")]
-	public async Task<ActionResult> GetAudioFiles(Guid userId, Guid targetUserId, [FromQuery] List<Guid>? alreadyLoaded)
+
+	[HttpGet("{momentoType}/Files/{userId:guid}/{targetUserId:guid}")]
+	public async Task<ActionResult> GetAudioFiles(string momentoType, Guid userId, Guid targetUserId, [FromQuery] List<Guid>? alreadyLoaded)
 	{
 		alreadyLoaded ??= [];
 		
-		var audios = await momentoService.GetAudioFiles(userId, targetUserId, alreadyLoaded);
+		MomentoType type = (MomentoType)Enum.Parse(typeof(MomentoType), momentoType);
+		
+		var audios = await momentoService.GetMomentoFiles(userId, targetUserId, type, alreadyLoaded);
 
 		return File(audios, "application/zip", "audios.zip");
 	}
 	
-	[HttpGet("Audio/{userId:guid}/{targetUserId:guid}")]
-	public async Task<ActionResult> GetAudios(Guid userId, Guid targetUserId, [FromQuery] List<Guid>? alreadyLoaded)
+	[HttpGet("{momentoType}/{userId:guid}/{targetUserId:guid}")]
+	public async Task<ActionResult> GetAudios(string momentoType, Guid userId, Guid targetUserId, [FromQuery] List<Guid>? alreadyLoaded)
 	{
 		alreadyLoaded ??= [];
+		MomentoType type = (MomentoType)Enum.Parse(typeof(MomentoType), momentoType);
 		
-		var audios = await momentoService.GetAudios(userId, targetUserId, alreadyLoaded);
+		var audios = await momentoService.GetMomentos(userId, targetUserId, type, alreadyLoaded);
 
 		return Ok(audios);
 	}
 	
-	[HttpDelete("Audio/{id:guid}")]
-	public async Task<ActionResult> DeleteAudio(Guid id)
+	[HttpDelete("{id:guid}")]
+	public async Task<ActionResult> DeleteMomento(Guid id)
 	{
 		await momentoService.Delete(id);
 
 		return Ok();
 	}
 	
-	[HttpPatch("Audio/{id:guid}")]
-	public async Task<ActionResult> UpdateAudio(Guid id, [FromBody]string comment)
+	[HttpPatch("{id:guid}/Comment")]
+	public async Task<ActionResult> UpdateCommentMomento(Guid id, [FromBody]string comment)
 	{
 		await momentoService.UpdateComment(id, comment);
+
+		return Ok();
+	}
+	
+	[HttpPatch("{id:guid}")]
+	public async Task<ActionResult> UpdateValueMomento(Guid id, [FromBody]string value)
+	{
+		await momentoService.UpdateValue(id, value);
 
 		return Ok();
 	}

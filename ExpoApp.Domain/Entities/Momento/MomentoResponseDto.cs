@@ -1,8 +1,9 @@
 ﻿namespace ExpoApp.Domain.Entities.Momento;
 
-public class AudioResponseDto
+public class MomentoResponseDto
 {
-	public string FileName { get; set; }
+	public Guid Id { get; set; }
+	public string Value { get; set; }
 	public string Comment { get; set; }
 	public DateTime CreatedDate { get; set; }
 }
