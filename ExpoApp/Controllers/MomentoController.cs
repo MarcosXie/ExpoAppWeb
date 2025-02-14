@@ -9,7 +9,7 @@ namespace ExpoApp.Api.Controllers;
 public class MomentoController(IMomentoService momentoService) : ControllerBase
 {
 	[HttpPost("{momentoType}/{targetUserId:guid}")]
-	public async Task<ActionResult> SaveAudio(IFormFile file, string momentoType, Guid targetUserId)
+	public async Task<ActionResult> SaveMomento(IFormFile file, string momentoType, Guid targetUserId)
 	{
 		if (file.Length == 0)
 			return BadRequest("No file selected");
@@ -20,7 +20,17 @@ public class MomentoController(IMomentoService momentoService) : ControllerBase
 		
 		return Ok(response);
 	}
-
+	
+	[HttpPost("Text/{momentoType}/{targetUserId:guid}")]
+	public async Task<ActionResult> SaveMomentoText(string value, string momentoType, Guid targetUserId)
+	{
+		MomentoType type = (MomentoType)Enum.Parse(typeof(MomentoType), momentoType);
+		
+		var response = await momentoService.AddMomentoText(value, targetUserId, type);
+		
+		return Ok(response);
+	}
+	
 	[HttpGet("{momentoType}/Files/{userId:guid}/{targetUserId:guid}")]
 	public async Task<ActionResult> GetAudioFiles(string momentoType, Guid userId, Guid targetUserId, [FromQuery] List<Guid>? alreadyLoaded)
 	{
