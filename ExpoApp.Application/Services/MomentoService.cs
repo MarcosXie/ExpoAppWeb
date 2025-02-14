@@ -38,13 +38,16 @@ public class MomentoService(
 		}
 		
 		await momentoRepository.CreateAsync(momento);
+		
+		var dbMomento = await momentoRepository.GetByIdAsync(momento.Id);
 
 		return new()
 		{
 			Id = momento.Id,
-			CreatedDate = momento.CreatedAt,
+			CreatedDate = dbMomento.CreatedAt,
 			Comment = momento.Comment,
 			Value = fileName,
+			Order = momentoOrder
 		};
 	}
 
@@ -70,6 +73,7 @@ public class MomentoService(
 			CreatedDate = momento.CreatedAt,
 			Comment = "",
 			Value = value,
+			Order = momentoOrder
 		};
 	}
 
@@ -79,9 +83,11 @@ public class MomentoService(
 
 		return audios.Select(x => new MomentoResponseDto
 		{
+			Id = x.Id,
 			Value = x.Value,
 			Comment = x.Comment ?? "",
 			CreatedDate = x.CreatedAt,
+			Order = x.Order,
 		}).ToList();
 	}
 

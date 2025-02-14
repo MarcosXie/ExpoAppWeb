@@ -34,7 +34,7 @@ public class MomentoController(IMomentoService momentoService) : ControllerBase
 	}
 	
 	[HttpGet("{momentoType}/{userId:guid}/{targetUserId:guid}")]
-	public async Task<ActionResult> GetAudios(string momentoType, Guid userId, Guid targetUserId, [FromQuery] List<Guid>? alreadyLoaded)
+	public async Task<ActionResult> GetMomentos(string momentoType, Guid userId, Guid targetUserId, [FromQuery] List<Guid>? alreadyLoaded)
 	{
 		alreadyLoaded ??= [];
 		MomentoType type = (MomentoType)Enum.Parse(typeof(MomentoType), momentoType);

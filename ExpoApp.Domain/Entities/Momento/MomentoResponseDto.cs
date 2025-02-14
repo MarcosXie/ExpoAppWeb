@@ -2,8 +2,9 @@
 
 public class MomentoResponseDto
 {
-	public Guid Id { get; set; }
-	public string Value { get; set; }
-	public string Comment { get; set; }
-	public DateTime CreatedDate { get; set; }
+	public required Guid Id { get; set; }
+	public required string Value { get; set; }
+	public required string Comment { get; set; }
+	public required int Order { get; set; }
+	public required DateTime CreatedDate { get; set; }
 }
