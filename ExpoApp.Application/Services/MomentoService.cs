@@ -66,11 +66,13 @@ public class MomentoService(
 		};
 		
 		await momentoRepository.CreateAsync(momento);
+		
+		var dbMomento = await momentoRepository.GetByIdAsync(momento.Id);
 
 		return new()
 		{
 			Id = momento.Id,
-			CreatedDate = momento.CreatedAt,
+			CreatedDate = dbMomento.CreatedAt,
 			Comment = "",
 			Value = value,
 			Order = momentoOrder

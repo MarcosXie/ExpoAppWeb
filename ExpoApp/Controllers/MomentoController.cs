@@ -22,7 +22,9 @@ public class MomentoController(IMomentoService momentoService) : ControllerBase
 	}
 	
 	[HttpPost("Text/{momentoType}/{targetUserId:guid}")]
-	public async Task<ActionResult> SaveMomentoText(string value, string momentoType, Guid targetUserId)
+	public async Task<ActionResult> SaveMomentoText(
+		[FromBody]string value, [FromRoute]string momentoType, [FromRoute]Guid targetUserId
+	)
 	{
 		MomentoType type = (MomentoType)Enum.Parse(typeof(MomentoType), momentoType);
 		
