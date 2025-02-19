@@ -18,6 +18,12 @@ using ExpoShared.Repository.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+	options.Limits.MaxRequestBodySize = 200 * 1024 * 1024; // Exemplo: 200MB
+});
+
+
 // Add services to the container.
 IServiceCollection services = builder.Services;
 ConfigurationManager config = builder.Configuration;
