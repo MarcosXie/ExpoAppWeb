@@ -23,3 +23,7 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ExpoApp.dll"]
+
+USER root
+WORKDIR /app
+COPY .platform/nginx/nginx.conf /etc/nginx/nginx.conf
