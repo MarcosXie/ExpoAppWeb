@@ -2,7 +2,7 @@
 <project version="4">
   <component name="UserContentModel">
     <attachedFolders>
-      <Path>.yebs/nginx</Path>
+      <Path>.platform/nginx</Path>
     </attachedFolders>
     <explicitIncludes />
     <explicitExcludes />
