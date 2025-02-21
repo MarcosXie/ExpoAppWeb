@@ -104,12 +104,15 @@ public class MomentoService(
 	
 	public async Task Delete(Guid id)
 	{
-		var momento = await momentoRepository.GetByIdAsync(id);
-		
-		await Task.WhenAll(
-			momentoRepository.DeleteAsync(id),
-			fileStorageService.DeleteFileAsync(FileStorageKeys.MomentoFiles, momento.Value)
-		);
+		var momento = await momentoRepository.GetByIdOrDefaultAsync(id);
+
+		if (momento is not null)
+		{
+			await Task.WhenAll(
+				momentoRepository.DeleteAsync(id),
+				fileStorageService.DeleteFileAsync(FileStorageKeys.MomentoFiles, momento.Value)
+			);
+		}
 	}
 
 	public async Task UpdateComment(Guid id, string comment)
