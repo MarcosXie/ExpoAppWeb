@@ -41,6 +41,13 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 		return Ok();
 	}
 
+	[HttpDelete("{id}")]
+	public async Task<ActionResult<List<RelationshipResponseDto>>> DeleteAsync(Guid id)	{
+		await service.DeleteAsync(id);
+
+		return Ok();
+	}
+	
 	[HttpGet("{id}/Memo")]
 	public async Task<ActionResult<List<RelationshipResponseDto>>> GetMemoAsync(Guid id)
 	{
