@@ -3,10 +3,11 @@ using ExpoApp.Repository.Configuration;
 using ExpoShared.Repository.Context;
 using ExpoShared.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ExpoApp.Repository.Context;
 
-public class ExpoAppDbContext() : ExpoSharedContext()
+public class ExpoAppDbContext(IConfiguration configuration) : ExpoSharedContext(configuration)
 {
 	public DbSet<MomentoDao> Momentos { get; set; }
 
