@@ -41,6 +41,7 @@ public class ExhibitorService(IUserRepository userRepository, IRelationshipRepos
 		return users.Select(user => new ExhibitorResponseDto()
 		{
 			Id = user.Id,
+			Name = user.Name,
 			Country = user.Country,
 			Enterprise = user.Enterprise ?? string.Empty,
 			Tags = user.Catalog?.Tags,

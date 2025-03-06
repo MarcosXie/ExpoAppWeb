@@ -8,7 +8,7 @@ namespace ExpoApp.Api.Controllers;
 public class ExhibitorController(IExhibitorService exhibitorService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<ExpoFinderResponseDto>>> GetExpoFinderAsync([FromQuery] string? companyName = null)
+    public async Task<ActionResult<ExpoFinderResponseDto>> GetExpoFinderAsync([FromQuery] string? companyName = null)
     {
         var exhibitors = await exhibitorService.GetExhibitorsAsync(companyName);
         var companies = await exhibitorService.GetExhibitorsCompaniesAsync();
