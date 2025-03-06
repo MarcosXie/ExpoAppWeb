@@ -9,24 +9,42 @@ namespace ExpoApp.Application.Services;
 public class ExhibitorService(IUserRepository userRepository, IRelationshipRepository relationshipRepository, AuthUserHelper authUserHelper)
 	: IExhibitorService
 {
-	public async Task<List<ExhibitorResponseDto>> GetExhibitorsAsync(string? companyName = null)
+	public async Task<List<ExhibitorResponseDto>> GetExhibitorsAsync(		
+		string? companyName = null, 
+		string? name = null, 
+		string? country = null)
 	{
 		var users = await userRepository.GetAsync(x => 
 			x.Type == UserType.Exhibitor &&
 			x.Enterprise != null &&
-			(companyName == null || x.Enterprise.ToLower().Contains(companyName.ToLower())) 
+			(companyName == null || x.Enterprise.ToLower().Contains(companyName.ToLower())) &&
+			(name == null || x.Name.ToLower().Contains(name.ToLower())) &&
+			(country == null || x.Country.ToLower().Equals(country.ToLower())) 
 		);
 		var relationships = await GetUserRelationshipsAsync();
 		
 		return BuildExhibitorsResponse(users, relationships).ToList();
 	}
 
-	public async Task<List<string>> GetExhibitorsCompaniesAsync()
+	public async Task<ExpoFinderOptionsResponseDto> GetFinderOptionsAsync(		
+		string? companyName = null,
+		string? name = null,
+		string? country = null)
 	{
-		var users = await userRepository.GetAsync(x => 
-			x.Type == UserType.Exhibitor && !string.IsNullOrEmpty(x.Enterprise));
+		var users = 
+			await userRepository.GetAsync(x => 
+				x.Type == UserType.Exhibitor && !string.IsNullOrEmpty(x.Enterprise) && 
+				(companyName == null || x.Enterprise.ToLower().Contains(companyName.ToLower())) &&
+				(name == null || x.Name.ToLower().Contains(name.ToLower())) &&
+				(country == null || x.Country.ToLower().Equals(country.ToLower()))
+			);
 		
-		return users.Select(x => x.Enterprise!).ToList();
+		return new()
+		{
+			Names = users.Select(x => x.Name).ToList(),
+			CompanyNames = users.Select(x => x.Enterprise ?? "").ToList(),
+			Countries = users.Select(x => x.Country).ToList(),
+		};
 	}
 
 	private async Task<List<Relationship>> GetUserRelationshipsAsync()

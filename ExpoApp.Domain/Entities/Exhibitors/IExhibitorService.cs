@@ -4,6 +4,13 @@ namespace ExpoApp.Domain.Entities.Exhibitors;
 
 public interface IExhibitorService
 {
-	Task<List<ExhibitorResponseDto>> GetExhibitorsAsync(string? companyName = null);
-	Task<List<string>> GetExhibitorsCompaniesAsync();
+	Task<List<ExhibitorResponseDto>> GetExhibitorsAsync(
+		string? companyName = null, 
+		string? name = null, 
+		string? country = null
+	);
+	Task<ExpoFinderOptionsResponseDto> GetFinderOptionsAsync(
+		string? companyName = null,
+		string? name = null,
+		string? country = null);
 }

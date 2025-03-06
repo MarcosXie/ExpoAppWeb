@@ -8,14 +8,20 @@ namespace ExpoApp.Api.Controllers;
 public class ExhibitorController(IExhibitorService exhibitorService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<ExpoFinderResponseDto>> GetExpoFinderAsync([FromQuery] string? companyName = null)
+    public async Task<ActionResult<ExpoFinderResponseDto>> GetExpoFinderAsync(
+	    [FromQuery] string? companyName = null,
+	    [FromQuery] string? name = null,
+	    [FromQuery] string? country = null
+	)
     {
-        var exhibitors = await exhibitorService.GetExhibitorsAsync(companyName);
-        var companies = await exhibitorService.GetExhibitorsCompaniesAsync();
+        var exhibitors = await exhibitorService.GetExhibitorsAsync(companyName, name, country);
+        var options = await exhibitorService.GetFinderOptionsAsync();
         return Ok(new ExpoFinderResponseDto
         {
 	        Exhibitors = exhibitors,
-	        CompanyNames = companies
+	        CompanyNames = options.CompanyNames,
+	        Countries = options.Countries,
+	        Names = options.Names
         });
     }
 }
