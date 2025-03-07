@@ -15,7 +15,7 @@ public class ExhibitorController(IExhibitorService exhibitorService) : Controlle
 	)
     {
         var exhibitors = await exhibitorService.GetExhibitorsAsync(companyName, name, country);
-        var options = await exhibitorService.GetFinderOptionsAsync();
+        var options = await exhibitorService.GetFinderOptionsAsync(companyName, name, country);
         return Ok(new ExpoFinderResponseDto
         {
 	        Exhibitors = exhibitors,
