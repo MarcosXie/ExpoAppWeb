@@ -11,14 +11,14 @@ public class ExhibitorService(IUserRepository userRepository, IRelationshipRepos
 {
 	public async Task<List<ExhibitorResponseDto>> GetExhibitorsAsync(		
 		string? companyName = null, 
-		string? name = null, 
+		string? email = null, 
 		string? country = null)
 	{
 		var users = await userRepository.GetAsync(x => 
 			x.Type == UserType.Exhibitor &&
 			x.Enterprise != null &&
 			(companyName == null || x.Enterprise.ToLower().Contains(companyName.ToLower())) &&
-			(name == null || x.Name.ToLower().Contains(name.ToLower())) &&
+			(email == null || x.Email.ToLower().Contains(email.ToLower())) &&
 			(country == null || x.Country.ToLower().Equals(country.ToLower())) 
 		);
 		var relationships = await GetUserRelationshipsAsync();
@@ -28,20 +28,20 @@ public class ExhibitorService(IUserRepository userRepository, IRelationshipRepos
 
 	public async Task<ExpoFinderOptionsResponseDto> GetFinderOptionsAsync(		
 		string? companyName = null,
-		string? name = null,
+		string? email = null,
 		string? country = null)
 	{
 		var users = 
 			await userRepository.GetAsync(x => 
 				x.Type == UserType.Exhibitor && !string.IsNullOrEmpty(x.Enterprise) && 
 				(companyName == null || x.Enterprise.ToLower().Contains(companyName.ToLower())) &&
-				(name == null || x.Name.ToLower().Contains(name.ToLower())) &&
+				(email == null || x.Name.ToLower().Contains(email.ToLower())) &&
 				(country == null || x.Country.ToLower().Equals(country.ToLower()))
 			);
 		
 		return new()
 		{
-			Names = users.Select(x => x.Name).ToList(),
+			Emails = users.Select(x => x.Email).ToList(),
 			CompanyNames = users.Select(x => x.Enterprise ?? "").ToList(),
 			Countries = users.Select(x => x.Country).ToList(),
 		};

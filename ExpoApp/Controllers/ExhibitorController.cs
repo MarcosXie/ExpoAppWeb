@@ -21,7 +21,7 @@ public class ExhibitorController(IExhibitorService exhibitorService) : Controlle
 	        Exhibitors = exhibitors,
 	        CompanyNames = options.CompanyNames.OrderBy(x => x).ToList(),
 	        Countries = options.Countries.Distinct().OrderBy(x => x).ToList(),
-	        Names = options.Names.OrderBy(x => x).ToList()
+	        Emails = options.Emails.OrderBy(x => x).ToList()
         });
     }
 }
