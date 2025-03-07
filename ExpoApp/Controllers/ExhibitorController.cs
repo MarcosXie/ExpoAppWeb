@@ -19,9 +19,9 @@ public class ExhibitorController(IExhibitorService exhibitorService) : Controlle
         return Ok(new ExpoFinderResponseDto
         {
 	        Exhibitors = exhibitors,
-	        CompanyNames = options.CompanyNames,
-	        Countries = options.Countries,
-	        Names = options.Names
+	        CompanyNames = options.CompanyNames.OrderBy(x => x).ToList(),
+	        Countries = options.Countries.Distinct().OrderBy(x => x).ToList(),
+	        Names = options.Names.OrderBy(x => x).ToList()
         });
     }
 }
