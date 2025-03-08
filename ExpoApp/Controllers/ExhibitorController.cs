@@ -14,7 +14,7 @@ public class ExhibitorController(IExhibitorService exhibitorService) : Controlle
 	    [FromQuery] string? country = null
 	)
     {
-        var exhibitors = await exhibitorService.GetExhibitorsAsync(companyName, name, country);
+        var exhibitors = await exhibitorService.GetUsersAsync(companyName, name, country);
         var options = await exhibitorService.GetFinderOptionsAsync(companyName, name, country);
         return Ok(new ExpoFinderResponseDto
         {

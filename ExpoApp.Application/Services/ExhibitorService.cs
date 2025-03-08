@@ -9,14 +9,12 @@ namespace ExpoApp.Application.Services;
 public class ExhibitorService(IUserRepository userRepository, IRelationshipRepository relationshipRepository, AuthUserHelper authUserHelper)
 	: IExhibitorService
 {
-	public async Task<List<ExhibitorResponseDto>> GetExhibitorsAsync(		
+	public async Task<List<ExhibitorResponseDto>> GetUsersAsync(		
 		string? companyName = null, 
 		string? email = null, 
 		string? country = null)
 	{
 		var users = await userRepository.GetAsync(x => 
-			x.Type == UserType.Exhibitor &&
-			x.Enterprise != null &&
 			(companyName == null || x.Enterprise.ToLower().Contains(companyName.ToLower())) &&
 			(email == null || x.Email.ToLower().Contains(email.ToLower())) &&
 			(country == null || x.Country.ToLower().Equals(country.ToLower())) 
