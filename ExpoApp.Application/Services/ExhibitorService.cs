@@ -23,7 +23,9 @@ public class ExhibitorService(IUserRepository userRepository, IRelationshipRepos
 		);
 		var relationships = await GetUserRelationshipsAsync();
 		
-		return BuildExhibitorsResponse(users, relationships).ToList();
+		return BuildExhibitorsResponse(users, relationships)
+			.Where(x => !x.HasRelationship)
+			.ToList();
 	}
 
 	public async Task<ExpoFinderOptionsResponseDto> GetFinderOptionsAsync(		
@@ -36,6 +38,8 @@ public class ExhibitorService(IUserRepository userRepository, IRelationshipRepos
 		var users = 
 			await userRepository.GetAsync(x => 
 				x.Id != userId &&
+				!x.BuyerRelationships.Any(y => y.BuyerUserId == userId || y.SupplierUserId == userId) &&
+				!x.SupplierRelationships.Any(y => y.BuyerUserId == userId || y.SupplierUserId == userId) &&
 				(companyName == null || x.Enterprise.ToLower().Contains(companyName.ToLower())) &&
 				(email == null || x.Name.ToLower().Contains(email.ToLower())) &&
 				(country == null || x.Country.ToLower().Equals(country.ToLower()))
