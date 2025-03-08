@@ -62,6 +62,7 @@ public class ExhibitorService(IUserRepository userRepository, IRelationshipRepos
 		{
 			Id = user.Id,
 			Name = user.Name,
+			Email = user.Email,
 			Country = user.Country,
 			Enterprise = user.Enterprise ?? string.Empty,
 			Tags = user.Catalog?.Tags,
