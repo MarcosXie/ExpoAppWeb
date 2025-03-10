@@ -68,9 +68,9 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 
 	[HttpGet("Add/{id}")]
 	[AllowAnonymous]
-	public ActionResult UpdateMemoAsync()
+	public ActionResult UpdateMemoAsync(Guid id)
 	{
-		const string redirectUrl = "expoapp://add-relationship/{id}";
+		string redirectUrl = $"expoapp://add-relationship/{id}";
 
 		return Redirect(redirectUrl);
 	}
