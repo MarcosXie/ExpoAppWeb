@@ -1,4 +1,5 @@
 using ExpoShared.Domain.Entities.Relationships;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpoApp.Api.Controllers;
@@ -63,5 +64,14 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 		await service.UpdateMemoAsync(id, updateDto);
 
 		return Ok();
+	}
+
+	[HttpGet("Add/{id}")]
+	[AllowAnonymous]
+	public ActionResult UpdateMemoAsync()
+	{
+		const string redirectUrl = "expoapp://add-relationship/{id}";
+
+		return Redirect(redirectUrl);
 	}
 }
