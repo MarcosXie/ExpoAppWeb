@@ -70,8 +70,31 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 	[AllowAnonymous]
 	public ActionResult UpdateMemoAsync(Guid id)
 	{
-		string redirectUrl = $"expoapp://add-relationship/{id}";
+		string appUrl = $"expoapp://add-relationship/{id}";
+		string playStoreUrl = "https://google.com";
+		string appStoreUrl = "https://google.com";
+		
+		string fallbackUrl = playStoreUrl;
+		string userAgent = Request.Headers["User-Agent"].ToString();
 
-		return Redirect(redirectUrl);
+		if (userAgent.Contains("iPhone") || userAgent.Contains("iPad"))
+		{
+			fallbackUrl = appStoreUrl;
+		}
+
+		return Content($@"
+			<html>
+				<head>
+		            <meta http-equiv='refresh' content='0; url={appUrl}' />
+		            <script>
+		                setTimeout(function() {{
+		                    window.location.href = '{fallbackUrl}';
+		                }}, 2500);
+		            </script>
+				</head>
+		        <body>
+		        </body>
+			</html>	
+		", "text/html");
 	}
 }
