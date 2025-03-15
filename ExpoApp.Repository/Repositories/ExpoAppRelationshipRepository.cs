@@ -34,4 +34,16 @@ public class ExpoAppRelationshipRepository(UExpoDbContext context, IMapper mappe
 
 		return Mapper.Map<List<Relationship>>(users);
 	}
+	
+	public override async Task<Relationship> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		var users = await Database
+			.Include(x => x.BuyerUser)
+			.ThenInclude(x => x.Images)
+			.Include(x => x.SupplierUser)
+			.ThenInclude(x => x.Images)
+			.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+		return Mapper.Map<Relationship>(users);
+	}
 }
