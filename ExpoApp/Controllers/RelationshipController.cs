@@ -75,10 +75,10 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 
 	[HttpGet("Add/{id}")]
 	[AllowAnonymous]
-	public ActionResult UpdateMemoAsync(Guid id)
+	public ActionResult RedirectToApp(Guid id)
 	{
 		string appUrl = $"expoapp://add-relationship/{id}";
-		string playStoreUrl = "https://google.com";
+		string playStoreUrl = "https://play.google.com/store/apps/details?id=com.exposoft.expoapp";
 		string appStoreUrl = "https://google.com";
 		
 		string fallbackUrl = playStoreUrl;
