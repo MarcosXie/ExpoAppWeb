@@ -132,4 +132,12 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 		var base64String = Convert.ToBase64String(qrCode);
 		return Ok($"data:image/png;base64,{base64String}");
 	}
+	
+	[HttpGet("{userId}/UpdateFcmToken")]
+	public async Task<ActionResult<UserProfileResponseDto>> UpdateFcmToken(Guid userId, [FromBody] string token)
+	{
+		await service.UpdateFcmToken(userId, token);
+		
+		return Ok();
+	}
 }
