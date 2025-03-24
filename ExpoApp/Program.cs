@@ -165,7 +165,7 @@ app.UseSwaggerUI(c =>
 //}
 
 app.UseMiddleware<ExceptionMiddleware>();
-
+app.UseWebSockets();
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseStaticFiles();
