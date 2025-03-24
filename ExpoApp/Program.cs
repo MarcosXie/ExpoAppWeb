@@ -96,6 +96,9 @@ services.AddSharedApplication();
 services.AddSharedInfrastructure();
 services.AddSharedRepository(false);
 
+// Adds Firebase
+services.AddFirebase();
+
 // Adding Expo App
 services.AddDomain();
 services.AddApplication();
