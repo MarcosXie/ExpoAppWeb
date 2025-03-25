@@ -133,10 +133,10 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 		return Ok($"data:image/png;base64,{base64String}");
 	}
 	
-	[HttpGet("{userId}/UpdateFcmToken")]
-	public async Task<ActionResult<UserProfileResponseDto>> UpdateFcmToken(Guid userId, [FromBody] string token)
+	[HttpPost("UpdateFcmToken")]
+	public async Task<ActionResult<UserProfileResponseDto>> UpdateFcmToken([FromBody] string token)
 	{
-		await service.UpdateFcmToken(userId, token);
+		await service.UpdateFcmToken(token);
 		
 		return Ok();
 	}
