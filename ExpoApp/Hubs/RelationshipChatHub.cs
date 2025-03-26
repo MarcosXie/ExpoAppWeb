@@ -58,14 +58,15 @@ public class RelationshipChatHub(
 		{
 			Notification = new Notification()
 			{
-				Title = $"New Message from {msgDto.SenderName}",
+				Title = msgDto.SenderName,
 				Body = msgDto.SendedMessage
 			},
 			Data = new Dictionary<string, string>()
 			{
 				{ "roomId", msgDto.RoomId },
 				{ "senderId", msgDto.SenderId.ToString() },
-				{ "message", msgDto.SendedMessage }
+				{ "message", msgDto.SendedMessage },
+				{ "profileImage", receiver.ProfileImageUri ?? ""}
 			},
 			Token = receiver.FcmToken
 		};
