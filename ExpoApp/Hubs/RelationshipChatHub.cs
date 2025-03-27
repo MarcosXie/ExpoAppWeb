@@ -53,6 +53,7 @@ public class RelationshipChatHub(
 	private async Task SendPushNotification(ReceiveMessageDto msgDto)
 	{
 		var receiver = await userRepository.GetByIdAsync(msgDto.ReceiverId);
+		var sender = await userRepository.GetByIdAsync(msgDto.SenderId);
 
 		var message = new Message()
 		{
@@ -66,7 +67,7 @@ public class RelationshipChatHub(
 				{ "roomId", msgDto.RoomId },
 				{ "senderId", msgDto.SenderId.ToString() },
 				{ "message", msgDto.SendedMessage },
-				{ "profileImage", receiver.ProfileImageUri ?? ""}
+				{ "profileImage", sender.ProfileImageUri ?? ""}
 			},
 			Token = receiver.FcmToken
 		};
