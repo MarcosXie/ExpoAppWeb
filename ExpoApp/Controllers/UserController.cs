@@ -1,5 +1,8 @@
+using ExpoApp.Domain.Entities.User;
 using ExpoApp.Domain.Entities.UserQrCodes;
+using ExpoShared.Domain.Entities.Shared;
 using ExpoShared.Domain.Entities.Users;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +10,7 @@ namespace ExpoApp.Api.Controllers;
 
 [ApiController]
 [Route("Api/[controller]")]
-public class UserController(IUserService service, IUserQrCodeService qrCodeService) : ControllerBase
+public class UserController(IUserService service, IUserQrCodeService qrCodeService, IConfiguration config) : ControllerBase
 {
     private readonly IUserService service = service;
     
@@ -139,5 +142,73 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 		await service.UpdateFcmToken(token);
 		
 		return Ok();
+	}
+	
+	[HttpPost("Google")]
+	[AllowAnonymous]
+	public async Task<ActionResult<string>> GoogleLoginAsync([FromBody] GoogleLoginDto googleLoginDto)
+	{
+	    try
+	    {
+	        // Verify Google ID token
+	        var payload = await VerifyGoogleToken(googleLoginDto.IdToken);
+	        if (payload is null)
+	        {
+	            return BadRequest("Invalid Google ID token");
+	        }
+
+	        // Find or create user
+	        var user = await service.FindUserByEmailAsync(payload.Email);
+	        if (user == null)
+	        {
+	            // Create new user with Google data
+	            var createUser = new UserDto
+	            {
+	                Email = payload.Email,
+	                Name = payload.Name ?? "Google User",
+	                Password = "", // No password for Google users
+	                Country = "Unknown", // Default or prompt later
+	                BirthDate = DateTime.Now, // Default or prompt later
+	                Type = UserType.Visitor, // Adjust based on your enum
+					SourceType = SourceType.ANDROID,
+					Enterprise = "",
+					ConfirmPassword = ""
+	            };
+	            await service.CreateUserAsync(createUser);
+	        }
+	        else if (!string.IsNullOrEmpty(user.Password))
+	        {
+	            return BadRequest("Account already exists with email/password. Please use password login or link accounts.");
+	        }
+
+	        // Generate session token (same as LoginAsync)
+	        string? hash = await service.GenerateSessionTokenAsync(user!.Id);
+	        if (hash == null)
+	        {
+	            return BadRequest("Failed to generate session token");
+	        }
+
+	        return Ok(hash);
+	    }
+	    catch (Exception ex)
+	    {
+	        return StatusCode(500, $"Google login failed: {ex.Message}");
+	    }
+	}
+
+	private async Task<GoogleJsonWebSignature.Payload?> VerifyGoogleToken(string idToken)
+	{
+	    try
+	    {
+	        var settings = new GoogleJsonWebSignature.ValidationSettings
+	        {
+	            Audience = new[] { config.GetValue<string>("GoogleCloudConsole") ?? "" }
+	        };
+	        return await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+	    }
+	    catch
+	    {
+	        return null;
+	    }
 	}
 }
