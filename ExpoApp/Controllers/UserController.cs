@@ -146,10 +146,11 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 	
 	[HttpPost("Google")]
 	[AllowAnonymous]
-	public async Task<ActionResult<string>> GoogleLoginAsync([FromBody] GoogleLoginDto googleLoginDto)
+	public async Task<ActionResult<GoogleLoginResponseDto>> GoogleLoginAsync([FromBody] GoogleLoginDto googleLoginDto)
 	{
 	    try
 	    {
+		    bool isFirstTime = false;
 	        // Verify Google ID token
 	        var payload = await VerifyGoogleToken(googleLoginDto.IdToken);
 	        if (payload is null)
@@ -161,6 +162,7 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 	        var user = await service.FindUserByEmailAsync(payload.Email);
 	        if (user == null)
 	        {
+		        isFirstTime = true;
 	            // Create new user with Google data
 	            var createUser = new UserDto
 	            {
@@ -171,24 +173,26 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 	                BirthDate = DateTime.Now, // Default or prompt later
 	                Type = UserType.Visitor, // Adjust based on your enum
 					SourceType = SourceType.ANDROID,
+					ProfileImageUri = payload.Picture,
 					Enterprise = "",
 					ConfirmPassword = ""
 	            };
-	            await service.CreateUserAsync(createUser);
-	        }
-	        else if (!string.IsNullOrEmpty(user.Password))
-	        {
-	            return BadRequest("Account already exists with email/password. Please use password login or link accounts.");
+	            await service.CreateUserAsync(createUser, true);
+	            user = await service.FindUserByEmailAsync(payload.Email);
 	        }
 
 	        // Generate session token (same as LoginAsync)
-	        string? hash = await service.GenerateSessionTokenAsync(user!.Id);
+	        string? hash = await service.LoginWithGoogle(user!.Id);
 	        if (hash == null)
 	        {
 	            return BadRequest("Failed to generate session token");
 	        }
 
-	        return Ok(hash);
+	        return Ok(new GoogleLoginResponseDto
+	        {
+		        Hash = hash,
+		        IsFirstTimeLogin = isFirstTime,
+	        });
 	    }
 	    catch (Exception ex)
 	    {
