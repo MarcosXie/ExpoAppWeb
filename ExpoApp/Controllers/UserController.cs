@@ -169,7 +169,7 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 	                Email = payload.Email,
 	                Name = payload.Name ?? "Google User",
 	                Password = "", // No password for Google users
-	                Country = "Unknown", // Default or prompt later
+	                Country = "", // Default or prompt later
 	                BirthDate = DateTime.Now, // Default or prompt later
 	                Type = UserType.Visitor, // Adjust based on your enum
 					SourceType = SourceType.ANDROID,
