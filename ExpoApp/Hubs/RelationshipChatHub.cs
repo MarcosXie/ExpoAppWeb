@@ -47,7 +47,11 @@ public class RelationshipChatHub(
 				RelationshipNotifications = await service.GetNotReadedMessagesAsync(msgDto.ReceiverId),
 			});
 
-		await SendPushNotification(msgDto);
+		
+		if (msgDto.SenderId != msgDto.ReceiverId)
+		{
+			await SendPushNotification(msgDto);
+		}
 	}
 
 private async Task SendPushNotification(ReceiveMessageDto msgDto)
