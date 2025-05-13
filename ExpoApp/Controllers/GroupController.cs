@@ -19,7 +19,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
 		return Ok(await groupService.CreateGroupAsync(createGroupDto));
 	}
 	
-	[HttpGet("{groupId}")]
+	[HttpGet]
 	public async Task<ActionResult> GetGroupsAsync()
 	{
 		return Ok(await groupService.GetByCurrentUserAsync());
