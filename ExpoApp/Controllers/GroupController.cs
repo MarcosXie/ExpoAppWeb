@@ -8,12 +8,29 @@ namespace ExpoApp.Api.Controllers;
 [ApiController]
 public class GroupController(IGroupService groupService) : ControllerBase
 {
+	/// <summary>
+	/// Create Group
+	/// </summary>
+	/// <param name="createGroupDto"></param>
+	/// <returns></returns>
 	[HttpPost]
 	public async Task<ActionResult> CreateGroupAsync(CreateGroupDto createGroupDto)
 	{
 		return Ok(await groupService.CreateGroupAsync(createGroupDto));
 	}
 	
+	[HttpPut("{groupId}")]
+	public async Task<ActionResult> GetGroupsAsync()
+	{
+		return Ok(await groupService.GetByCurrentUserAsync());
+	}
+	
+	/// <summary>
+	/// Update Group Name
+	/// </summary>
+	/// <param name="groupId"></param>
+	/// <param name="name"></param>
+	/// <returns></returns>
 	[HttpPut("{groupId}")]
 	public async Task<ActionResult> UpdateAsync(
 		Guid groupId, string name
@@ -24,6 +41,12 @@ public class GroupController(IGroupService groupService) : ControllerBase
 		return Ok();
 	}
 	
+	/// <summary>
+	/// Add Member
+	/// </summary>
+	/// <param name="groupId"></param>
+	/// <param name="groupAddMemberDto"></param>
+	/// <returns></returns>
 	[HttpPatch("{groupId}")]
 	public async Task<ActionResult> AddMemberAsync(
 		Guid groupId, GroupAddMemberDto groupAddMemberDto
@@ -34,6 +57,12 @@ public class GroupController(IGroupService groupService) : ControllerBase
 		return Ok();
 	}
 	
+	/// <summary>
+	/// Make User in an Admin
+	/// </summary>
+	/// <param name="groupId"></param>
+	/// <param name="userId"></param>
+	/// <returns></returns>
 	[HttpPatch("{groupId}/Admin/{userId}")]
 	public async Task<ActionResult> MakeAdminAsync(Guid groupId, Guid userId)
 	{
@@ -42,6 +71,12 @@ public class GroupController(IGroupService groupService) : ControllerBase
 		return Ok();
 	}
 	
+	/// <summary>
+	/// Remove User from Group
+	/// </summary>
+	/// <param name="groupId"></param>
+	/// <param name="userId"></param>
+	/// <returns></returns>
 	[HttpDelete("{groupId}/{userId}")]
 	public async Task<ActionResult> RemoveUserAsync(Guid groupId, Guid userId)
 	{
@@ -50,6 +85,11 @@ public class GroupController(IGroupService groupService) : ControllerBase
 		return Ok();
 	}
 	
+	/// <summary>
+	/// Delete Group Async
+	/// </summary>
+	/// <param name="groupId"></param>
+	/// <returns></returns>
 	[HttpDelete("{groupId}")]
 	public async Task<ActionResult> DeleteGroupAsync(Guid groupId)
 	{
