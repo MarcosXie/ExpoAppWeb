@@ -48,7 +48,7 @@ public class GroupController(IGroupService groupService) : ControllerBase
 	/// <param name="groupId"></param>
 	/// <param name="image"></param>
 	/// <returns></returns>
-	[HttpPut("{groupId}/Image")]
+	[HttpPost("{groupId}/Image")]
 	public async Task<ActionResult> UpdateImageAsync(Guid groupId, IFormFile image)
 	{
 		var uri = await groupService.UpdateImageAsync(groupId, image);
