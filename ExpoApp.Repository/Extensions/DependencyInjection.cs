@@ -1,4 +1,5 @@
 ﻿using ExpoApp.Domain.Entities.Momento;
+using ExpoApp.Domain.Entities.Wed;
 using ExpoApp.Repository.Context;
 using ExpoApp.Repository.Mapper;
 using ExpoApp.Repository.Repositories;
@@ -28,5 +29,6 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, ExpoAppUserRepository>();
         services.AddScoped<IRelationshipRepository, ExpoAppRelationshipRepository>();
         services.AddScoped<IMomentoRepository, MomentoRepository>();
+        services.AddScoped<IPresentRepository, PresentRepository>();
 	}
 }

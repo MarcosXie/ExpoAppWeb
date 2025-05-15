@@ -4,6 +4,7 @@ using ExpoApp.Repository.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpoApp.Repository.Migrations
 {
     [DbContext(typeof(ExpoAppDbContext))]
-    partial class ExpoAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250515001945_adds-present-table")]
+    partial class addspresenttable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,44 +64,6 @@ namespace ExpoApp.Repository.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("momento", (string)null);
-                });
-
-            modelBuilder.Entity("ExpoApp.Domain.Dao.Wed.PresentDao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Buyer")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("ByPix")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("ImageUri")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double");
-
-                    b.Property<string>("PurchaseLink")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Presents");
                 });
 
             modelBuilder.Entity("ExpoShared.Domain.Dao.AdminDao", b =>

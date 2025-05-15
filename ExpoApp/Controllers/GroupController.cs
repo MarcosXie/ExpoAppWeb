@@ -33,10 +33,10 @@ public class GroupController(IGroupService groupService) : ControllerBase
 	/// <returns></returns>
 	[HttpPut("{groupId}")]
 	public async Task<ActionResult> UpdateAsync(
-		Guid groupId, string name
+		Guid groupId, CreateGroupDto groupDto
 	)
 	{
-		await groupService.UpdateAsync(groupId, name);
+		await groupService.UpdateAsync(groupId, groupDto);
 		
 		return Ok();
 	}

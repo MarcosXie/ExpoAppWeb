@@ -1,4 +1,5 @@
 ﻿using ExpoApp.Domain.Dao;
+using ExpoApp.Domain.Dao.Wed;
 using ExpoApp.Repository.Configuration;
 using ExpoShared.Repository.Context;
 using ExpoShared.Repository.Extensions;
@@ -46,6 +47,7 @@ public class ExpoAppDbContext : ExpoSharedContext
     }
 
     public DbSet<MomentoDao> Momentos { get; set; }
+    public DbSet<PresentDao> Presents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
