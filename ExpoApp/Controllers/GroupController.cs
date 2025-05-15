@@ -28,8 +28,8 @@ public class GroupController(IGroupService groupService) : ControllerBase
 	/// <summary>
 	/// Update Group Name
 	/// </summary>
+	/// <param name="groupDto"></param>
 	/// <param name="groupId"></param>
-	/// <param name="name"></param>
 	/// <returns></returns>
 	[HttpPut("{groupId}")]
 	public async Task<ActionResult> UpdateAsync(
