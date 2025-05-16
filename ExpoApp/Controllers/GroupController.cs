@@ -72,6 +72,21 @@ public class GroupController(IGroupService groupService) : ControllerBase
 	}
 	
 	/// <summary>
+	/// ToggleStatus
+	/// </summary>
+	/// <param name="groupId"></param>
+	/// <returns></returns>
+	[HttpPatch("{groupId}/{userId}/Status")]
+	public async Task<ActionResult> AddMemberAsync(
+		Guid groupId, Guid userId
+	)
+	{
+		await groupService.ToggleStatusAsync(groupId, userId);
+		
+		return Ok();
+	}
+	
+	/// <summary>
 	/// Make User in an Admin
 	/// </summary>
 	/// <param name="groupId"></param>
