@@ -1,0 +1,141 @@
+using ExpoApp.Api.Hubs.Interfaces;
+using ExpoShared.Domain.Entities.Chats.GroupChat;
+using ExpoShared.Domain.Entities.Chats.RelationshipChat;
+using ExpoShared.Domain.Entities.Chats.Shared;
+using ExpoShared.Domain.Entities.Users;
+using FirebaseAdmin.Messaging;
+using Microsoft.AspNetCore.SignalR;
+
+namespace ExpoApp.Api.Hubs;
+
+public class GroupChatHub(
+	IUserRepository userRepository,
+	IGroupChatService service, 
+	IHubContext<NotificationsHub> notificationHub
+) : Hub
+{
+	public async Task<JoinGroupChatResponseDto> JoinChatRoom(ChatDto joinChatDto)
+	{
+		var roomId = joinChatDto.Id;
+
+		await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
+
+		return new()
+		{
+			RoomId = roomId,
+			Messages = await service.GetMessagesByChatAsync(joinChatDto)
+		};
+	}
+
+	public async Task ChangeUserLang(ChatDto callCenterChat)
+	{
+		await service.UpdateLangAsync(callCenterChat);
+	}
+
+	public async Task SendMessage(SendMessageDto message)
+	{
+		var msgs = await service.AddMessageAsync(message);
+
+		foreach (var msgDto in msgs)
+		{
+			msgDto.SendedTime = msgDto.SendedTime.ToUniversalTime();
+
+			await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
+
+			await notificationHub.Clients.Groups(msgDto.ReceiverId.ToString()).SendAsync("Notification",
+				new UserRoomNotificationsDto
+				{
+					RelationshipNotifications = await service.GetNotReadedMessagesAsync(msgDto.ReceiverId),
+				});
+			
+			if (msgDto.SenderId != msgDto.ReceiverId)
+			{
+				await SendPushNotification(msgDto);
+			}
+		}
+	}
+
+	public async Task VisualizeMessages(ChatDto chat)
+	{
+		await service.VisualizeMessagesAsync(chat);
+
+		await Clients.Group(chat.Id.ToString()!).SendAsync("VisualizedMessages", chat.UserId);
+
+		await notificationHub.Clients.Groups(chat.UserId.ToString()).SendAsync("Notification",
+			new UserRoomNotificationsDto
+			{
+				GroupNotifications = await service.GetNotReadedMessagesAsync(chat.UserId),
+			});
+	}
+
+	public async Task DeleteMessage(DeleteMsgDto deleteMsgDto)
+	{
+		await service.DeleteMessageAsync(deleteMsgDto);
+
+		await Clients.Group(deleteMsgDto.RoomId.ToString()).SendAsync("DeleteMessage", deleteMsgDto);
+	}
+	
+	private async Task SendPushNotification(ReceiveMessageDto msgDto)
+	{
+	    var receiver = await userRepository.GetByIdAsync(msgDto.ReceiverId);
+	    var sender = await userRepository.GetByIdAsync(msgDto.SenderId);
+
+	    var message = new Message()
+	    {
+	        Notification = new Notification()
+	        {
+	            Title = msgDto.SenderName,
+	        },
+	        Data = new Dictionary<string, string>()
+	        {
+	            { "roomId", msgDto.RoomId },
+	            { "senderId", msgDto.SenderId.ToString() },
+	            { "message", msgDto.TranslatedMessage ?? msgDto.SendedMessage },
+	            { "fileUri", msgDto.File ?? "" },
+	            { "profileImage", sender.ProfileImageUri ?? "" },
+	            { "receiverId", msgDto.ReceiverId.ToString()},
+	        },
+	        Token = receiver.FcmToken
+	    };
+
+	    // Verifica se há um arquivo e determina o tipo
+	    if (!string.IsNullOrEmpty(msgDto.File) && !string.IsNullOrEmpty(msgDto.FileName))
+	    {
+	        var extension = Path.GetExtension(msgDto.FileName)?.ToLowerInvariant()?.TrimStart('.');
+	        var imageExtensions = new[] { "jpg", "jpeg", "png", "gif", "bmp", "webp" };
+	        var videoExtensions = new[] { "mp4", "mov", "avi", "mkv", "webm" };
+
+	        if (imageExtensions.Contains(extension))
+	        {
+	            // Para imagens, define ImageUrl para exibir a imagem
+	            message.Notification.ImageUrl = msgDto.File;
+	        }
+	        else if (videoExtensions.Contains(extension))
+	        {
+	            // Para vídeos, define o corpo como "Video received"
+	            message.Notification.Body = "Video received";
+	        }
+	        else
+	        {
+	            // Para outros arquivos, define o corpo como "File received"
+	            message.Notification.Body = "File received";
+	        }
+	    }
+	    else
+	    {
+	        // Sem arquivo, usa a mensagem padrão
+	        message.Notification.Body = msgDto.TranslatedMessage ?? msgDto.SendedMessage;
+	    }
+
+	    try
+	    {
+	        string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
+	        Console.WriteLine($"Successfully sent push notification: {response}");
+	    }
+	    catch (Exception ex)
+	    {
+	        Console.WriteLine($"Error sending push notification: {ex.Message}");
+	    }
+	}
+
+}

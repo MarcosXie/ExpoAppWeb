@@ -184,6 +184,9 @@ app.MapHub<CallCenterChatHub>("/call-center-chathub")
 app.MapHub<RelationshipChatHub>("/relationship-chathub")
 	.RequireAuthorization();
 
+app.MapHub<GroupChatHub>("/group-chathub")
+	.RequireAuthorization();
+
 app.MapHub<CartChatHub>("/cart-chathub")
 	.RequireAuthorization();
 
