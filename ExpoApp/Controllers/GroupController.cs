@@ -1,4 +1,5 @@
 ﻿using ExpoShared.Domain.Entities.Chats.GroupChat;
+using ExpoShared.Domain.Entities.Groups;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpoApp.Api.Controllers;
@@ -23,6 +24,12 @@ public class GroupController(IGroupService groupService) : ControllerBase
 	public async Task<ActionResult> GetGroupsAsync()
 	{
 		return Ok(await groupService.GetByCurrentUserAsync());
+	}
+	
+	[HttpGet("{groupId}")]
+	public async Task<ActionResult> GetGroupByIdAsync(Guid groupId)
+	{
+		return Ok(await groupService.GetByIdAsync(groupId));
 	}
 	
 	/// <summary>
