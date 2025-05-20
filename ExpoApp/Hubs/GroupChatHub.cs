@@ -57,15 +57,15 @@ public class GroupChatHub(
 
 	public async Task VisualizeMessages(ChatDto chat)
 	{
-		await service.VisualizeMessagesAsync(chat);
-
-		await Clients.Group(chat.Id.ToString()!).SendAsync("VisualizedMessages", chat.UserId);
-
-		await notificationHub.Clients.Groups(chat.UserId.ToString()).SendAsync("Notification",
-			new UserRoomNotificationsDto
-			{
-				GroupNotifications = await service.GetNotReadedMessagesAsync(chat.UserId),
-			});
+		// await service.VisualizeMessagesAsync(chat);
+		//
+		// await Clients.Group(chat.Id.ToString()!).SendAsync("VisualizedMessages", chat.UserId);
+		//
+		// await notificationHub.Clients.Groups(chat.UserId.ToString()).SendAsync("Notification",
+		// 	new UserRoomNotificationsDto
+		// 	{
+		// 		GroupNotifications = await service.GetNotReadedMessagesAsync(chat.UserId),
+		// 	});
 	}
 
 	public async Task DeleteMessage(DeleteMsgDto deleteMsgDto)
