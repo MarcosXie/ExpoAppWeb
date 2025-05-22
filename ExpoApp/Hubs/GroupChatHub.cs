@@ -41,11 +41,12 @@ public class GroupChatHub(
 			msgDto.SendedTime = msgDto.SendedTime.ToUniversalTime();
 
 			await Clients.Group(msgDto.RoomId).SendAsync("ReceiveMessage", msgDto);
+			var notification = await service.GetNotReadedMessagesAsync(msgDto.ReceiverId);
 
 			await notificationHub.Clients.Groups(msgDto.ReceiverId.ToString()).SendAsync("Notification",
 				new UserRoomNotificationsDto
 				{
-					RelationshipNotifications = await service.GetNotReadedMessagesAsync(msgDto.ReceiverId),
+					RelationshipNotifications = notification
 				});
 			
 			if (msgDto.SenderId != msgDto.ReceiverId)
