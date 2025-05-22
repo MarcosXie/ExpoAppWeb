@@ -46,7 +46,7 @@ public class GroupChatHub(
 			await notificationHub.Clients.Groups(msgDto.ReceiverId.ToString()).SendAsync("Notification",
 				new UserRoomNotificationsDto
 				{
-					RelationshipNotifications = notification
+					GroupNotifications = notification
 				});
 			
 			if (msgDto.SenderId != msgDto.ReceiverId)
