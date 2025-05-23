@@ -9,9 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExpoApp.Api.Controllers;
 
-
-
-[Microsoft.AspNetCore.Components.Route("api/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class NotificationsController(
 	ICallCenterChatService callCenterService,
