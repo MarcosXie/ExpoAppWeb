@@ -7,7 +7,7 @@ namespace ExpoApp.Api.Hubs;
 
 public class BaseGoogleNotificationHub(IUserRepository userRepository) : Hub
 {
-	protected async Task SendPushNotification(ReceiveMessageDto msgDto)
+	protected async Task SendPushNotification(ReceiveMessageDto msgDto, bool isGroup = false)
 	{
 	    var receiver = await userRepository.GetByIdAsync(msgDto.ReceiverId);
 	    var sender = await userRepository.GetByIdAsync(msgDto.SenderId);
@@ -25,7 +25,7 @@ public class BaseGoogleNotificationHub(IUserRepository userRepository) : Hub
 	            { "message", msgDto.TranslatedMessage ?? msgDto.SendedMessage },
 	            { "fileUri", msgDto.File ?? "" },
 	            { "profileImage", sender.ProfileImageUri ?? "" },
-	            { "receiverId", msgDto.ReceiverId.ToString()},
+	            { "receiverId", isGroup ? msgDto.ReceiverId.ToString() : ""},
 	        },
 	        Token = receiver.FcmToken
 	    };

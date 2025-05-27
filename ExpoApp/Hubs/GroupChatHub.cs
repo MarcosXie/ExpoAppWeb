@@ -51,7 +51,7 @@ public class GroupChatHub(
 			
 			if (msgDto.SenderId != msgDto.ReceiverId)
 			{
-				await SendPushNotification(msgDto);
+				await SendPushNotification(msgDto, true);
 			}
 		}
 	}
