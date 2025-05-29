@@ -28,6 +28,7 @@ public class NotificationsHub(
 			NewCarts = await cartChatService.GetNewCartsAsync(userId),
 		};
 
+		
 		return notifications;
 	}
 }
