@@ -13,20 +13,18 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: true # Clonar os submódulos
-          fetch-depth: 0   # Certifica-se de buscar todo o histórico
+          submodules: true
+          fetch-depth: 0
           token: ${{ secrets.GH_PAT }}
 
       - name: Update submodules
         run: git submodule update --init --recursive
-        # Opcional para garantir que os submódulos sejam atualizados corretamente
-        
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -45,22 +43,48 @@ jobs:
         with: 
           name: deploy-files
           path: ${{github.run_id}}.zip
-  deploy:
 
+      - name: Delete old artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          # Lista todos os artefatos do repositório
+          artifacts=$(gh api -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | .[].id')
+          
+          # Conta o número total de artefatos
+          total_artifacts=$(echo "$artifacts" | wc -l)
+          
+          # Calcula quantos artefatos devem ser mantidos (os 3 mais recentes)
+          artifacts_to_keep=3
+          
+          # Se houver mais de 3 artefatos, exclui os mais antigos
+          if [ $total_artifacts -gt $artifacts_to_keep ]; then
+            artifacts_to_delete=$(echo "$artifacts" | head -n $(($total_artifacts - $artifacts_to_keep)))
+            for artifact_id in $artifacts_to_delete; do
+              echo "Deletando artefato ID: $artifact_id"
+              gh api -X DELETE -H "Accept: application/vnd.github+json" \
+                /repos/${{ github.repository }}/actions/artifacts/$artifact_id
+            done
+          else
+            echo "Menos de $artifacts_to_keep artefatos encontrados, nada para deletar."
+          fi
+
+  deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-    - uses: actions/download-artifact@v4.1.7
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-region: us-east-1
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    - name: Deploy
-      run: |
-        aws s3 cp "deploy-files/${{github.run_id}}.zip" s3://elasticbeanstalk-us-east-1-${{ secrets.AWS_ACCOUNT_ID }}/artifact/UExpoApi/
-        aws elasticbeanstalk create-application-version --application-name $ELASTIC_BEANSTALK_NAME --version-label ${{github.run_id}} --description ${{github.run_id}} --source-bundle S3Bucket="elasticbeanstalk-us-east-1-${{ secrets.AWS_ACCOUNT_ID }}",S3Key="artifact/UExpoApi/${{github.run_id}}.zip"
-        aws elasticbeanstalk update-environment --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENV_NAME --version-label ${{github.run_id}}
-        aws elasticbeanstalk wait environment-updated --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENV_NAME
+      - uses: actions/download-artifact@v4.1.7
+      - name: Configure AWS Credentials
+        uses: actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Deploy
+        run: |
+          aws s3 cp "deploy-files/${{github.run_id}}.zip" s3://elasticbeanstalk-us-east-1-${{ secrets.AWS_ACCOUNT_ID }}/artifact/UExpoApi/
+          aws elasticbeanstalk create-application-version --application-name $ELASTIC_BEANSTALK_NAME --version-label ${{github.run_id}} --description ${{github.run_id}} --source-bundle S3Bucket="elasticbeanstalk-us-east-1-${{ secrets.AWS_ACCOUNT_ID }}",S3Key="artifact/UExpoApi/${{github.run_id}}.zip"
+          aws elasticbeanstalk update-environment --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENV_NAME --version-label ${{github.run_id}}
+          aws elasticbeanstalk wait environment-updated --application-name $ELASTIC_BEANSTALK_NAME --environment-name $ELASTIC_BEANSTALK_ENV_NAME
