@@ -17,6 +17,7 @@ using ExpoShared.Infrastructure.Extensions;
 using ExpoShared.Repository.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddUserSecrets<Program>();
 
 builder.WebHost.ConfigureKestrel(options =>
 {
