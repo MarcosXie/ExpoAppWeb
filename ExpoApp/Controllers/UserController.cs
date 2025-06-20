@@ -90,6 +90,16 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 		var uri = await service.AddProfileImageAsync(id, image);
 		return Ok(uri);
 	}
+	
+	[HttpPost("Profile/ProfileImage/{id}/formatted")]
+    public async Task<ActionResult> AddProfileImagesFormattedAsync(Guid id, IFormFile image)
+    {
+    	var uri = await service.AddProfileImageAsync(id, image);
+    	return Ok(new
+	    {
+		    Uri = uri
+	    });
+    }
 
 	[HttpDelete("Profile/ProfileImage/{id}")]
 	public async Task<ActionResult> DeleteProfileImageAsync(Guid id)
