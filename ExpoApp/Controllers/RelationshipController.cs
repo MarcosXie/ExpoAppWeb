@@ -48,6 +48,16 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 
 		return Ok();
 	}
+	
+	[HttpPut("{id}/Nickname")]
+	public async Task<ActionResult<List<RelationshipResponseDto>>> UpdateNickNameAsync(
+		Guid id, RelationshipNickNameDto updateDto)
+	{
+		await service.UpdateNicknameAsync(id, updateDto);
+
+		return Ok();
+	}
+
 
 	[HttpDelete("{id}")]
 	public async Task<ActionResult<List<RelationshipResponseDto>>> DeleteAsync(Guid id)	{
