@@ -1,16 +1,27 @@
-﻿using ExpoShared.Domain.Entities.Chats.Shared;
+﻿using Amazon.S3.Model.Internal.MarshallTransformations;
+using ExpoShared.Domain.Entities.Chats.Shared;
+using ExpoShared.Domain.Entities.Relationships;
 using ExpoShared.Domain.Entities.Users;
 using FirebaseAdmin.Messaging;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ExpoApp.Api.Hubs;
 
-public class BaseGoogleNotificationHub(IUserRepository userRepository) : Hub
+public class BaseGoogleNotificationHub(IUserRepository userRepository, IRelationshipRepository relationshipRepository) : Hub
 {
 	protected async Task SendPushNotification(ReceiveMessageDto msgDto, bool isGroup = false)
 	{
 	    var receiver = await userRepository.GetByIdAsync(msgDto.ReceiverId);
 	    var sender = await userRepository.GetByIdAsync(msgDto.SenderId);
+	    if (isGroup)
+	    {
+		    var relationship = await relationshipRepository.GetByIdAsync(Guid.Parse(msgDto.RoomId));
+		    var userStatus = relationship.BuyerUserId == msgDto.SenderId ? relationship.BuyerStatus : relationship.SupplierStatus;
+		    if (userStatus == RelationshipStatus.Locked)
+		    {
+			    return;
+		    }
+	    }
 
 	    var message = new Message()
 	    {
