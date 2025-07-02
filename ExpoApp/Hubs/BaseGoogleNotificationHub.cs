@@ -13,7 +13,7 @@ public class BaseGoogleNotificationHub(IUserRepository userRepository, IRelation
 	{
 	    var receiver = await userRepository.GetByIdAsync(msgDto.ReceiverId);
 	    var sender = await userRepository.GetByIdAsync(msgDto.SenderId);
-	    if (isGroup)
+	    if (!isGroup)
 	    {
 		    var relationship = await relationshipRepository.GetByIdAsync(Guid.Parse(msgDto.RoomId));
 		    var userStatus = relationship.BuyerUserId == msgDto.SenderId ? relationship.BuyerStatus : relationship.SupplierStatus;
