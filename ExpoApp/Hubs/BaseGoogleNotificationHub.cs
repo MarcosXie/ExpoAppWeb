@@ -16,7 +16,7 @@ public class BaseGoogleNotificationHub(IUserRepository userRepository, IRelation
 	    if (!isGroup)
 	    {
 		    var relationship = await relationshipRepository.GetByIdAsync(Guid.Parse(msgDto.RoomId));
-		    var userStatus = relationship.BuyerUserId == msgDto.SenderId ? relationship.BuyerStatus : relationship.SupplierStatus;
+		    var userStatus = relationship.BuyerUserId == msgDto.SenderId ? relationship.SupplierStatus : relationship.BuyerStatus;
 		    if (userStatus == RelationshipStatus.Locked)
 		    {
 			    return;
