@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpoApp.Repository.Repositories;
 
-public class ExpoAppRelationshipRepository(UExpoDbContext context, IMapper mapper) : RelationshipRepository(context, mapper)
+public class ExpoAppRelationshipRepository(UExpoDbContext context, IMapper mapper, IRelationshipMessageRepository repository) : RelationshipRepository(context, mapper, repository)
 {
 	public override async Task<List<Relationship>> GetByUserIdAsync(Guid id)
 	{
