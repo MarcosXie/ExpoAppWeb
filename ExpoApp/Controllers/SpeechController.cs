@@ -1,4 +1,5 @@
-﻿using ExpoShared.Domain.SpeechTranslation;
+﻿using ExpoShared.Domain.Exceptions;
+using ExpoShared.Domain.SpeechTranslation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpoApp.Api.Controllers;
@@ -26,7 +27,7 @@ public class SpeechController : ControllerBase
 
 		if (result == null)
 		{
-			return StatusCode(500, "Failed to process audio translation.");
+			throw new BadRequestException("Error communicating with azure.");
 		}
 
 		return Ok(result);
