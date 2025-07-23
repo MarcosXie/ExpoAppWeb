@@ -21,7 +21,7 @@ public class ConfirmationEmailTemplate : IConfirmationEmailTemplate
 				<p style=""margin-top: 16px;"">
 				<a href=""{0}/025_verify_email/{1}/{2}/{3}""
 			style=""background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;"">
-				Verify Email
+				Validate
 				</a>
 				</p>
 
