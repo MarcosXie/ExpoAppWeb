@@ -158,12 +158,12 @@ void LogConfigurationStatus(string key)
     if (string.IsNullOrEmpty(value))
     {
         // Se a chave não for encontrada, emite um aviso.
-        logger.LogWarning("⚠️ CONFIG KEY '{Key}' NÃO ENCONTRADA ou está vazia.", key);
+        logger.LogCritical("⚠️ CONFIG KEY '{Key}' NÃO ENCONTRADA ou está vazia.", key);
     }
     else
     {
         // NÃO LOGUE O VALOR! Apenas confirme que foi carregado com sucesso.
-        logger.LogInformation("✔️ CONFIG KEY '{Key}' carregada com sucesso.", key);
+        logger.LogCritical("✔️ CONFIG KEY '{Key}' carregada com sucesso.", key);
     }
 }
 
