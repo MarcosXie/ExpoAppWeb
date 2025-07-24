@@ -34,15 +34,11 @@ config.AddEnvironmentVariables();
 // Para usar o logger durante a configuração, precisamos criá-lo temporariamente.
 var tempLogger = LoggerFactory.Create(config => config.AddConsole()).CreateLogger<Program>();
 
-if (!builder.Environment.IsDevelopment())
-{
-    tempLogger.LogInformation("✅ Production environment detected. Loading configuration from AWS Parameter Store (/LoroApp)...");
-    config.AddSystemsManager("/LoroApp");
-}
-else
-{
-    tempLogger.LogInformation("🛠️ Development environment detected. Skipping AWS Parameter Store. Using User Secrets and appsettings.json.");
-}
+
+tempLogger.LogInformation("✅ Production environment detected. Loading configuration from AWS Parameter Store (/LoroApp)...");
+config.AddSystemsManager("/LoroApp");
+
+
 // --- FIM DA ALTERAÇÃO 1 ---
 
 builder.Services.AddLogging(loggingBuilder =>
