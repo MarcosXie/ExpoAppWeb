@@ -29,7 +29,7 @@ builder.WebHost.ConfigureKestrel(options =>
 IServiceCollection services = builder.Services;
 ConfigurationManager config = builder.Configuration;
 config.AddEnvironmentVariables();
-
+config.AddSystemsManager("/LoroApp");
 
 builder.Services.AddLogging(loggingBuilder =>
 {
