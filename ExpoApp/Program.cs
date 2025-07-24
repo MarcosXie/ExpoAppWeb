@@ -21,7 +21,7 @@ builder.Configuration.AddUserSecrets<Program>();
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-	options.Limits.MaxRequestBodySize = 200 * 1024 * 1024; // Exemplo: 200MB
+    options.Limits.MaxRequestBodySize = 200 * 1024 * 1024; // Exemplo: 200MB
 });
 
 
@@ -29,14 +29,25 @@ builder.WebHost.ConfigureKestrel(options =>
 IServiceCollection services = builder.Services;
 ConfigurationManager config = builder.Configuration;
 config.AddEnvironmentVariables();
+
+// --- ALTERAÇÃO 1: LOG PARA CONFIRMAR O AMBIENTE ---
+// Para usar o logger durante a configuração, precisamos criá-lo temporariamente.
+var tempLogger = LoggerFactory.Create(config => config.AddConsole()).CreateLogger<Program>();
+
 if (!builder.Environment.IsDevelopment())
 {
-	config.AddSystemsManager("/LoroApp");
+    tempLogger.LogInformation("✅ Production environment detected. Loading configuration from AWS Parameter Store (/LoroApp)...");
+    config.AddSystemsManager("/LoroApp");
 }
+else
+{
+    tempLogger.LogInformation("🛠️ Development environment detected. Skipping AWS Parameter Store. Using User Secrets and appsettings.json.");
+}
+// --- FIM DA ALTERAÇÃO 1 ---
 
 builder.Services.AddLogging(loggingBuilder =>
 {
-	loggingBuilder.AddConsole(); // Configura o logger para sa�da no console
+    loggingBuilder.AddConsole();
 });
 
 //CORS
@@ -45,18 +56,16 @@ services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy
-		        // .AllowAnyOrigin()
-	          .WithOrigins("http://localhost:3000", "https://andre-e-leticia.vercel.app", "http://localhost:5174", "http://localhost:5173", "http://10.0.0.34:5173", "https://expoapp.com.br", "177.128.51.223", "172.31.0.73",  "http://177.128.51.223", "http://172.31.0.73",  "https://177.128.51.223", "https://172.31.0.73")
+              .WithOrigins("http://localhost:3000", "https://andre-e-leticia.vercel.app", "http://localhost:5174", "http://localhost:5173", "http://10.0.0.34:5173", "https://expoapp.com.br", "177.128.51.223", "172.31.0.73",  "http://177.128.51.223", "http://172.31.0.73",  "https://177.128.51.223", "https://172.31.0.73")
               .AllowAnyHeader()
               .AllowAnyMethod()
-			  .WithExposedHeaders("Content-Disposition")
+            .WithExposedHeaders("Content-Disposition")
               .AllowCredentials()
-		        ;
+               ;
     });
 });
 
 services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen(c =>
 {
@@ -91,8 +100,8 @@ services.AddSwaggerGen(c =>
 services.AddHttpContextAccessor();
 services.AddSignalR(o =>
 {
-	o.EnableDetailedErrors = true;
-	o.MaximumReceiveMessageSize = 10000000; // bytes
+    o.EnableDetailedErrors = true;
+    o.MaximumReceiveMessageSize = 10000000; // bytes
 });
 
 // Adding Shared 
@@ -113,21 +122,21 @@ byte[] key = Encoding.ASCII.GetBytes(config["Jwt:Key"]!);
 
 services.AddAuthentication(x =>
 {
-	x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-	x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(x =>
 {
-	x.RequireHttpsMetadata = false;
-	x.SaveToken = true;
-	x.TokenValidationParameters = new TokenValidationParameters
-	{
-		ValidateIssuerSigningKey = true,
-		IssuerSigningKey = new SymmetricSecurityKey(key),
-		ValidateIssuer = true,
-		ValidateActor = true,
-		ValidIssuer = config["Jwt:Issuer"],
-		ValidAudience = config["Jwt:Audience"]
-	};
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+       ValidateIssuerSigningKey = true,
+       IssuerSigningKey = new SymmetricSecurityKey(key),
+       ValidateIssuer = true,
+       ValidateActor = true,
+       ValidIssuer = config["Jwt:Issuer"],
+       ValidAudience = config["Jwt:Audience"]
+    };
 });
 
 services.AddIdentityCore<UserDao>()
@@ -141,35 +150,50 @@ services.AddAuthorizationBuilder()
 
 WebApplication app = builder.Build();
 
-// Obter o logger
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
-// logger.LogInformation("ENVIRONMENT VARIABLES:");
+// --- ALTERAÇÃO 2: VERIFICAÇÃO SEGURA DAS CONFIGURAÇÕES CARREGADAS ---
+logger.LogInformation("--- Verificando Configurações Carregadas ---");
 
-// // Registrar todas as vari�veis de ambiente
-// foreach (var variable in Environment.GetEnvironmentVariables().Keys)
-// {
-// 	var k = variable.ToString();
-// 	var value = Environment.GetEnvironmentVariable(k);
-// 	logger.LogInformation($"Environment Variable - {k}: {value}");
-// }
+// Função auxiliar para registrar o status de uma chave de forma segura
+void LogConfigurationStatus(string key)
+{
+    var value = app.Configuration[key];
+    if (string.IsNullOrEmpty(value))
+    {
+        // Se a chave não for encontrada, emite um aviso.
+        logger.LogWarning("⚠️ CONFIG KEY '{Key}' NÃO ENCONTRADA ou está vazia.", key);
+    }
+    else
+    {
+        // NÃO LOGUE O VALOR! Apenas confirme que foi carregado com sucesso.
+        logger.LogInformation("✔️ CONFIG KEY '{Key}' carregada com sucesso.", key);
+    }
+}
+
+// Verifique todas as suas chaves importantes aqui
+LogConfigurationStatus("AzureSpeech:SubscriptionKey");
+LogConfigurationStatus("AzureSpeech:Region");
+LogConfigurationStatus("AzureTranslator:SubscriptionKey");
+LogConfigurationStatus("AzureTranslator:Endpoint");
+LogConfigurationStatus("Jwt:Key");
+
+logger.LogInformation("-------------------------------------------");
+// --- FIM DA ALTERAÇÃO 2 ---
+
 
 app.Use(async (context, next) =>
 {
-	var ip = context.Connection.RemoteIpAddress;
-	logger.LogInformation($"Requisição de: {ip}");
-	await next();
+    var ip = context.Connection.RemoteIpAddress;
+    logger.LogInformation($"Requisição de: {ip}");
+    await next();
 });
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ExpoApp API v1");
 });
-//}
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseWebSockets();
@@ -184,20 +208,14 @@ app.MapControllers();
 
 app.MapHub<CallCenterChatHub>("/call-center-chathub")
     .RequireAuthorization();
-
 app.MapHub<RelationshipChatHub>("/relationship-chathub")
-	.RequireAuthorization();
-
+    .RequireAuthorization();
 app.MapHub<GroupChatHub>("/group-chathub")
-	.RequireAuthorization();
-
+    .RequireAuthorization();
 app.MapHub<CartChatHub>("/cart-chathub")
-	.RequireAuthorization();
-
+    .RequireAuthorization();
 app.MapHub<NotificationsHub>("/notifications-hub")
-	.RequireAuthorization();
-
-//app.UseHttpsRedirection();
+    .RequireAuthorization();
 
 SeedDataHelper.BootstrapAdmin(app.Services);
 
