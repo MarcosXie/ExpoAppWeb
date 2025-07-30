@@ -32,4 +32,17 @@ public class SpeechController : ControllerBase
 
 		return Ok(result);
 	}
+	
+	[HttpPost("Text")]
+	public async Task<IActionResult> TranslateText([FromForm] TranslationTextRequestDto request)
+	{
+		var result = await _speechService.TranslateTextAsync(request);
+
+		if (result == null)
+		{
+			throw new BadRequestException("Error communicating with azure.");
+		}
+
+		return Ok(result);
+	}
 }
