@@ -18,11 +18,16 @@ public class SpeechController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> Translate([FromForm] TranslationRequestDto request)
 	{
+		if (request.AudioFile.Length == 0)
+		{
+			return BadRequest("Audio file is required.");
+		}
+
 		var result = await _speechService.TranslateAudioAsync(request);
 
 		if (result == null)
 		{
-			throw new BadRequestException("Error communicating with azure.");
+			return BadRequest("Failed to process audio translation.");
 		}
 
 		return Ok(result);
