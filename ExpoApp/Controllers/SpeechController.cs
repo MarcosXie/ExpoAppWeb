@@ -1,5 +1,6 @@
 ﻿using ExpoShared.Domain.Exceptions;
 using ExpoShared.Domain.SpeechTranslation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpoApp.Api.Controllers;
@@ -16,6 +17,7 @@ public class SpeechController : ControllerBase
 	}
 
 	[HttpPost]
+	[AllowAnonymous]
 	public async Task<IActionResult> Translate([FromForm] TranslationRequestDto request)
 	{
 		if (request.AudioFile.Length == 0)
@@ -33,7 +35,8 @@ public class SpeechController : ControllerBase
 		return Ok(result);
 	}
 	
-	[HttpPost("Text")]
+	[HttpPost("Text")]	
+	[AllowAnonymous]
 	public async Task<IActionResult> TranslateText([FromForm] TranslationTextRequestDto request)
 	{
 		var result = await _speechService.TranslateTextAsync(request);
