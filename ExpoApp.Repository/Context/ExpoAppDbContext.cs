@@ -1,6 +1,7 @@
 ﻿using ExpoApp.Domain.Dao;
 using ExpoApp.Domain.Dao.Wed;
 using ExpoApp.Repository.Configuration;
+using ExpoShared.Domain.Dao;
 using ExpoShared.Repository.Context;
 using ExpoShared.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;

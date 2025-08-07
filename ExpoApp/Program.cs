@@ -36,7 +36,7 @@ var tempLogger = LoggerFactory.Create(config => config.AddConsole()).CreateLogge
 
 
 tempLogger.LogInformation("✅ Production environment detected. Loading configuration from AWS Parameter Store (/LoroApp)...");
-config.AddSystemsManager("/LoroApp");
+// config.AddSystemsManager("/LoroApp");
 
 
 // --- FIM DA ALTERAÇÃO 1 ---
