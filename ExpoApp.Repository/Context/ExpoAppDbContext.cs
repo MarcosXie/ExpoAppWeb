@@ -59,6 +59,7 @@ public class ExpoAppDbContext : ExpoSharedContext
         modelBuilder.ApplyConfiguration(new GroupConfiguration());
         modelBuilder.ApplyConfiguration(new GroupUserConfiguration());
         modelBuilder.ApplyConfiguration(new GroupMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new UserLoroConfiguration());
         
         base.OnModelCreating(modelBuilder);
     }
