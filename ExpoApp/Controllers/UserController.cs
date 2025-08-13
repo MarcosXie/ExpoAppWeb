@@ -216,7 +216,7 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 	    {
 	        var settings = new GoogleJsonWebSignature.ValidationSettings
 	        {
-	            Audience = new[] { config.GetValue<string>("GoogleCloudConsole") ?? "" }
+	            Audience = new[] { config.GetValue<string>("GoogleCloudConsoleExpoApp") ?? "" }
 	        };
 	        return await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
 	    }
