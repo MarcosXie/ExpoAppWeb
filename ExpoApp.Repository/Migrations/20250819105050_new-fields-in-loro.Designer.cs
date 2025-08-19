@@ -4,6 +4,7 @@ using ExpoApp.Repository.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpoApp.Repository.Migrations
 {
     [DbContext(typeof(ExpoAppDbContext))]
-    partial class ExpoAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250819105050_new-fields-in-loro")]
+    partial class newfieldsinloro
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1003,9 +1006,6 @@ namespace ExpoApp.Repository.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("ValidationCode")
-                        .HasColumnType("longtext");
 
                     b.HasKey("Id")
                         .HasName("user_loro_pkey");
