@@ -1,9 +1,5 @@
-using ExpoApp.Domain.Entities.User;
-using ExpoApp.Domain.Entities.UserQrCodes;
-using ExpoShared.Domain.Entities.Shared;
 using ExpoShared.Domain.Entities.UserLoros;
 using ExpoShared.Domain.Entities.Users;
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

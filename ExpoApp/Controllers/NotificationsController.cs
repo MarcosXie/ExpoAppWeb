@@ -1,5 +1,4 @@
-﻿using ExpoApp.Domain.Entities.Momento;
-using ExpoShared.Domain.Entities.Chats.CallCenterChat;
+﻿using ExpoShared.Domain.Entities.Chats.CallCenterChat;
 using ExpoShared.Domain.Entities.Chats.CartChat;
 using ExpoShared.Domain.Entities.Chats.GroupChat;
 using ExpoShared.Domain.Entities.Chats.RelationshipChat;

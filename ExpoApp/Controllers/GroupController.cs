@@ -1,5 +1,4 @@
-﻿using ExpoShared.Domain.Entities.Chats.GroupChat;
-using ExpoShared.Domain.Entities.Groups;
+﻿using ExpoShared.Domain.Entities.Groups;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpoApp.Api.Controllers;

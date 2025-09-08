@@ -1,10 +1,7 @@
-using ExpoApp.Api.Hubs.Interfaces;
 using ExpoShared.Domain.Entities.Chats.GroupChat;
-using ExpoShared.Domain.Entities.Chats.RelationshipChat;
 using ExpoShared.Domain.Entities.Chats.Shared;
 using ExpoShared.Domain.Entities.Relationships;
 using ExpoShared.Domain.Entities.Users;
-using FirebaseAdmin.Messaging;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ExpoApp.Api.Hubs;
