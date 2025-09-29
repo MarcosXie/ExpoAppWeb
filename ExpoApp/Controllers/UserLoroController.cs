@@ -27,7 +27,7 @@ public class UserLoroController(IUserLoroService service) : ControllerBase
 
         return Ok(hash);
     }
-	[HttpPost("Delete/{id:guid}")]
+	[HttpDelete("Delete/{id:guid}")]
 	[AllowAnonymous]
 	public async Task<ActionResult> LoginAsync(Guid id)
 	{
