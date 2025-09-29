@@ -27,6 +27,14 @@ public class UserLoroController(IUserLoroService service) : ControllerBase
 
         return Ok(hash);
     }
+	[HttpPost("Delete/{id:guid}")]
+	[AllowAnonymous]
+	public async Task<ActionResult> LoginAsync(Guid id)
+	{
+		await service.DeleteAsync(id);
+		
+		return Ok();
+	}
 	
 	[HttpPost("UpdateFcmToken")]
 	public async Task<ActionResult<UserProfileResponseDto>> UpdateFcmToken([FromBody] string token)
