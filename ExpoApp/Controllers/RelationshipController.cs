@@ -18,9 +18,9 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 	}
 
 	[HttpGet]
-	public async Task<ActionResult<List<RelationshipResponseDto>>> GetAsync([FromQuery] Guid? userId = null)
+	public async Task<ActionResult<List<RelationshipResponseDto>>> GetAsync([FromQuery] Guid? userId = null, [FromQuery] List<Guid>? extraUserIds = null)
 	{
-		var relationships = await service.GetRelationshipsByUserIdAsync(userId);
+		var relationships = await service.GetRelationshipsByUserIdAsync(userId, extraUserIds);
 
 		return Ok(relationships);
 	}

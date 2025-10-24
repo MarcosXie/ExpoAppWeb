@@ -9,14 +9,17 @@ namespace ExpoApp.Repository.Repositories;
 
 public class ExpoAppRelationshipRepository(UExpoDbContext context, IMapper mapper, IRelationshipMessageRepository repository) : RelationshipRepository(context, mapper, repository)
 {
-	public override async Task<List<Relationship>> GetByUserIdAsync(Guid id)
+	public override async Task<List<Relationship>> GetByUserIdAsync(Guid id, List<Guid>? extraUserIds = null)
 	{
 		var users = await Database
 			.Include(x => x.BuyerUser)
 			.ThenInclude(x => x.Images)
 			.Include(x => x.SupplierUser)
 			.ThenInclude(x => x.Images)
-			.Where(x => x.BuyerUserId == id || x.SupplierUserId == id)
+			.Where(
+				x => (x.BuyerUserId == id || x.SupplierUserId == id) ||
+				     (extraUserIds == null || ((extraUserIds.Contains(x.BuyerUserId)) || (extraUserIds.Contains(x.SupplierUserId))))
+			)
 			.ToListAsync();
 
 		return Mapper.Map<List<Relationship>>(users);
