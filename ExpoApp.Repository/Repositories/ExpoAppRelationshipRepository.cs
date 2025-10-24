@@ -17,9 +17,10 @@ public class ExpoAppRelationshipRepository(UExpoDbContext context, IMapper mappe
 			.Include(x => x.SupplierUser)
 			.ThenInclude(x => x.Images)
 			.Where(
-				x => (x.BuyerUserId == id || x.SupplierUserId == id) ||
+				x => (x.BuyerUserId == id || x.SupplierUserId == id) &&
 				     (extraUserIds == null || ((extraUserIds.Contains(x.BuyerUserId)) || (extraUserIds.Contains(x.SupplierUserId))))
 			)
+			.Distinct()
 			.ToListAsync();
 
 		return Mapper.Map<List<Relationship>>(users);
