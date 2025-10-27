@@ -123,6 +123,13 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
         return Ok(profile);
     }
 
+	[HttpGet("Profile")]
+	public async Task<ActionResult<List<UserProfileResponseDto>>> GetProfileAsync([FromQuery] List<Guid> ids)
+	{
+		var profiles = await service.GetProfilesAsync(ids);
+		return Ok(profiles);
+	}
+    
 	[HttpPatch("{id}/Language")]
 	public async Task<ActionResult<UserProfileResponseDto>> UpdateLanguage(Guid id, UpdateLanguageDto updateDto)
 	{
