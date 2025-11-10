@@ -55,7 +55,7 @@ namespace ExpoApp.Api.Controllers
             try
             {
                 var presents = await _presentService.GetPresentsAsync();
-                return Ok(presents);
+                return Ok(presents.OrderBy(x => x.Price));
             }
             catch (Exception ex)
             {
