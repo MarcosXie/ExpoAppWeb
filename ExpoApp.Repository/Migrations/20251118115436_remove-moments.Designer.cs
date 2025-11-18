@@ -4,6 +4,7 @@ using ExpoApp.Repository.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpoApp.Repository.Migrations
 {
     [DbContext(typeof(ExpoAppDbContext))]
-    partial class ExpoAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251118115436_remove-moments")]
+    partial class removemoments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,45 +24,6 @@ namespace ExpoApp.Repository.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("ExpoApp.Domain.Dao.MomentoDao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("TargetUserId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id")
-                        .HasName("momento_pkey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("momento", (string)null);
-                });
 
             modelBuilder.Entity("ExpoApp.Domain.Dao.Wed.PresentDao", b =>
                 {
@@ -1012,17 +976,6 @@ namespace ExpoApp.Repository.Migrations
                         .HasName("user_loro_pkey");
 
                     b.ToTable("user_loro", (string)null);
-                });
-
-            modelBuilder.Entity("ExpoApp.Domain.Dao.MomentoDao", b =>
-                {
-                    b.HasOne("ExpoShared.Domain.Dao.UserDao", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ExpoShared.Domain.Dao.CallCenterChatDao", b =>
