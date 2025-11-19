@@ -61,7 +61,7 @@ public class MomentoService(
 			UserId = userId,
 			TargetUserId = targetUserId,
 			Type = type,
-			Value = "",
+			Value = filePath,
 			Comment = type == MomentoType.Audio ?  $"Record {momentoOrder}": "",
 			Order = momentoOrder
 		};
