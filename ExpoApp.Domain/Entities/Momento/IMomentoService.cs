@@ -5,6 +5,7 @@ namespace ExpoApp.Domain.Entities.Momento;
 public interface IMomentoService
 {
 	Task<MomentoResponseDto> AddMomentoFile(IFormFile file, Guid targetUserId, MomentoType type);
+	Task<MomentoResponseDto> AddMomentoFilePath(Guid targetUserId, MomentoType type, string filePath);
 	Task<MomentoResponseDto> AddMomentoText(string value, Guid targetUserId, MomentoType type = MomentoType.Memo);
 	Task<MemoryStream> GetMomentoFiles(Guid userId, Guid targetUserId, MomentoType type, List<Guid> alreadyLoaded);
 	Task<List<MomentoResponseDto>> GetMomentos(Guid userId, Guid targetUserId, MomentoType type, List<Guid> alreadyLoaded);

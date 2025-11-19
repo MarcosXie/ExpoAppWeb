@@ -21,6 +21,17 @@ public class MomentoController(IMomentoService momentoService) : ControllerBase
 		return Ok(response);
 	}
 	
+	[HttpPost("FilePath/{momentoType}/{targetUserId:guid}/{filePath}")]
+	public async Task<ActionResult> SaveMomento(string momentoType, Guid targetUserId, string filePath)
+	{
+		MomentoType type = (MomentoType)Enum.Parse(typeof(MomentoType), momentoType);
+		
+		var response = await momentoService.AddMomentoFilePath(targetUserId, type, filePath);
+		
+		return Ok(response);
+	}
+
+	
 	[HttpPost("Text/{momentoType}/{targetUserId:guid}")]
 	public async Task<ActionResult> SaveMomentoText(
 		[FromBody]string value, [FromRoute]string momentoType, [FromRoute]Guid targetUserId

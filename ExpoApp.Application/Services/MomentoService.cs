@@ -51,6 +51,35 @@ public class MomentoService(
 		};
 	}
 
+	public async Task<MomentoResponseDto> AddMomentoFilePath(Guid targetUserId, MomentoType type, string filePath)
+	{
+		var userId = authUserHelper.GetUser().Id;
+		int momentoOrder = await GetMomentoOrder(targetUserId, type, userId);
+		
+		var momento = new Momento
+		{
+			UserId = userId,
+			TargetUserId = targetUserId,
+			Type = type,
+			Value = "",
+			Comment = type == MomentoType.Audio ?  $"Record {momentoOrder}": "",
+			Order = momentoOrder
+		};
+		
+		await momentoRepository.CreateAsync(momento);
+		
+		var dbMomento = await momentoRepository.GetByIdAsync(momento.Id);
+
+		return new()
+		{
+			Id = momento.Id,
+			CreatedDate = dbMomento.CreatedAt,
+			Comment = momento.Comment,
+			Value = filePath,
+			Order = momentoOrder
+		};
+	}
+
 	public async Task<MomentoResponseDto> AddMomentoText(string value, Guid targetUserId, MomentoType type = MomentoType.Memo)
 	{
 		var userId = authUserHelper.GetUser().Id;
