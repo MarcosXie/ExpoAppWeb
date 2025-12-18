@@ -29,6 +29,15 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 		BeMemberInfoDto info = service.GetBeMemberInfo();
 		return Ok(info);
 	}
+	
+	
+	[HttpGet("IsValidEmail/{email}")]
+	[AllowAnonymous]
+	public async Task<ActionResult> IsValidEmailAsync(string email)
+	{
+		bool isValid = await service.IsValidEmailAsync(email);
+		return Ok(isValid);
+	}
 
 	[HttpPost("Login")]
     [AllowAnonymous]
