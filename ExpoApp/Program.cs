@@ -52,7 +52,21 @@ services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy
-              .WithOrigins("http://localhost:3000", "https://andre-e-leticia.vercel.app", "http://localhost:5174", "http://localhost:5173", "http://10.0.0.34:5173", "https://expoapp.com.br", "177.128.51.223", "172.31.0.73",  "http://177.128.51.223", "http://172.31.0.73",  "https://177.128.51.223", "https://172.31.0.73")
+              .WithOrigins(
+	              "http://localhost:3000", 
+	              "https://andre-e-leticia.vercel.app", 
+	              "http://localhost:5174", 
+	              "http://localhost:5173", 
+	              "http://10.0.0.34:5173", 
+	              "https://expoapp.com.br", 
+	              "177.128.51.223", 
+	              "172.31.0.73",  
+	              "http://177.128.51.223", 
+	              "http://172.31.0.73",  
+	              "https://177.128.51.223", 
+	              "https://172.31.0.73",
+	              "https://expobot.com.br"
+	              )
               .AllowAnyHeader()
               .AllowAnyMethod()
             .WithExposedHeaders("Content-Disposition")
