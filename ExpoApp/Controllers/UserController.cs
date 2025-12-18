@@ -162,6 +162,15 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 		return Ok($"data:image/png;base64,{base64String}");
 	}
 	
+	[HttpGet("email/{email}/QRCode")]
+	public async Task<ActionResult<UserProfileResponseDto>> GetQrCodeByEmail(Guid email)
+	{
+		var qrCode = await qrCodeService.GenerateQrCodeByEmailAsync(email);
+		
+		var base64String = Convert.ToBase64String(qrCode);
+		return Ok($"data:image/png;base64,{base64String}");
+	}
+	
 	[HttpPost("UpdateFcmToken")]
 	public async Task<ActionResult<UserProfileResponseDto>> UpdateFcmToken([FromBody] string token)
 	{
