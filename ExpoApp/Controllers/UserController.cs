@@ -162,6 +162,7 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 		return Ok($"data:image/png;base64,{base64String}");
 	}
 	
+	[AllowAnonymous]
 	[HttpGet("email/{email}/QRCode")]
 	public async Task<ActionResult<UserProfileResponseDto>> GetQrCodeByEmail(Guid email)
 	{
