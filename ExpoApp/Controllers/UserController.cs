@@ -164,7 +164,7 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 	
 	[AllowAnonymous]
 	[HttpGet("email/{email}/QRCode")]
-	public async Task<ActionResult<UserProfileResponseDto>> GetQrCodeByEmail(Guid email)
+	public async Task<ActionResult<UserProfileResponseDto>> GetQrCodeByEmail(string email)
 	{
 		var qrCode = await qrCodeService.GenerateQrCodeByEmailAsync(email);
 		

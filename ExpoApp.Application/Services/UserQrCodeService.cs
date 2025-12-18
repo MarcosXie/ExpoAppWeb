@@ -13,10 +13,15 @@ public class UserQrCodeService(IUserRepository userRepository) : IUserQrCodeServ
 		return Task.FromResult(qrCode);
 	}
 
-	public async Task<byte[]> GenerateQrCodeByEmailAsync(Guid email)
+	public async Task<byte[]> GenerateQrCodeByEmailAsync(string email)
 	{
-		var user = await userRepository.GetByIdAsync(email);
+		var user = await userRepository.FirstOrDefaultAsync(x => x.Email == email);
 
+		if (user == null)
+		{
+			return null;
+		}
+		
 		var qrCode = await GenerateQrCodeAsync(user.Id);
 		return qrCode;
 	}

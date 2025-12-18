@@ -3,5 +3,5 @@
 public interface IUserQrCodeService
 {
 	Task<byte[]> GenerateQrCodeAsync(Guid userId);
-	Task<byte[]> GenerateQrCodeByEmailAsync(Guid email);
+	Task<byte[]> GenerateQrCodeByEmailAsync(string email);
 }
