@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpoShared.Repository", "Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpoApp.Domain", "ExpoApp.Domain\ExpoApp.Domain.csproj", "{38B93B5C-AE5F-423B-8F44-97E5C6F9E7B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpoApp.Auth.SDK", "ExpoApp.Auth.SDK\ExpoApp.Auth.SDK.csproj", "{4BEA4376-49F9-46C7-B3CC-C7F3D49E8942}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{38B93B5C-AE5F-423B-8F44-97E5C6F9E7B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38B93B5C-AE5F-423B-8F44-97E5C6F9E7B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38B93B5C-AE5F-423B-8F44-97E5C6F9E7B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BEA4376-49F9-46C7-B3CC-C7F3D49E8942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BEA4376-49F9-46C7-B3CC-C7F3D49E8942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BEA4376-49F9-46C7-B3CC-C7F3D49E8942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BEA4376-49F9-46C7-B3CC-C7F3D49E8942}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

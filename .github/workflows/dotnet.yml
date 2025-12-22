@@ -71,6 +71,33 @@ jobs:
           name: deploy-files
           path: ${{github.run_id}}.zip
 
+  publish-nuget:
+    runs-on: ubuntu-latest
+    # Opcional: só publica se o build passar
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.GH_PAT }}
+  
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+          # Configura o source do NuGet para o GitHub Packages
+          source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Pack NuGet
+        # Apontar para o caminho da sua Class Library específica
+        run: dotnet pack ExpoApp.Auth.SDK/ExpoApp.Auth.SDK.csproj -c Release -o out
+  
+      - name: Push to GitHub Packages
+        # O GITHUB_TOKEN é gerado automaticamente pelo GitHub Actions
+        run: dotnet nuget push out/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
