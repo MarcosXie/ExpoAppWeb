@@ -88,7 +88,7 @@ jobs:
           # Configura o source do NuGet para o GitHub Packages
           source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
       - name: Pack NuGet
         # Apontar para o caminho da sua Class Library específica
