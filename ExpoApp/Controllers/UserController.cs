@@ -14,6 +14,14 @@ public class UserController(IUserService service, IUserQrCodeService qrCodeServi
 {
     private readonly IUserService service = service;
     
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> UpdateProfileAsync(Guid id)
+    {
+	    await service.DeleteAsync(id);
+	    return Ok();
+    }
+
+    
     [HttpPost]
     [AllowAnonymous]
     public async Task<ActionResult<string>> RegisterUserAsync(UserDto user)
