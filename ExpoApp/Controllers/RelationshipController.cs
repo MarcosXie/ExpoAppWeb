@@ -83,6 +83,16 @@ public class RelationshipController(IRelationshipService service) : ControllerBa
 		return Ok();
 	}
 
+	
+	[HttpPatch("{id}/ReportMessage")]
+	public async Task<ActionResult<List<RelationshipResponseDto>>> ReportMessageAsync(
+		Guid id)
+	{
+		await service.ReportMessageAsync(id);
+
+		return Ok();
+	}
+	
 	[HttpGet("Add/{id}")]
 	[AllowAnonymous]
 	public ActionResult RedirectToApp(Guid id)
