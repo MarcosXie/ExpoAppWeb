@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using ExpoApp.Domain.Entities.Calls;
 using ExpoShared.Domain.Entities.UserLoros;
 using FirebaseAdmin.Messaging;
+using Microsoft.Extensions.Logging;
 
 namespace ExpoApp.Application.Services;
 
@@ -10,16 +11,20 @@ public class CallService : ICallService
 	private static readonly ConcurrentDictionary<string, ActiveCall> ActiveCalls = new();
 	private readonly IDailyService _dailyService;
 	private readonly IUserLoroRepository _userLoroRepository;
+	private readonly ILogger<CallService> _logger;
 
-	public CallService(IDailyService dailyService, IUserLoroRepository userLoroRepository)
+	public CallService(IDailyService dailyService, IUserLoroRepository userLoroRepository, ILogger<CallService> logger)
 	{
 		_dailyService = dailyService;
 		_userLoroRepository = userLoroRepository;
+		_logger = logger;
 	}
 
 	public async Task<InitiateCallResponseDto> InitiateCallAsync(InitiateCallDto dto)
 	{
+		_logger.LogInformation("[CallService] Step 1: Creating Daily.co room...");
 		var (roomName, roomUrl) = await _dailyService.CreateRoomAsync();
+		_logger.LogInformation("[CallService] Step 2: Room created: {RoomName} / {RoomUrl}", roomName, roomUrl);
 
 		var call = new ActiveCall
 		{
@@ -38,9 +43,14 @@ public class CallService : ICallService
 		ActiveCalls[call.CallId] = call;
 
 		// Send FCM push to target user (from user_loro table)
+		_logger.LogInformation("[CallService] Step 3: Looking up target user {TargetUserId}...", dto.TargetUserId);
 		var targetUser = await _userLoroRepository.GetByIdAsync(Guid.Parse(dto.TargetUserId));
+		_logger.LogInformation("[CallService] Step 4: Target user found: Name={Name}, FcmToken present={HasToken}",
+			targetUser.Name, !string.IsNullOrEmpty(targetUser.FcmToken));
+
 		if (!string.IsNullOrEmpty(targetUser.FcmToken))
 		{
+			_logger.LogInformation("[CallService] Step 5: Sending FCM to target...");
 			await SendFcmAsync(targetUser.FcmToken, new Dictionary<string, string>
 			{
 				{ "type", "incoming_call" },

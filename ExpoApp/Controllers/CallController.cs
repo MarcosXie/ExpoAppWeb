@@ -7,7 +7,7 @@ namespace ExpoApp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CallController(ICallService callService, IUserLoroRepository userLoroRepository, AuthUserHelper authUserHelper) : ControllerBase
+public class CallController(ICallService callService, IUserLoroRepository userLoroRepository, AuthUserHelper authUserHelper, ILogger<CallController> logger) : ControllerBase
 {
 
 
@@ -16,11 +16,19 @@ public class CallController(ICallService callService, IUserLoroRepository userLo
 	{
 		try
 		{
+			logger.LogInformation("[CallController] InitiateCall called: CallerId={CallerId}, TargetUserId={TargetUserId}, CallerName={CallerName}, CallerLang={CallerLang}, TargetLang={TargetLang}",
+				dto.CallerId, dto.TargetUserId, dto.CallerName, dto.CallerLang, dto.TargetLang);
+
 			var result = await callService.InitiateCallAsync(dto);
+
+			logger.LogInformation("[CallController] InitiateCall success: CallId={CallId}, RoomUrl={RoomUrl}",
+				result.CallId, result.RoomUrl);
+
 			return Ok(result);
 		}
 		catch (Exception ex)
 		{
+			logger.LogError(ex, "[CallController] InitiateCall FAILED: {Message}", ex.Message);
 			return StatusCode(400, new { error = ex.Message });
 		}
 	}
