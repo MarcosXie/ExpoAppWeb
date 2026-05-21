@@ -1,4 +1,5 @@
 ﻿using ExpoApp.Application.Services;
+using ExpoApp.Domain.Entities.Calls;
 using ExpoApp.Domain.Entities.Exhibitors;
 using ExpoApp.Domain.Entities.Momento;
 using ExpoApp.Domain.Entities.UserQrCodes;
@@ -15,5 +16,7 @@ public static class DependencyInjection
 	    services.AddScoped<IUserQrCodeService, UserQrCodeService>();
 	    services.AddScoped<IMomentoService, MomentoService>();
 	    services.AddScoped<IPresentService, PresentService>();
+	    services.AddSingleton<IDailyService, DailyService>();
+	    services.AddScoped<ICallService, CallService>();
     }
 }
