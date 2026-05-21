@@ -23,3 +23,9 @@ public class AcceptCallResponseDto
 	public string TargetLang { get; set; } = string.Empty;
 }
 
+public class ContactDto
+{
+	public Guid Id { get; set; }
+	public string Name { get; set; } = string.Empty;
+	public string Country { get; set; } = string.Empty;
+}
