@@ -7,13 +7,23 @@ namespace ExpoApp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CallController(ICallService callService, IUserLoroRepository userLoroRepository, AuthUserHelper authUserHelper) : ControllerBase
+public class CallController(ICallService callService, IUserLoroRepository userLoroRepository, AuthUserHelper authUserHelper, ILogger logger) : ControllerBase
 {
+	private ILogger _logger;
+
 	[HttpPost("initiate")]
 	public async Task<ActionResult<InitiateCallResponseDto>> InitiateCall(InitiateCallDto dto)
 	{
-		var result = await callService.InitiateCallAsync(dto);
-		return Ok(result);
+		try
+		{
+			var result = await callService.InitiateCallAsync(dto);
+			return Ok(result);
+		}
+		catch (Exception ex)
+		{
+			logger.LogError(ex, "Call initiate failed for target {TargetId}", dto.TargetUserId);
+			return StatusCode(400, new { error = ex.Message });
+		}
 	}
 
 	[HttpPost("accept/{callId}")]
