@@ -46,7 +46,8 @@ public class CallController(ICallService callService, IUserLoroRepository userLo
 		{
 			Id = u.Id,
 			Name = u.Name,
-			Country = u.Country
+			Country = u.Country,
+			CellPhone = u.CellPhone
 		}).ToList();
 		return Ok(contacts);
 	}
