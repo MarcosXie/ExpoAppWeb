@@ -48,9 +48,13 @@ public class CallService : ICallService
 		_logger.LogInformation("[CallService] Step 4: Target user found: Name={Name}, FcmToken present={HasToken}",
 			targetUser.Name, !string.IsNullOrEmpty(targetUser.FcmToken));
 
-		if (!string.IsNullOrEmpty(targetUser.FcmToken))
+		if (string.IsNullOrEmpty(targetUser.FcmToken))
 		{
-			_logger.LogInformation("[CallService] Step 5: Sending FCM to target...");
+			_logger.LogWarning("[CallService] Step 5: Target user has NO FcmToken! Push will NOT be sent.");
+		}
+		else
+		{
+			_logger.LogInformation("[CallService] Step 5: Sending FCM to target token={Token}...", targetUser.FcmToken[..Math.Min(20, targetUser.FcmToken.Length)] + "...");
 			await SendFcmAsync(targetUser.FcmToken, new Dictionary<string, string>
 			{
 				{ "type", "incoming_call" },
@@ -162,21 +166,26 @@ public class CallService : ICallService
 		ActiveCalls.TryRemove(callId, out _);
 	}
 
-	private static async Task SendFcmAsync(string fcmToken, Dictionary<string, string> data)
+	private async Task SendFcmAsync(string fcmToken, Dictionary<string, string> data)
 	{
 		try
 		{
+			_logger.LogInformation("[CallService] SendFcmAsync: Sending to token={Token}, data keys=[{Keys}]",
+				fcmToken?[..Math.Min(20, fcmToken?.Length ?? 0)] + "...",
+				string.Join(", ", data.Keys));
+
 			var message = new Message
 			{
 				Token = fcmToken,
 				Data = data,
 				Android = new AndroidConfig { Priority = Priority.High }
 			};
-			await FirebaseMessaging.DefaultInstance.SendAsync(message);
+			var response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
+			_logger.LogInformation("[CallService] SendFcmAsync SUCCESS: response={Response}", response);
 		}
 		catch (Exception ex)
 		{
-			Console.WriteLine($"FCM send error: {ex.Message}");
+			_logger.LogError(ex, "[CallService] SendFcmAsync FAILED: {Message}", ex.Message);
 		}
 	}
 }
