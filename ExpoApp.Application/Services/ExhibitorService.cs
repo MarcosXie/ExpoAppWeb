@@ -17,9 +17,12 @@ public class ExhibitorService(IUserRepository userRepository, IRelationshipRepos
 		var userId = authUserHelper.GetUser().Id; 
 		var users = await userRepository.GetAsync(x => 
 			x.Id != userId &&
+			!string.IsNullOrEmpty(x.Enterprise) &&
 			(companyName == null || x.Enterprise.ToLower().Contains(companyName.ToLower())) &&
 			(email == null || x.Email.ToLower().Contains(email.ToLower())) &&
-			(country == null || x.Country.ToLower().Equals(country.ToLower())) 
+			(country == null || x.Country.ToLower().Equals(country.ToLower()) 
+			)
+			 
 		);
 		var relationships = await GetUserRelationshipsAsync();
 		
@@ -48,7 +51,7 @@ public class ExhibitorService(IUserRepository userRepository, IRelationshipRepos
 		return new()
 		{
 			Emails = users.Select(x => x.Email).ToList(),
-			CompanyNames = users.Select(x => x.Enterprise ?? "").ToList(),
+			CompanyNames = users.Where(x => !string.IsNullOrEmpty(x.Enterprise)).Select(x => x.Enterprise ?? "").ToList(),
 			Countries = users.Select(x => x.Country).ToList(),
 		};
 	}

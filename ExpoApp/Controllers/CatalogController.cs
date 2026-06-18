@@ -123,7 +123,7 @@ public class CatalogController(ICatalogService service, AuthUserHelper userHelpe
         if (images.Any(img => !supportedTypes.Contains(Path.GetExtension(img.FileName))))
             return BadRequest("Invalid file type");
 
-        var createdImages = await service.AddImagesAsync(id, productId, images);
+        var createdImages = await service.AddImagesAsync(id, productId, images, includeSegments: false);
 
         return Ok(createdImages);
     }

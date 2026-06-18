@@ -73,8 +73,8 @@ public class CartController(ICartService service) : ControllerBase
 		return Ok(items);
 	}
 
-	[HttpPut("Item/{itemId}")]
-	public async Task<ActionResult> UpdateItem(Guid itemId, CartItemUpdateDto item)
+	[HttpPut("{id}/Item/{itemId}")]
+	public async Task<ActionResult> UpdateItem(Guid id, Guid itemId, CartItemUpdateDto item)
 	{
 		await service.UpdateItemAsync(itemId, item);
 
