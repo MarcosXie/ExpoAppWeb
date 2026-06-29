@@ -34,7 +34,7 @@ ENV ASPNETCORE_ENVIRONMENT=Production \
     DOTNET_RUNNING_IN_CONTAINER=true \
     DOTNET_gcServer=1
 
-COPY --from=publish /app/publish ./
+COPY --from=build /app/publish ./
 
 EXPOSE 8081
 
