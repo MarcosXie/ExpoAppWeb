@@ -1,10 +1,9 @@
-name: .NET
+name: .NET (AWS Elastic Beanstalk) [DISABLED]
 
+# Temporariamente desabilitado — deploy ativo é o deploy-vps.yml.
+# Para reativar: restaurar os gatilhos push / pull_request abaixo.
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 env:
   PROJECT_LOCATION: ExpoApp/ExpoApp.Api.csproj
